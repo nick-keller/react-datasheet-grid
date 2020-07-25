@@ -1,0 +1,54 @@
+.dsgContainer {
+  border-bottom: solid 1px rgb(232, 235, 237);
+}
+
+.dsgCornerIndicator {
+  margin: auto;
+  width: 0;
+  border-bottom: solid 10px rgb(157, 166, 171);
+  border-left: solid 10px transparent;
+}
+
+.dsgCell {
+  display: flex;
+  align-items: center;
+  border: solid 1px rgb(232, 235, 237);
+  border-bottom: none;
+  border-right: none;
+  box-sizing: border-box;
+}
+
+.dsgCellHeader, .dsgCellGutter {
+  color: rgb(157, 166, 171);
+  padding: 0 10px;
+  transition: color .1s;
+  z-index: 1;
+}
+
+.dsgCellGutter {
+  padding: 0 5px;
+}
+
+.dsgCellHeaderActive, .dsgCellGutterActive {
+  color: black;
+}
+
+.dsgCellGutterActive {
+  box-shadow: 2px 0 rgb(69, 128, 230);
+}
+
+.dsgCellHeaderActive {
+  box-shadow: 0 2px rgb(69, 128, 230);
+}
+
+.dsgActiveCell, .dsgSelectionRect {
+  position: absolute;
+  border: solid 2px rgb(69, 128, 230);
+  box-sizing: border-box;
+  border-radius: 2px;
+  transition: all .1s;
+}
+
+.dsgSelectionRect {
+  background: rgba(69, 128, 230, 0.04);
+}
