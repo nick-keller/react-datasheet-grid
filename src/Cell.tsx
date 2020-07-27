@@ -11,18 +11,26 @@ export const Cell = ({
   columnIndex,
   rowIndex,
 }: GridChildComponentProps) => {
-  const { selection, data, columns, activeCell } = useContext(
-    DataSheetGridContext
-  )
+  const {
+    selection,
+    data,
+    columns,
+    activeCell,
+    editing,
+    onChange,
+    isCellDisabled,
+  } = useContext(DataSheetGridContext)
+
+  const active =
+    activeCell?.col === columnIndex - 1 && activeCell.row === rowIndex - 1
 
   return (
     <div
       className={cx({
-        [`dsgCol${columnIndex - 1}`]: columnIndex > 0,
-        [`dsgCol${columnIndex - columns.length}`]: columnIndex > 0,
-        [`dsgRow${rowIndex - 1}`]: rowIndex > 0,
-        [`dsgRow${rowIndex - data.length}`]: rowIndex > 0,
         [s.dsgCell]: true,
+        [s.dsgCellDisabled]:
+          rowIndex !== 0 &&
+          isCellDisabled({ col: columnIndex - 1, row: rowIndex - 1 }),
         [s.dsgCellHeader]: rowIndex === 0,
         [s.dsgCellGutter]: columnIndex === 0,
         [s.dsgCellHeaderActive]:
@@ -43,12 +51,17 @@ export const Cell = ({
       {rowIndex === 0
         ? columns[columnIndex].title
         : columns[columnIndex].render({
-            active:
-              activeCell?.col === columnIndex - 1 &&
-              activeCell.row === rowIndex - 1,
-            focus: false,
+            active,
+            focus: active && editing,
             rowIndex: rowIndex - 1,
             rowData: data[rowIndex - 1],
+            columnIndex: columnIndex - 1,
+            setRowData: (rowData) =>
+              onChange([
+                ...data.slice(0, rowIndex - 1),
+                rowData,
+                ...data.slice(rowIndex),
+              ]),
           })}
     </div>
   )

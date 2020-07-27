@@ -34,7 +34,7 @@ export const useColumnWidths = (width: number, columns: Column[]) => {
         const child = document.createElement('div')
 
         child.style.display = 'block'
-        child.style.flex = String(column.width || 1)
+        child.style.flex = String(column.width)
         child.style.minWidth = `${column.minWidth}px`
         child.style.maxWidth = `${column.maxWidth}px`
 
@@ -47,6 +47,7 @@ export const useColumnWidths = (width: number, columns: Column[]) => {
       setWidths(children.map((child) => child.offsetWidth))
       el.remove()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, columnsHash, scrollbarWidth])
 
   return { widths, offsets }

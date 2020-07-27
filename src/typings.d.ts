@@ -17,11 +17,28 @@ declare module '*.svg' {
   export { svgComponent as ReactComponent }
 }
 
+interface DataSheetGridProps {
+  data?: any[]
+  onChange?: (data: any[]) => void
+  columns?: Partial<Column>[]
+  width?: number
+  height?: number
+  rowHeight?: number
+  headerRowHeight?: number
+  createRow?: () => any
+  duplicateRow?: ({ rowData }) => any
+  isRowEmpty?: ({ rowData }) => boolean
+  autoAddRow?: boolean
+  lockRows?: boolean
+}
+
 interface ColumnRenderFunctionOptions {
   rowData: any
   rowIndex: number
+  columnIndex: number
   active: boolean
   focus: boolean
+  setRowData: (rowData: any) => void
 }
 
 interface ColumnRenderFunction {
@@ -30,10 +47,15 @@ interface ColumnRenderFunction {
 
 interface Column {
   title?: React.ReactNode
-  width?: string | number
+  width: string | number
   minWidth?: number
   maxWidth?: number
   render: ColumnRenderFunction
+  disableKeys: boolean
+  disabled: boolean | (({ rowData }) => boolean)
+  deleteValue: ({ rowData }) => any
+  copyValue: ({ rowData }) => number | string | null
+  pasteValue: ({ rowData, value }) => any
 }
 
 interface Cell {
@@ -43,6 +65,7 @@ interface Cell {
 
 interface GridContext {
   focus: boolean
+  editing: boolean
   activeCell: Cell | null
   columnWidths: number[]
   rowHeight: number
@@ -52,5 +75,7 @@ interface GridContext {
     max: Cell
   } | null
   data: any[]
+  onChange: (data: any[]) => void
   columns: Column[]
+  isCellDisabled: (cell: Cell) => boolean
 }

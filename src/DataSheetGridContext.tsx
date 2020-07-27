@@ -9,4 +9,6 @@ export const DataSheetGridContext = React.createContext<GridContext>({
   data: [],
   columns: [],
   selection: null,
+  editing: false,
+  onChange: () => null,
 })

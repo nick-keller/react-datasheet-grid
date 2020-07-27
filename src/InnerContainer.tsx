@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { forwardRef, RefObject, useContext } from 'react'
+import { forwardRef, RefObject, useContext, useMemo } from 'react'
 import { DataSheetGridContext } from './DataSheetGridContext'
 import s from './styles.css'
+import cx from 'classnames'
 
 const buildSquare = (top, right, bottom, left) => {
   return [
@@ -39,7 +40,9 @@ export const InnerContainer = forwardRef(
       headerRowHeight,
       selection,
       data,
+      editing,
       columns,
+      isCellDisabled,
     } = useContext(DataSheetGridContext)
 
     const extraPixelV = (rowI: number): number => {
@@ -72,22 +75,46 @@ export const InnerContainer = forwardRef(
       top: rowHeight * selection.min.row + headerRowHeight,
     }
 
+    const selectionIsDisabled = useMemo(() => {
+      if (!selection) {
+        return false
+      }
+
+      for (let col = selection.min.col; col <= selection.max.col; ++col) {
+        for (let row = selection.min.row; row <= selection.max.row; ++row) {
+          if (!isCellDisabled({ col, row })) {
+            return false
+          }
+        }
+      }
+
+      return true
+    }, [isCellDisabled, selection])
+
     return (
       <div ref={ref} {...rest}>
         {children}
         {activeCellRect && (
-          <div className={s.dsgActiveCell} style={activeCellRect} />
+          <div
+            className={cx({
+              [s.dsgActiveCell]: true,
+              [s.dsgActiveCellFocus]: editing,
+              [s.dsgActiveCellDisabled]:
+                activeCell && isCellDisabled(activeCell),
+            })}
+            style={activeCellRect}
+          />
         )}
         {selectionRect && activeCellRect && (
           <div
-            className={s.dsgSelectionRect}
+            className={cx({ [s.dsgSelectionRect]: true, [s.dsgSelectionRectDisabled]: selectionIsDisabled })}
             style={{
               ...selectionRect,
               clipPath: buildClipPath(
                 activeCellRect.top - selectionRect.top,
                 activeCellRect.left - selectionRect.left,
                 activeCellRect.top + activeCellRect.height - selectionRect.top,
-                activeCellRect.left + activeCellRect.width - selectionRect.left,
+                activeCellRect.left + activeCellRect.width - selectionRect.left
               ),
             }}
           />
