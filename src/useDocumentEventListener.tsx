@@ -7,5 +7,5 @@ export const useDocumentEventListener = (type: string, listener) => {
     return () => {
       document.removeEventListener(type, listener)
     }
-  }, [listener])
+  }, [listener, type])
 }

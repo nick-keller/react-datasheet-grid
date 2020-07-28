@@ -1,18 +1,18 @@
-.dsgContainer {
+:global(.dsg-container) {
   box-shadow: 0 0 0 1px rgb(232, 235, 237) inset;
   cursor: cell;
   background: white;
   user-select: none;
 }
 
-.dsgCornerIndicator {
+:global(.dsg-corner-indicator) {
   margin: auto;
   width: 0;
   border-bottom: solid 10px rgb(157, 166, 171);
   border-left: solid 10px transparent;
 }
 
-.dsgCell {
+:global(.dsg-cell) {
   display: flex;
   align-items: center;
   border: solid 1px rgb(232, 235, 237);
@@ -21,34 +21,34 @@
   box-sizing: border-box;
 }
 
-.dsgCellDisabled {
+:global(.dsg-cell-disabled) {
   background: rgb(250, 250, 250);
 }
 
-.dsgCellHeader, .dsgCellGutter {
+:global(.dsg-cell-header), :global(.dsg-cell-gutter) {
   color: rgb(157, 166, 171);
   padding: 0 10px;
   transition: color .1s;
   z-index: 1;
 }
 
-.dsgCellGutter {
+:global(.dsg-cell-gutter) {
   padding: 0 5px;
 }
 
-.dsgCellHeaderActive, .dsgCellGutterActive {
+:global(.dsg-cell-header-active), :global(.dsg-cell-gutter-active) {
   color: black;
 }
 
-.dsgCellGutterActive {
+:global(.dsg-cell-gutter-active) {
   box-shadow: 2px 0 rgb(69, 128, 230);
 }
 
-.dsgCellHeaderActive {
+:global(.dsg-cell-header-active) {
   box-shadow: 0 2px rgb(69, 128, 230);
 }
 
-.dsgActiveCell, .dsgSelectionRect {
+:global(.dsg-active-cell), :global(.dsg-selection-rect) {
   position: absolute;
   border: solid 2px rgb(69, 128, 230);
   box-sizing: border-box;
@@ -57,23 +57,23 @@
   pointer-events: none;
 }
 
-.dsgActiveCellFocus {
+:global(.dsg-active-cell-focus) {
   box-shadow: 0 2px 5px rgba(0,0,0,.4);
 }
 
-.dsgActiveCellDisabled, .dsgSelectionRectDisabled {
+:global(.dsg-active-cell-disabled), :global(.dsg-selection-rect-disabled) {
   border-color: #9DA6AB;
 }
 
-.dsgSelectionRect {
+:global(.dsg-selection-rect) {
   background: rgba(69, 128, 230, 0.04);
 }
 
-.dsgSelectionRectDisabled {
+:global(.dsg-selection-rect-disabled) {
   background: rgba(0, 0, 0, 0.04);
 }
 
-.dsgInput {
+:global(.dsg-input) {
   display: block;
   flex: 1;
   width: 50%;
@@ -84,7 +84,7 @@
   padding: 0 10px;
 }
 
-.dsgAddRow {
+:global(.dsg-add-row) {
   background: rgb(250, 250, 250);
   padding: 5px 10px;
   border: solid 1px rgb(232, 235, 237);

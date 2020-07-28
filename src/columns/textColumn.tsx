@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useLayoutEffect, useRef } from 'react'
-import s from '../styles.css'
 
 const Component = ({ focus, onChange, value }) => {
   const ref = useRef<HTMLInputElement>(null)
@@ -15,7 +14,7 @@ const Component = ({ focus, onChange, value }) => {
 
   return (
     <input
-      className={s.dsgInput}
+      className='dsg-input'
       ref={ref}
       style={{ pointerEvents: focus ? 'auto' : 'none' }}
       value={value || ''}
@@ -24,7 +23,7 @@ const Component = ({ focus, onChange, value }) => {
   )
 }
 
-export const textColumn = ({ key, ...rest }): Column => ({
+export const textColumn = ({ key, ...rest }): Partial<Column> => ({
   render: ({ focus, rowData, setRowData }) => (
     <Component
       value={rowData[key]}

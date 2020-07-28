@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { forwardRef, RefObject, useContext, useMemo } from 'react'
+import { forwardRef, useContext, useMemo } from 'react'
 import { DataSheetGridContext } from './DataSheetGridContext'
-import s from './styles.css'
 import cx from 'classnames'
 
 const buildSquare = (top, right, bottom, left) => {
@@ -31,8 +30,8 @@ const buildClipPath = (top, right, bottom, left) => {
     .join(',')})`
 }
 
-export const InnerContainer = forwardRef(
-  ({ children, ...rest }, ref: RefObject<HTMLDivElement>) => {
+export const InnerContainer = forwardRef<HTMLDivElement>(
+  ({ children, ...rest }, ref) => {
     const {
       activeCell,
       columnWidths,
@@ -97,9 +96,9 @@ export const InnerContainer = forwardRef(
         {activeCellRect && (
           <div
             className={cx({
-              [s.dsgActiveCell]: true,
-              [s.dsgActiveCellFocus]: editing,
-              [s.dsgActiveCellDisabled]:
+              'dsg-active-cell': true,
+              'dsg-active-cell-focus': editing,
+              'dsg-active-cell-disabled':
                 activeCell && isCellDisabled(activeCell),
             })}
             style={activeCellRect}
@@ -107,7 +106,10 @@ export const InnerContainer = forwardRef(
         )}
         {selectionRect && activeCellRect && (
           <div
-            className={cx({ [s.dsgSelectionRect]: true, [s.dsgSelectionRectDisabled]: selectionIsDisabled })}
+            className={cx({
+              'dsg-selection-rect': true,
+              'dsg-selection-rect-disabled': selectionIsDisabled,
+            })}
             style={{
               ...selectionRect,
               clipPath: buildClipPath(

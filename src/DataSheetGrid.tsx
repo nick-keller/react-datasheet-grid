@@ -6,7 +6,6 @@ import { useColumnWidths } from './useColumnWidths'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { InnerContainer } from './InnerContainer'
 import { DataSheetGridContext } from './DataSheetGridContext'
-import s from './styles.css'
 import { useGetBoundingRect } from './useGetBoundingRect'
 import { useDocumentEventListener } from './useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
@@ -30,7 +29,7 @@ export const DataSheetGrid = ({
     {
       width: '0 0 30px',
       minWidth: 0,
-      title: <div className={s.dsgCornerIndicator} />,
+      title: <div className='dsg-corner-indicator' />,
       render: ({ rowIndex }) => rowIndex + 1,
     },
     ...rawColumns,
@@ -668,7 +667,7 @@ export const DataSheetGrid = ({
         ref={gridRef}
         innerRef={containerRef}
         width={width}
-        className={s.dsgContainer}
+        className='dsg-container'
         columnCount={columns.length}
         columnWidth={(i) => columnWidths[i]}
         height={Math.min(height, headerRowHeight + rowHeight * data.length)}
@@ -680,7 +679,7 @@ export const DataSheetGrid = ({
       />
       {createRow && !lockRows && (
         <button
-          className={s.dsgAddRow}
+          className='dsg-add-row'
           style={{ width }}
           onClick={() => onInsertRowAfter(data?.length - 1)}
         >

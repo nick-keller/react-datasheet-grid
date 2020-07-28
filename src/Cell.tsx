@@ -1,5 +1,4 @@
 import * as React from 'react'
-import s from './styles.css'
 import cx from 'classnames'
 
 import { GridChildComponentProps } from 'react-window'
@@ -27,19 +26,19 @@ export const Cell = ({
   return (
     <div
       className={cx({
-        [s.dsgCell]: true,
-        [s.dsgCellDisabled]:
+        'dsg-cell': true,
+        'dsg-cell-disabled':
           rowIndex !== 0 &&
           isCellDisabled({ col: columnIndex - 1, row: rowIndex - 1 }),
-        [s.dsgCellHeader]: rowIndex === 0,
-        [s.dsgCellGutter]: columnIndex === 0,
-        [s.dsgCellHeaderActive]:
+        'dsg-cell-header': rowIndex === 0,
+        'dsg-cell-gutter': columnIndex === 0,
+        'dsg-cell-header-active':
           rowIndex === 0 &&
           (activeCell?.col === columnIndex - 1 ||
             (selection &&
               columnIndex >= selection.min.col + 1 &&
               columnIndex <= selection.max.col + 1)),
-        [s.dsgCellGutterActive]:
+        'dsg-cell-gutter-active':
           columnIndex === 0 &&
           (activeCell?.row === rowIndex - 1 ||
             (selection &&
