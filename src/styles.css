@@ -86,9 +86,41 @@
 
 :global(.dsg-add-row) {
   background: rgb(250, 250, 250);
-  padding: 5px 10px;
+  padding: 7px 10px;
   border: solid 1px rgb(232, 235, 237);
   border-top: none;
   box-sizing: border-box;
   text-align: left;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: background-color .2s;
+}
+
+:global(.dsg-add-row):hover {
+  background: rgb(246, 246, 246);
+}
+
+:global(.dsg-add-row):before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  margin-right: 10px;
+  height: 2px;
+  background: rgb(157, 166, 171);
+}
+
+:global(.dsg-add-row):after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  margin-right: 10px;
+  height: 10px;
+  background: rgb(157, 166, 171);
+  position: absolute;
+  left: 14px;
+}
+
+:global(.dsg-checkbox) {
+  margin: auto;
 }

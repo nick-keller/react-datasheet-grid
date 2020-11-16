@@ -1,17 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useScrollbarWidth } from './useScrollbarWidth'
+import { Column } from '../typings'
 
-export const useColumnWidths = (width: number, columns: Column[]) => {
+export const useColumnWidths = (
+  width: number,
+  columns: Column[],
+  includeScrollbar: boolean
+) => {
   const scrollbarWidth = useScrollbarWidth()
-  const [widths, setWidths] = useState<number[]>(() =>
-    columns.map(() => Math.floor(width / columns.length))
-  )
-  const offsets = useMemo<number[]>(() => {
+  const [widths, setWidths] = useState<number[] | null>(null)
+  const offsets = useMemo<number[] | null>(() => {
     let total = 0
-    return widths.map((w, i) => {
-      total += w
-      return i === widths.length - 1 ? Infinity : total
-    })
+    return (
+      widths &&
+      widths.map((w, i) => {
+        total += w
+        return i === widths.length - 1 ? Infinity : total
+      })
+    )
   }, [widths])
 
   const columnsHash = columns
@@ -26,7 +32,7 @@ export const useColumnWidths = (width: number, columns: Column[]) => {
 
       el.style.display = 'flex'
       el.style.position = 'fixed'
-      el.style.width = `${width - scrollbarWidth}px`
+      el.style.width = `${width - (includeScrollbar ? scrollbarWidth : 0)}px`
       el.style.left = '-999px'
       el.style.top = '-1px'
 
@@ -48,7 +54,7 @@ export const useColumnWidths = (width: number, columns: Column[]) => {
       el.remove()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, columnsHash, scrollbarWidth])
+  }, [width, columnsHash, scrollbarWidth, includeScrollbar])
 
   return { widths, offsets }
 }

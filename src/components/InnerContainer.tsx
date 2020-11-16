@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { forwardRef, useContext, useMemo } from 'react'
-import { DataSheetGridContext } from './DataSheetGridContext'
+import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import cx from 'classnames'
 
 const buildSquare = (top, right, bottom, left) => {

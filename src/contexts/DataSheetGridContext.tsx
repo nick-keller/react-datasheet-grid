@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { GridContext } from '../typings'
 
 export const DataSheetGridContext = React.createContext<GridContext>({
   focus: false,

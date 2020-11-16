@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useLayoutEffect, useRef } from 'react'
+import { Column } from '../typings'
 
 const Component = ({ focus, onChange, value }) => {
   const ref = useRef<HTMLInputElement>(null)

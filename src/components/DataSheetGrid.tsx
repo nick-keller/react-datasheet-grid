@@ -1,21 +1,22 @@
 import * as React from 'react'
 import { VariableSizeGrid } from 'react-window'
-import { Cell } from './Cell'
+import { Cell as CellComponent } from './Cell'
 
-import { useColumnWidths } from './useColumnWidths'
+import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { InnerContainer } from './InnerContainer'
-import { DataSheetGridContext } from './DataSheetGridContext'
-import { useGetBoundingRect } from './useGetBoundingRect'
-import { useDocumentEventListener } from './useDocumentEventListener'
+import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
+import { useGetBoundingRect } from '../hooks/useGetBoundingRect'
+import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
+import { Cell, Column, DataSheetGridProps } from '../typings'
 
 export const DataSheetGrid = ({
   data = [],
   onChange = () => null,
   columns: rawColumns = [],
-  width = 200,
-  height = 150,
+  width = 400,
+  height = 300,
   rowHeight = 40,
   headerRowHeight = rowHeight,
   createRow = () => ({}),
@@ -47,15 +48,19 @@ export const DataSheetGrid = ({
 
   const { widths: columnWidths, offsets: columnOffsets } = useColumnWidths(
     width,
-    columns
+    columns,
+    height < headerRowHeight + rowHeight * data.length
   )
   const gridRef = useRef<VariableSizeGrid>(null)
   const containerRef = useRef<HTMLElement>(null)
   const getContainerBoundingRect = useGetBoundingRect(containerRef)
 
   // Update grid when column widths changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => gridRef.current?.resetAfterColumnIndex(0), columnWidths)
+  useEffect(
+    () => gridRef.current?.resetAfterColumnIndex(0),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    columnWidths || columns.map(() => 0)
+  )
 
   // True when the active cell is being edited
   const [editing, setEditing] = useState(false)
@@ -107,7 +112,7 @@ export const DataSheetGrid = ({
   const getCursorIndex = useCallback(
     (event: MouseEvent, force: boolean = false): Cell | null => {
       const boundingClientRect = getContainerBoundingRect(force)
-      if (boundingClientRect) {
+      if (boundingClientRect && columnOffsets) {
         const x = event.clientX - boundingClientRect.left
 
         return {
@@ -653,13 +658,14 @@ export const DataSheetGrid = ({
         focus: Boolean(activeCell),
         editing,
         activeCell: activeCell,
-        columnWidths,
+        columnWidths: columnWidths || columns.map(() => 0),
         rowHeight,
         headerRowHeight,
         selection,
         columns,
         data,
         onChange,
+        onDoneEditing,
         isCellDisabled,
       }}
     >
@@ -668,14 +674,14 @@ export const DataSheetGrid = ({
         innerRef={containerRef}
         width={width}
         className='dsg-container'
-        columnCount={columns.length}
-        columnWidth={(i) => columnWidths[i]}
+        columnCount={(columnWidths && columns.length) || 0}
+        columnWidth={(i) => columnWidths?.[i] || 0}
         height={Math.min(height, headerRowHeight + rowHeight * data.length)}
-        rowCount={data.length + 1}
+        rowCount={(columnWidths && data.length + 1) || 0}
         rowHeight={(i) => (i === 0 ? headerRowHeight : rowHeight)}
         estimatedRowHeight={rowHeight}
         innerElementType={InnerContainer}
-        children={Cell}
+        children={CellComponent}
       />
       {createRow && !lockRows && (
         <button

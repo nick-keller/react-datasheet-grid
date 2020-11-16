@@ -2,6 +2,8 @@
  * Default CSS definition for typescript,
  * will be overridden with file-specific definitions by rollup
  */
+import { ReactNode } from 'react'
+
 declare module '*.css' {
   const content: { [className: string]: string }
   export default content
@@ -39,23 +41,24 @@ interface ColumnRenderFunctionOptions {
   active: boolean
   focus: boolean
   setRowData: (rowData: any) => void
+  onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
 }
 
 interface ColumnRenderFunction {
-  (options: ColumnRenderFunctionOptions): React.ReactNode
+  (options: ColumnRenderFunctionOptions): ReactNode
 }
 
 interface Column {
-  title?: React.ReactNode
+  title?: ReactNode
   width: string | number
   minWidth?: number
   maxWidth?: number
   render: ColumnRenderFunction
   disableKeys: boolean
-  disabled: boolean | (({ rowData }) => boolean)
-  deleteValue: ({ rowData }) => any
-  copyValue: ({ rowData }) => number | string | null
-  pasteValue: ({ rowData, value }) => any
+  disabled: boolean | (({ rowData }: { rowData: any }) => boolean)
+  deleteValue: ({ rowData }: { rowData: any }) => any
+  copyValue: ({ rowData }: { rowData: any }) => number | string | null
+  pasteValue: ({ rowData, value }: { rowData: any; value: string }) => any
 }
 
 interface Cell {
@@ -78,4 +81,5 @@ interface GridContext {
   onChange: (data: any[]) => void
   columns: Column[]
   isCellDisabled: (cell: Cell) => boolean
+  onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
 }

@@ -1,6 +1,7 @@
 import { textColumn } from './columns/textColumn'
-import { DataSheetGrid } from './DataSheetGrid'
+import { checkboxColumn } from './columns/checkboxColumn'
+import { DataSheetGrid } from './components/DataSheetGrid'
 import './styles.css'
 
-export { DataSheetGrid, textColumn }
-export default { DataSheetGrid, textColumn }
+export { DataSheetGrid, textColumn, checkboxColumn }
+export default { DataSheetGrid, textColumn, checkboxColumn }
