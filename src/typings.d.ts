@@ -19,46 +19,47 @@ declare module '*.svg' {
   export { svgComponent as ReactComponent }
 }
 
-interface DataSheetGridProps {
-  data?: any[]
-  onChange?: (data: any[]) => void
-  columns?: Partial<Column>[]
+interface DataSheetGridProps<TRow = any> {
+  data?: TRow[]
+  onChange?: (data: TRow[]) => void
+  columns?: Partial<Column<TRow>>[]
   width?: number
   height?: number
   rowHeight?: number
   headerRowHeight?: number
-  createRow?: () => any
-  duplicateRow?: ({ rowData }) => any
-  isRowEmpty?: ({ rowData }) => boolean
+  gutterColumnWidth?: number | string
+  createRow?: () => TRow
+  duplicateRow?: ({ rowData }: { rowData: TRow }) => TRow
+  isRowEmpty?: ({ rowData }: { rowData: TRow }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
 }
 
-interface ColumnRenderFunctionOptions {
-  rowData: any
+interface ColumnRenderFunctionOptions<TRow = any> {
+  rowData: TRow
   rowIndex: number
   columnIndex: number
   active: boolean
   focus: boolean
-  setRowData: (rowData: any) => void
+  setRowData: (rowData: TRow) => void
   onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
 }
 
-interface ColumnRenderFunction {
-  (options: ColumnRenderFunctionOptions): ReactNode
+interface ColumnRenderFunction<TRow = any> {
+  (options: ColumnRenderFunctionOptions<TRow>): ReactNode
 }
 
-interface Column {
+interface Column<TRow = any> {
   title?: ReactNode
   width: string | number
   minWidth?: number
   maxWidth?: number
-  render: ColumnRenderFunction
+  render: ColumnRenderFunction<TRow>
   disableKeys: boolean
-  disabled: boolean | (({ rowData }: { rowData: any }) => boolean)
-  deleteValue: ({ rowData }: { rowData: any }) => any
-  copyValue: ({ rowData }: { rowData: any }) => number | string | null
-  pasteValue: ({ rowData, value }: { rowData: any; value: string }) => any
+  disabled: boolean | (({ rowData }: { rowData: TRow }) => boolean)
+  deleteValue: ({ rowData }: { rowData: TRow }) => TRow
+  copyValue: ({ rowData }: { rowData: TRow }) => number | string | null
+  pasteValue: ({ rowData, value }: { rowData: TRow; value: string }) => TRow
 }
 
 interface Cell {
@@ -66,7 +67,7 @@ interface Cell {
   row: number
 }
 
-interface GridContext {
+interface GridContext<TRow = any> {
   focus: boolean
   editing: boolean
   activeCell: Cell | null
@@ -77,9 +78,9 @@ interface GridContext {
     min: Cell
     max: Cell
   } | null
-  data: any[]
-  onChange: (data: any[]) => void
-  columns: Column[]
+  data: TRow[]
+  onChange: (data: TRow[]) => void
+  columns: Column<TRow>[]
   isCellDisabled: (cell: Cell) => boolean
   onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
 }

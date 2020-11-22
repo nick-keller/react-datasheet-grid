@@ -13,4 +13,5 @@ export const DataSheetGridContext = React.createContext<GridContext>({
   editing: false,
   onChange: () => null,
   isCellDisabled: () => false,
+  onDoneEditing: () => undefined,
 })

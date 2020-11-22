@@ -4,7 +4,7 @@
   "description": "Made with create-react-library",
   "author": "nick-keller",
   "license": "MIT",
-  "repository": "nick-keller/react-datasheet-grid",
+  "repository": "Equify/react-datasheet-grid",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.tsx",

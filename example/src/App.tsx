@@ -8,20 +8,21 @@ const App = () => {
     { active: true, firstName: 'Elon', lastName: 'Musk' },
   ])
 
-  console.log(data[0])
-
   const columns = [
     checkboxColumn({ title: 'Active', key: 'active' }),
     textColumn({ title: 'First name', key: 'firstName' }),
-    textColumn({ title: 'Last name', key: 'lastName' }),
+    textColumn({ title: 'Last name', key: 'lastName', disabled: true }),
   ]
 
   return (
-    <DataSheetGrid
-      data={data}
-      onChange={setData}
-      columns={columns}
-    />
+    <>
+      <DataSheetGrid
+        data={data}
+        onChange={setData}
+        columns={columns}
+      />
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </>
   )
 }
 

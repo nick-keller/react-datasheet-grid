@@ -24,16 +24,21 @@ const Component = ({ focus, onChange, value }) => {
   )
 }
 
-export const textColumn = ({ key, ...rest }): Partial<Column> => ({
-  render: ({ focus, rowData, setRowData }) => (
-    <Component
-      value={rowData[key]}
-      focus={focus}
-      onChange={(value) => setRowData({ ...rowData, [key]: value })}
-    />
-  ),
-  deleteValue: ({ rowData }) => ({ ...rowData, [key]: null }),
-  copyValue: ({ rowData }) => rowData[key],
-  pasteValue: ({ rowData, value }) => ({ ...rowData, [key]: value }),
-  ...rest,
-})
+export function textColumn<TRow = any>({
+  key,
+  ...rest
+}: Partial<Column<TRow>> & { key: string }): Partial<Column<TRow>> {
+  return {
+    render: ({ focus, rowData, setRowData }) => (
+      <Component
+        value={rowData[key]}
+        focus={focus}
+        onChange={(value) => setRowData({ ...rowData, [key]: value })}
+      />
+    ),
+    deleteValue: ({ rowData }) => ({ ...rowData, [key]: null }),
+    copyValue: ({ rowData }) => rowData[key],
+    pasteValue: ({ rowData, value }) => ({ ...rowData, [key]: value }),
+    ...rest,
+  }
+}

@@ -14,6 +14,8 @@ const FALSY = [
   'unchecked',
   'undefined',
   'null',
+  'wrong',
+  'negative',
 ]
 
 const Component = ({ focus, active, onChange, value, onDoneEditing }) => {
@@ -24,6 +26,7 @@ const Component = ({ focus, active, onChange, value, onDoneEditing }) => {
       onChange(!value)
       onDoneEditing({ nextRow: false })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus, onDoneEditing])
 
   return (
@@ -32,26 +35,31 @@ const Component = ({ focus, active, onChange, value, onDoneEditing }) => {
       type='checkbox'
       ref={ref}
       checked={value || false}
-      onChange={(e) => !active && onChange(e.target.checked)}
+      onMouseDown={() => !active && onChange(!value)}
     />
   )
 }
 
-export const checkboxColumn = ({ key, ...rest }): Partial<Column> => ({
-  render: ({ focus, active, rowData, setRowData, onDoneEditing }) => (
-    <Component
-      value={rowData[key]}
-      focus={focus}
-      active={active}
-      onDoneEditing={onDoneEditing}
-      onChange={(value) => setRowData({ ...rowData, [key]: value })}
-    />
-  ),
-  deleteValue: ({ rowData }) => ({ ...rowData, [key]: false }),
-  copyValue: ({ rowData }) => (rowData[key] ? 'YES' : 'NO'),
-  pasteValue: ({ rowData, value }) => ({
-    ...rowData,
-    [key]: !FALSY.includes(value.toLowerCase()),
-  }),
-  ...rest,
-})
+export function checkboxColumn<TRow = any>({
+  key,
+  ...rest
+}: Partial<Column<TRow>> & { key: string }): Partial<Column<TRow>> {
+  return {
+    render: ({ focus, active, setRowData, rowData, onDoneEditing }) => (
+      <Component
+        value={rowData[key]}
+        focus={focus}
+        active={active}
+        onDoneEditing={onDoneEditing}
+        onChange={(value) => setRowData({ ...rowData, [key]: value })}
+      />
+    ),
+    deleteValue: ({ rowData }) => ({ ...rowData, [key]: false }),
+    copyValue: ({ rowData }) => (rowData[key] ? 'YES' : 'NO'),
+    pasteValue: ({ rowData, value }) => ({
+      ...rowData,
+      [key]: !FALSY.includes(value.toLowerCase()),
+    }),
+    ...rest,
+  }
+}

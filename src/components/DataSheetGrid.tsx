@@ -11,7 +11,7 @@ import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
 import { Cell, Column, DataSheetGridProps } from '../typings'
 
-export const DataSheetGrid = ({
+export function DataSheetGrid<TRow = any>({
   data = [],
   onChange = () => null,
   columns: rawColumns = [],
@@ -19,16 +19,17 @@ export const DataSheetGrid = ({
   height = 300,
   rowHeight = 40,
   headerRowHeight = rowHeight,
-  createRow = () => ({}),
+  gutterColumnWidth = '0 0 30px',
+  createRow = () => ({} as TRow),
   duplicateRow = ({ rowData }) => ({ ...rowData }),
   isRowEmpty = ({ rowData }) => Object.values(rowData).every((value) => !value),
   autoAddRow = false,
   lockRows = false,
-}: DataSheetGridProps) => {
+}: DataSheetGridProps<TRow>) {
   // Add gutter column
   const columns: Column[] = [
     {
-      width: '0 0 30px',
+      width: gutterColumnWidth,
       minWidth: 0,
       title: <div className='dsg-corner-indicator' />,
       render: ({ rowIndex }) => rowIndex + 1,
