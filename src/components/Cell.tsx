@@ -36,6 +36,8 @@ export const Cell = ({
           isCellDisabled({ col: columnIndex - 1, row: rowIndex - 1 }),
         'dsg-cell-header': headerRow,
         'dsg-cell-gutter': gutterColumn,
+        'dsg-cell-last-column': columnIndex === columns.length - 1,
+        'dsg-cell-last-row': rowIndex === data.length,
         'dsg-cell-header-active':
           headerRow &&
           (activeCell?.col === columnIndex - 1 ||

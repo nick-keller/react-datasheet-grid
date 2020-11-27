@@ -25,6 +25,18 @@
   background: rgb(250, 250, 250);
 }
 
+:global(.dsg-cell-disabled.dsg-cell-last-row) {
+  box-shadow: 0 -1px 0 rgb(232, 235, 237) inset;
+}
+
+:global(.dsg-cell-disabled.dsg-cell-last-column) {
+  box-shadow: -1px 0 0 rgb(232, 235, 237) inset;
+}
+
+:global(.dsg-cell-disabled.dsg-cell-last-row.dsg-cell-last-column) {
+  box-shadow: -1px -1px 0 rgb(232, 235, 237) inset;
+}
+
 :global(.dsg-cell-header), :global(.dsg-cell-gutter) {
   color: rgb(157, 166, 171);
   padding: 0 10px;
