@@ -11,18 +11,20 @@ const App = () => {
   const columns = [
     checkboxColumn({ title: 'Active', key: 'active' }),
     textColumn({ title: 'First name', key: 'firstName' }),
-    textColumn({ title: 'Last name', key: 'lastName', disabled: true }),
+    textColumn({ title: 'Last name', key: 'lastName', disabled: true, minWidth: 400 }),
+    textColumn({ title: 'Role', key: 'role', minWidth: 400 }),
+    textColumn({ title: 'Age', key: 'age', minWidth: 400 }),
   ]
 
   return (
-    <>
+    <div style={{ padding: '50px' }}>
       <DataSheetGrid
         data={data}
         onChange={setData}
         columns={columns}
       />
       <pre>{JSON.stringify(data, null, 2)}</pre>
-    </>
+    </div>
   )
 }
 

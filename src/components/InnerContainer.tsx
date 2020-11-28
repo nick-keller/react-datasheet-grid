@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { forwardRef, useContext, useMemo } from 'react'
+import { CSSProperties, forwardRef, useContext, useMemo } from 'react'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import cx from 'classnames'
 
@@ -35,6 +35,8 @@ export const InnerContainer = forwardRef<HTMLDivElement>(
     const {
       activeCell,
       columnWidths,
+      columnOffsets,
+      innerWidth,
       rowHeight,
       headerRowHeight,
       selection,
@@ -92,6 +94,41 @@ export const InnerContainer = forwardRef<HTMLDivElement>(
 
     return (
       <div ref={ref} {...rest}>
+        <div
+          className={cx({
+            'dsg-header-row': true,
+          })}
+          style={{ height: `${headerRowHeight}px`, width: `${innerWidth}px` }}
+        >
+          {columnWidths.map((width, columnIndex) => {
+            const gutterColumn = columnIndex === 0
+
+            return (
+              <div
+                key={columnIndex}
+                className={cx({
+                  'dsg-cell': true,
+                  'dsg-cell-header': true,
+                  'dsg-cell-gutter': gutterColumn,
+                  'dsg-cell-last-column': columnIndex === columns.length - 1,
+                  'dsg-cell-header-active':
+                    activeCell?.col === columnIndex - 1 ||
+                    (selection &&
+                      columnIndex >= selection.min.col + 1 &&
+                      columnIndex <= selection.max.col + 1),
+                })}
+                style={{
+                  width: `${width}px`,
+                  left: `${columnOffsets[columnIndex - 1] || 0}px`,
+                  height: `${headerRowHeight}px`,
+                  top: 0,
+                }}
+              >
+                {columns[columnIndex].title}
+              </div>
+            )
+          })}
+        </div>
         {children}
         {activeCellRect && (
           <div

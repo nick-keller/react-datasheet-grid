@@ -1,25 +1,32 @@
 import * as React from 'react'
-import { VariableSizeGrid } from 'react-window'
-import { Cell as CellComponent } from './Cell'
+import { VariableSizeList } from 'react-window'
+import { Row as RowComponent } from './Row'
 
 import { useColumnWidths } from '../hooks/useColumnWidths'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { InnerContainer } from './InnerContainer'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import { useGetBoundingRect } from '../hooks/useGetBoundingRect'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
 import { Cell, Column, DataSheetGridProps } from '../typings'
+import useResizeObserver from '@react-hook/resize-observer'
 
 export function DataSheetGrid<TRow = any>({
   data = [],
   onChange = () => null,
   columns: rawColumns = [],
-  width = 400,
   height = 300,
   rowHeight = 40,
   headerRowHeight = rowHeight,
-  gutterColumnWidth = '0 0 30px',
+  gutterColumnWidth = '0 0 40px',
   createRow = () => ({} as TRow),
   duplicateRow = ({ rowData }) => ({ ...rowData }),
   isRowEmpty = ({ rowData }) => Object.values(rowData).every((value) => !value),
@@ -47,20 +54,29 @@ export function DataSheetGrid<TRow = any>({
     ...column,
   }))
 
-  const { widths: columnWidths, offsets: columnOffsets } = useColumnWidths(
+  const [width, setWidth] = useState<number>(0)
+
+  const {
+    widths: columnWidths,
+    offsets: columnOffsets,
+    innerWidth,
+  } = useColumnWidths(
     width,
     columns,
     height < headerRowHeight + rowHeight * data.length
   )
-  const gridRef = useRef<VariableSizeGrid>(null)
+  const listRef = useRef<VariableSizeList>(null)
   const containerRef = useRef<HTMLElement>(null)
+  const outsideContainerRef = useRef<HTMLDivElement>(null)
   const getContainerBoundingRect = useGetBoundingRect(containerRef)
 
-  // Update grid when column widths changes
-  useEffect(
-    () => gridRef.current?.resetAfterColumnIndex(0),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    columnWidths || columns.map(() => 0)
+  useLayoutEffect(() => {
+    setWidth(
+      (w) => outsideContainerRef.current?.getBoundingClientRect().width || w
+    )
+  }, [])
+  useResizeObserver(outsideContainerRef, (entry) =>
+    setWidth(entry.contentRect.width)
   )
 
   // True when the active cell is being edited
@@ -100,14 +116,14 @@ export function DataSheetGrid<TRow = any>({
   )
 
   // Scroll to the active cell when it changes
-  useEffect(() => {
-    if (activeCell) {
-      gridRef.current?.scrollToItem({
-        rowIndex: activeCell.row + 1,
-        columnIndex: activeCell.col + 1,
-      })
-    }
-  }, [activeCell])
+  // useEffect(() => {
+  //   if (activeCell) {
+  //     listRef.current?.scrollToItem({
+  //       rowIndex: activeCell.row + 1,
+  //       columnIndex: activeCell.col + 1,
+  //     })
+  //   }
+  // }, [activeCell])
 
   // Extract the coordinates of the cursor from a mouse event
   const getCursorIndex = useCallback(
@@ -169,13 +185,13 @@ export function DataSheetGrid<TRow = any>({
 
       onChange([...data.slice(0, row + 1), createRow(), ...data.slice(row + 1)])
       setActiveCell((a) => a && { ...a, row: row + 1 })
-      setTimeout(
-        () =>
-          gridRef.current?.scrollToItem({
-            rowIndex: row + 3,
-          }),
-        0
-      )
+      // setTimeout(
+      //   () =>
+      //     listRef.current?.scrollToItem({
+      //       rowIndex: row + 3,
+      //     }),
+      //   0
+      // )
     },
     [createRow, data, lockRows, onChange]
   )
@@ -628,6 +644,7 @@ export function DataSheetGrid<TRow = any>({
       } else if (['Backspace', 'Delete'].includes(event.key)) {
         if (!editing) {
           onDelete()
+          event.preventDefault()
         }
       } else if (event.key === 'a' && (event.ctrlKey || event.metaKey)) {
         if (!editing) {
@@ -660,6 +677,8 @@ export function DataSheetGrid<TRow = any>({
         editing,
         activeCell: activeCell,
         columnWidths: columnWidths || columns.map(() => 0),
+        columnOffsets: columnOffsets || columns.map(() => 0),
+        innerWidth: innerWidth || 0,
         rowHeight,
         headerRowHeight,
         selection,
@@ -670,29 +689,32 @@ export function DataSheetGrid<TRow = any>({
         isCellDisabled,
       }}
     >
-      <VariableSizeGrid
-        ref={gridRef}
-        innerRef={containerRef}
-        width={width}
-        className='dsg-container'
-        columnCount={(columnWidths && columns.length) || 0}
-        columnWidth={(i) => columnWidths?.[i] || 0}
-        height={Math.min(height, headerRowHeight + rowHeight * data.length)}
-        rowCount={(columnWidths && data.length + 1) || 0}
-        rowHeight={(i) => (i === 0 ? headerRowHeight : rowHeight)}
-        estimatedRowHeight={rowHeight}
-        innerElementType={InnerContainer}
-        children={CellComponent}
-      />
-      {createRow && !lockRows && (
-        <button
-          className='dsg-add-row'
-          style={{ width }}
-          onClick={() => onInsertRowAfter(data?.length - 1)}
-        >
-          Add
-        </button>
-      )}
+      <div ref={outsideContainerRef}>
+        <VariableSizeList
+          ref={listRef}
+          innerRef={containerRef}
+          innerElementType={InnerContainer}
+          estimatedItemSize={rowHeight}
+          itemSize={(i) => (i === 0 ? headerRowHeight : rowHeight)}
+          height={Math.min(
+            height,
+            headerRowHeight + rowHeight * data.length
+          ) + 1}
+          itemCount={(columnWidths && data.length + 1) || 0}
+          className='dsg-container'
+          width='100%'
+          children={RowComponent}
+        />
+
+        {createRow && !lockRows && (
+          <button
+            className='dsg-add-row'
+            onClick={() => onInsertRowAfter(data?.length - 1)}
+          >
+            Add
+          </button>
+        )}
+      </div>
     </DataSheetGridContext.Provider>
   )
 }

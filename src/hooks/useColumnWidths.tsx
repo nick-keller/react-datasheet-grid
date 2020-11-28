@@ -9,6 +9,14 @@ export const useColumnWidths = (
 ) => {
   const scrollbarWidth = useScrollbarWidth()
   const [widths, setWidths] = useState<number[] | null>(null)
+  const innerWidth = useMemo<number | null>(
+    () =>
+      widths &&
+      widths.reduce((total, w) => {
+        return total + w
+      }),
+    [widths]
+  )
   const offsets = useMemo<number[] | null>(() => {
     let total = 0
     return (
@@ -27,12 +35,14 @@ export const useColumnWidths = (
     .join('|')
 
   useEffect(() => {
-    if (scrollbarWidth !== undefined) {
+    if (scrollbarWidth !== undefined || !includeScrollbar) {
       const el = document.createElement('div')
 
       el.style.display = 'flex'
       el.style.position = 'fixed'
-      el.style.width = `${width - (includeScrollbar ? scrollbarWidth : 0)}px`
+      el.style.width = `${
+        width - (includeScrollbar ? (scrollbarWidth as number) : 0)
+      }px`
       el.style.left = '-999px'
       el.style.top = '-1px'
 
@@ -56,5 +66,5 @@ export const useColumnWidths = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, columnsHash, scrollbarWidth, includeScrollbar])
 
-  return { widths, offsets }
+  return { widths, offsets, innerWidth }
 }

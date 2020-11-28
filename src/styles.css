@@ -1,8 +1,11 @@
 :global(.dsg-container) {
-  box-shadow: 0 0 0 1px rgb(232, 235, 237) inset;
   cursor: cell;
   background: white;
   user-select: none;
+  border: solid 1px rgb(232, 235, 237);
+  border-top: none;
+  border-left: none;
+  box-sizing: border-box;
 }
 
 :global(.dsg-corner-indicator) {
@@ -12,6 +15,18 @@
   border-left: solid 10px transparent;
 }
 
+:global(.dsg-header-row) {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 2;
+  box-shadow: 0 1px 0 rgb(232, 235, 237);
+}
+
+:global(.dsg-row) {
+  position: relative;
+}
+
 :global(.dsg-cell) {
   display: flex;
   align-items: center;
@@ -19,22 +34,11 @@
   border-bottom: none;
   border-right: none;
   box-sizing: border-box;
+  position: absolute;
 }
 
 :global(.dsg-cell-disabled) {
   background: rgb(250, 250, 250);
-}
-
-:global(.dsg-cell-disabled.dsg-cell-last-row) {
-  box-shadow: 0 -1px 0 rgb(232, 235, 237) inset;
-}
-
-:global(.dsg-cell-disabled.dsg-cell-last-column) {
-  box-shadow: -1px 0 0 rgb(232, 235, 237) inset;
-}
-
-:global(.dsg-cell-disabled.dsg-cell-last-row.dsg-cell-last-column) {
-  box-shadow: -1px -1px 0 rgb(232, 235, 237) inset;
 }
 
 :global(.dsg-cell-header), :global(.dsg-cell-gutter) {
@@ -45,7 +49,15 @@
 }
 
 :global(.dsg-cell-gutter) {
+  position: sticky;
+  background: white;
+  box-shadow: 1px 0 0 rgb(232, 235, 237);
   padding: 0 5px;
+  justify-content: center;
+}
+
+:global(.dsg-cell-gutter.dsg-cell-header) {
+  z-index: 3;
 }
 
 :global(.dsg-cell-header-active), :global(.dsg-cell-gutter-active) {
@@ -94,6 +106,7 @@
   box-sizing: border-box;
   background: none;
   padding: 0 10px;
+  font-size: 1rem;
 }
 
 :global(.dsg-add-row) {
@@ -107,6 +120,8 @@
   align-items: center;
   position: relative;
   transition: background-color .2s;
+  width: 100%;
+  font-size: 1rem;
 }
 
 :global(.dsg-add-row):hover {

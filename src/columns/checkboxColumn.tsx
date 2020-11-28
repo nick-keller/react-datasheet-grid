@@ -34,8 +34,9 @@ const Component = ({ focus, active, onChange, value, onDoneEditing }) => {
       className='dsg-checkbox'
       type='checkbox'
       ref={ref}
-      checked={value || false}
+      checked={Boolean(value)}
       onMouseDown={() => !active && onChange(!value)}
+      onChange={() => null}
     />
   )
 }

@@ -23,7 +23,6 @@ interface DataSheetGridProps<TRow = any> {
   data?: TRow[]
   onChange?: (data: TRow[]) => void
   columns?: Partial<Column<TRow>>[]
-  width?: number
   height?: number
   rowHeight?: number
   headerRowHeight?: number
@@ -72,6 +71,8 @@ interface GridContext<TRow = any> {
   editing: boolean
   activeCell: Cell | null
   columnWidths: number[]
+  columnOffsets: number[]
+  innerWidth: number
   rowHeight: number
   headerRowHeight: number
   selection: {

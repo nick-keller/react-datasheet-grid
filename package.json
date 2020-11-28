@@ -63,6 +63,7 @@
     "dist"
   ],
   "dependencies": {
+    "@react-hook/resize-observer": "^1.1.0",
     "@xobotyi/scrollbar-width": "^1.9.5",
     "classnames": "^2.2.6",
     "fast-deep-equal": "^3.1.3",
