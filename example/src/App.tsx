@@ -11,7 +11,7 @@ const App = () => {
   const columns = [
     checkboxColumn({ title: 'Active', key: 'active' }),
     textColumn({ title: 'First name', key: 'firstName' }),
-    textColumn({ title: 'Last name', key: 'lastName', disabled: true, minWidth: 400 }),
+    textColumn({ title: 'Last name', key: 'lastName', disabled: ({ rowData }) => !rowData.active, minWidth: 400 }),
     textColumn({ title: 'Role', key: 'role', minWidth: 400 }),
     textColumn({ title: 'Age', key: 'age', minWidth: 400, disabled: true }),
   ]

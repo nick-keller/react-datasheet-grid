@@ -18,6 +18,7 @@ import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
 import { Cell, Column, DataSheetGridProps } from '../typings'
 import useResizeObserver from '@react-hook/resize-observer'
+import { useScrollbarWidth } from '../hooks/useScrollbarWidth'
 
 export function DataSheetGrid<TRow = any>({
   data = [],
@@ -61,10 +62,11 @@ export function DataSheetGrid<TRow = any>({
     offsets: columnOffsets,
     innerWidth,
   } = useColumnWidths(
-    width,
+    width - 1,
     columns,
     height < headerRowHeight + rowHeight * data.length
   )
+  const scrollbarWidth = useScrollbarWidth() || 0
   const listRef = useRef<VariableSizeList>(null)
   const containerRef = useRef<HTMLElement>(null)
   const outsideContainerRef = useRef<HTMLDivElement>(null)
@@ -710,9 +712,13 @@ export function DataSheetGrid<TRow = any>({
           innerElementType={InnerContainer}
           estimatedItemSize={rowHeight}
           itemSize={(i) => (i === 0 ? headerRowHeight : rowHeight)}
-          height={
-            Math.min(height, headerRowHeight + rowHeight * data.length) + 1
-          }
+          height={Math.min(
+            height,
+            headerRowHeight +
+              rowHeight * data.length +
+              (innerWidth && innerWidth >= width ? scrollbarWidth : 0) +
+              1
+          )}
           itemCount={(columnWidths && data.length + 1) || 0}
           className='dsg-container'
           width='100%'
