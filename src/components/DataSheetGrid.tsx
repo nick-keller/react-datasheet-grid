@@ -70,6 +70,7 @@ export function DataSheetGrid<TRow = any>({
   const outsideContainerRef = useRef<HTMLDivElement>(null)
   const getContainerBoundingRect = useGetBoundingRect(containerRef)
 
+  // Recompute the width as outside container is resized
   useLayoutEffect(() => {
     setWidth(
       (w) => outsideContainerRef.current?.getBoundingClientRect().width || w
@@ -129,20 +130,33 @@ export function DataSheetGrid<TRow = any>({
   const getCursorIndex = useCallback(
     (event: MouseEvent, force: boolean = false): Cell | null => {
       const boundingClientRect = getContainerBoundingRect(force)
+      const outsideBoundingClientRect =
+        force && outsideContainerRef.current?.getBoundingClientRect()
+
       if (boundingClientRect && columnOffsets) {
-        const x = event.clientX - boundingClientRect.left
+        let x = event.clientX - boundingClientRect.left
+        let y = event.clientY - boundingClientRect.top
+
+        if (outsideBoundingClientRect) {
+          if (
+            event.clientY - outsideBoundingClientRect.top <=
+            headerRowHeight
+          ) {
+            y = 0
+          }
+          if (
+            event.clientX - outsideBoundingClientRect.left <=
+            columnOffsets[0]
+          ) {
+            x = 0
+          }
+        }
 
         return {
           col: columnOffsets.findIndex((right) => x < right) - 1,
           row: Math.min(
             data.length - 1,
-            Math.max(
-              -1,
-              Math.floor(
-                (event.clientY - boundingClientRect.top - headerRowHeight) /
-                  rowHeight
-              )
-            )
+            Math.max(-1, Math.floor((y - headerRowHeight) / rowHeight))
           ),
         }
       }
@@ -696,10 +710,9 @@ export function DataSheetGrid<TRow = any>({
           innerElementType={InnerContainer}
           estimatedItemSize={rowHeight}
           itemSize={(i) => (i === 0 ? headerRowHeight : rowHeight)}
-          height={Math.min(
-            height,
-            headerRowHeight + rowHeight * data.length
-          ) + 1}
+          height={
+            Math.min(height, headerRowHeight + rowHeight * data.length) + 1
+          }
           itemCount={(columnWidths && data.length + 1) || 0}
           className='dsg-container'
           width='100%'
