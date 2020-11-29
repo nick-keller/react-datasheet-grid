@@ -4,6 +4,18 @@
 
 [![NPM](https://img.shields.io/npm/v/react-datasheet-grid.svg)](https://www.npmjs.com/package/react-datasheet-grid) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+An Airtable-like / Excel-like component to create spreadsheets.
+
+Feature rich:
+- Dead simple to setup
+- Supports copy / pasting to and from Excel, Google-sheet...
+- Keyboard navigation and shortcuts fully-supported
+- Blazing fast, optimized for speed
+- Smooth animations
+- Virtualized, supports hundreds of thousands of rows
+- Build around typed columns,each column can have its own widget
+- Extensively customizable, control every behavior, plug your own widgets
+
 ## Install
 
 ```bash
@@ -13,18 +25,21 @@ npm install --save react-datasheet-grid
 ## Usage
 
 ```tsx
-import React from 'react'
-
-import { DataSheetGrid } from 'react-datasheet-grid'
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  textColumn,
+} from 'react-datasheet-grid'
 import 'react-datasheet-grid/dist/index.css'
 
 const Example = () => {
   const [ data, setData ] = useState([
-    { firstName: 'Elon', lastName: 'Musk' },
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
 
-
   const columns = [
+    checkboxColumn({ title: 'Active', key: 'active' }),
     textColumn({ title: 'First name', key: 'firstName' }),
     textColumn({ title: 'Last name', key: 'lastName' }),
   ]
@@ -42,44 +57,45 @@ const Example = () => {
 ## API
 ### Props
 #### data
-> `array` default to `[]`
+> `any[]`
 
 List of rows. Elements are usually objects but can be anything.
 
 #### onChange
-> `(data: any[]) => void` default to empty function
+> `(data: any[]) => void`
 
 This function is called when the data is updated.
 
 #### columns
-> `Column[]` default to `[]`
+> `Column[]`
 
-List of columns.
-
-#### width
-> `number` default to `400`
-
-Width of grid in pixels.
+List of columns. [Learn more](#columns-1).
 
 #### height
-> `number` default to `300`
+> `number` default to `400`
 
-Height of grid in pixels.
+Maximum height of the grid in pixels. If the content is longer, the grid
+becomes scrollable.
 
 #### rowHeight
 > `number` default to `40`
 
-Height of a row in pixels.
+Height of a single row in pixels. All rows must have the same height.
 
 #### headerRowHeight
 > `number` default to `rowHeight`
 
-Height of the header row in pixels.
+Height of the header row in pixels. Same as `rowHeight` by default.
 
 #### gutterColumnWidth
 > `number | string` default to `'0 0 30px'`
 
-Width of the gutter column. Accepts the same values as any column.
+Width of the gutter column. Accepts the same values as the `width` property
+of any column.
+
+Be aware that giving it a number will **not** give the gutter a
+fixed size. To make it a fixed size in pixels pass a string like so: `'0 0 50px'`.
+Learn more about the [width property](#width).
 
 #### createRow
 > `() => any` default to `() => ({})`
@@ -90,7 +106,7 @@ This function is called once per row every time the user appends or inserts new 
 Most often used to add default values and / or random ids to new rows.
 
 #### duplicateRow
-> `func({ rowData }) => any` default to `({ rowData }) => ({ ...rowData })`
+> `({ rowData }) => any` default to `({ rowData }) => ({ ...rowData })`
 
 A function that should return a new row object from an existing row.
 This function is called once per row every time the user duplicates rows.
@@ -156,6 +172,23 @@ Disable the entire column by passing `true`, or disable it for specific rows by 
 
 A function that deletes the column value of a row. Used when the user clears a cell or deletes a row.
 
+#### copyValue
+> `({ rowData }) => number | string | null`
+
+A function that returns the value of the copied cell.
+If the user copies multiple cells at once, this function will be called
+multiple times.
+
+It can return a string, a number, or null, but it will always be turned into a
+string in the end.
+
+#### pasteValue
+> `({ rowData, value }) => any`
+
+A function that takes in a row and the `value` to be paste, and should return the updated row.
+If the value should be ignored, it should still return the unchanged row.
+
+The `value` is always a string and should therefore be casted to whatever type is needed.
 
 
 ## License

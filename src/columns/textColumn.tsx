@@ -38,7 +38,7 @@ export function textColumn<TRow = any>({
     ),
     deleteValue: ({ rowData }) => ({ ...rowData, [key]: null }),
     copyValue: ({ rowData }) => rowData[key],
-    pasteValue: ({ rowData, value }) => ({ ...rowData, [key]: value }),
+    pasteValue: ({ rowData, value }) => ({ ...rowData, [key]: value || null }),
     ...rest,
   }
 }

@@ -24,7 +24,7 @@ export function DataSheetGrid<TRow = any>({
   data = [],
   onChange = () => null,
   columns: rawColumns = [],
-  height = 300,
+  height = 400,
   rowHeight = 40,
   headerRowHeight = rowHeight,
   gutterColumnWidth = '0 0 40px',
