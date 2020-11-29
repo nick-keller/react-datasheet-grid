@@ -56,16 +56,15 @@ export function DataSheetGrid<TRow = any>({
   }))
 
   const [width, setWidth] = useState<number>(0)
+  const innerHeight = headerRowHeight + rowHeight * data.length
+  const verticalScrollBar = height < innerHeight
 
   const {
     widths: columnWidths,
     offsets: columnOffsets,
     innerWidth,
-  } = useColumnWidths(
-    width - 1,
-    columns,
-    height < headerRowHeight + rowHeight * data.length
-  )
+  } = useColumnWidths(width - 1, columns, verticalScrollBar)
+  const horizontalScrollBar = (innerWidth || 0) >= width
   const scrollbarWidth = useScrollbarWidth() || 0
   const listRef = useRef<VariableSizeList>(null)
   const containerRef = useRef<HTMLElement>(null)
@@ -118,15 +117,58 @@ export function DataSheetGrid<TRow = any>({
     [activeCell, selectionCell]
   )
 
+  const scrollTo = useCallback(
+    (cell: Cell) => {
+      // Align top
+      const topMax = cell.row * rowHeight
+      // Align bottom
+      const topMin =
+        (cell.row + 1) * rowHeight +
+        headerRowHeight -
+        (listRef.current?.props.height as number) +
+        1
+      // @ts-ignore
+      const scrollTop = listRef.current?.state.scrollOffset as number
+
+      if (scrollTop > topMax) {
+        listRef.current?.scrollTo(topMax)
+      } else if (scrollTop < topMin) {
+        listRef.current?.scrollTo(topMin)
+      }
+
+      if (columnOffsets && columnWidths) {
+        // Align left
+        const leftMax = columnOffsets[cell.col] - columnOffsets[0]
+        // Align right
+        const leftMin = columnOffsets[cell.col] + columnWidths[cell.col + 1] - width + 1
+
+        // @ts-ignore
+        const outerRef = listRef.current?._outerRef as HTMLElement
+        const scrollLeft = outerRef.scrollLeft
+
+        if (scrollLeft > leftMax) {
+          outerRef.scrollLeft = leftMax
+        } else if (scrollLeft < leftMin) {
+          outerRef.scrollLeft = leftMin
+        }
+      }
+    },
+    [rowHeight, headerRowHeight, columnOffsets, width, columnWidths]
+  )
+
+  // Scroll to the selectionCell cell when it changes
+  useEffect(() => {
+    if (selectionCell) {
+      scrollTo(selectionCell)
+    }
+  }, [selectionCell, scrollTo])
+
   // Scroll to the active cell when it changes
-  // useEffect(() => {
-  //   if (activeCell) {
-  //     listRef.current?.scrollToItem({
-  //       rowIndex: activeCell.row + 1,
-  //       columnIndex: activeCell.col + 1,
-  //     })
-  //   }
-  // }, [activeCell])
+  useEffect(() => {
+    if (activeCell) {
+      scrollTo(activeCell)
+    }
+  }, [activeCell, scrollTo])
 
   // Extract the coordinates of the cursor from a mouse event
   const getCursorIndex = useCallback(
@@ -201,13 +243,6 @@ export function DataSheetGrid<TRow = any>({
 
       onChange([...data.slice(0, row + 1), createRow(), ...data.slice(row + 1)])
       setActiveCell((a) => a && { ...a, row: row + 1 })
-      // setTimeout(
-      //   () =>
-      //     listRef.current?.scrollToItem({
-      //       rowIndex: row + 3,
-      //     }),
-      //   0
-      // )
     },
     [createRow, data, lockRows, onChange]
   )
@@ -627,6 +662,7 @@ export function DataSheetGrid<TRow = any>({
           }
         } else if (!isCellDisabled(activeCell)) {
           setEditing(true)
+          scrollTo(activeCell)
         }
       } else if (
         event.key === 'Enter' &&
@@ -656,6 +692,7 @@ export function DataSheetGrid<TRow = any>({
         if (!editing && !isCellDisabled(activeCell)) {
           setSelectionCell(null)
           setEditing(true)
+          scrollTo(activeCell)
         }
       } else if (['Backspace', 'Delete'].includes(event.key)) {
         if (!editing) {
@@ -671,6 +708,7 @@ export function DataSheetGrid<TRow = any>({
       }
     },
     [
+      scrollTo,
       activeCell,
       columns,
       data.length,
@@ -714,10 +752,7 @@ export function DataSheetGrid<TRow = any>({
           itemSize={(i) => (i === 0 ? headerRowHeight : rowHeight)}
           height={Math.min(
             height,
-            headerRowHeight +
-              rowHeight * data.length +
-              (innerWidth && innerWidth >= width ? scrollbarWidth : 0) +
-              1
+            innerHeight + (horizontalScrollBar ? scrollbarWidth : 0) + 1
           )}
           itemCount={(columnWidths && data.length + 1) || 0}
           className='dsg-container'
