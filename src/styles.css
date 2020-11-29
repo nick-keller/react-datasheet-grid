@@ -122,6 +122,7 @@
   transition: background-color .2s;
   width: 100%;
   font-size: 1rem;
+  outline: none;
 }
 
 :global(.dsg-add-row):hover {
@@ -146,6 +147,16 @@
   background: rgb(157, 166, 171);
   position: absolute;
   left: 14px;
+}
+
+:global(.dsg-add-row-input) {
+  margin: 0 10px;
+  font-size: 1rem;
+  padding: 5px;
+  width: 35px;
+  border: solid 1px rgb(157, 166, 171);
+  border-radius: 3px;
+  outline: none;
 }
 
 :global(.dsg-checkbox) {

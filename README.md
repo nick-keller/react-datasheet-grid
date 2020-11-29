@@ -88,7 +88,7 @@ Height of a single row in pixels. All rows must have the same height.
 Height of the header row in pixels. Same as `rowHeight` by default.
 
 #### gutterColumnWidth
-> `number | string` default to `'0 0 30px'`
+> `number | string` default to `'0 0 40px'`
 
 Width of the gutter column. Accepts the same values as the `width` property
 of any column.
@@ -129,6 +129,19 @@ When true, a new row is added at the end of the grid when the user presses enter
 > `boolean` default to `false`
 
 When true, prevents the user from adding or removing rows.
+
+#### counterComponent
+> A React component with props `value` and `onChange`
+
+Used to replace the content of the "Add row" button, enables:
+- Translations
+- Custom input / icons
+- Removing the counter
+
+`value` is an integer and `onChange` should be called with the new value
+(it should not be called with the event).
+
+View [default implementation](src/components/AddRowsCounter.tsx).
 
 ### Columns
 

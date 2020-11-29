@@ -19,6 +19,7 @@ import deepEqual from 'fast-deep-equal'
 import { Cell, Column, DataSheetGridProps } from '../typings'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useScrollbarWidth } from '../hooks/useScrollbarWidth'
+import { AddRowsCounter } from './AddRowsCounter'
 
 export function DataSheetGrid<TRow = any>({
   data = [],
@@ -31,6 +32,7 @@ export function DataSheetGrid<TRow = any>({
   createRow = () => ({} as TRow),
   duplicateRow = ({ rowData }) => ({ ...rowData }),
   isRowEmpty = ({ rowData }) => Object.values(rowData).every((value) => !value),
+  counterComponent = AddRowsCounter,
   autoAddRow = false,
   lockRows = false,
 }: DataSheetGridProps<TRow>) {
@@ -55,8 +57,13 @@ export function DataSheetGrid<TRow = any>({
     ...column,
   }))
 
+  // Outer width (including borders) of the outer container
   const [width, setWidth] = useState<number>(0)
+
+  // Height of all rows (including header row)
   const innerHeight = headerRowHeight + rowHeight * data.length
+
+  // True when the vertical scrollbar is visible
   const verticalScrollBar = height < innerHeight
 
   const {
@@ -64,8 +71,12 @@ export function DataSheetGrid<TRow = any>({
     offsets: columnOffsets,
     innerWidth,
   } = useColumnWidths(width - 1, columns, verticalScrollBar)
+
+  // True when the horizontal scrollbar is visible
   const horizontalScrollBar = (innerWidth || 0) >= width
+
   const scrollbarWidth = useScrollbarWidth() || 0
+
   const listRef = useRef<VariableSizeList>(null)
   const containerRef = useRef<HTMLElement>(null)
   const outsideContainerRef = useRef<HTMLDivElement>(null)
@@ -80,6 +91,9 @@ export function DataSheetGrid<TRow = any>({
   useResizeObserver(outsideContainerRef, (entry) =>
     setWidth(entry.contentRect.width)
   )
+
+  // Number of rows to add at once at the end of the grid when the add button is clicked
+  const [addRowsBatchSize, setAddRowsBatchSize] = useState(1)
 
   // True when the active cell is being edited
   const [editing, setEditing] = useState(false)
@@ -117,6 +131,7 @@ export function DataSheetGrid<TRow = any>({
     [activeCell, selectionCell]
   )
 
+  // Scroll to any given cell making sure it is in view
   const scrollTo = useCallback(
     (cell: Cell) => {
       // Align top
@@ -140,7 +155,8 @@ export function DataSheetGrid<TRow = any>({
         // Align left
         const leftMax = columnOffsets[cell.col] - columnOffsets[0]
         // Align right
-        const leftMin = columnOffsets[cell.col] + columnWidths[cell.col + 1] - width + 1
+        const leftMin =
+          columnOffsets[cell.col] + columnWidths[cell.col + 1] - width + 1
 
         // @ts-ignore
         const outerRef = listRef.current?._outerRef as HTMLElement
@@ -169,6 +185,14 @@ export function DataSheetGrid<TRow = any>({
       scrollTo(activeCell)
     }
   }, [activeCell, scrollTo])
+
+  // Blur any element on focusing the grid
+  useEffect(() => {
+    if (activeCell !== null) {
+      ;(document.activeElement as HTMLElement).blur()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCell !== null])
 
   // Extract the coordinates of the cursor from a mouse event
   const getCursorIndex = useCallback(
@@ -230,7 +254,7 @@ export function DataSheetGrid<TRow = any>({
   )
 
   const onInsertRowAfter = useCallback(
-    (row: number) => {
+    (row: number, count = 1) => {
       if (!createRow) {
         return
       }
@@ -241,8 +265,12 @@ export function DataSheetGrid<TRow = any>({
         return
       }
 
-      onChange([...data.slice(0, row + 1), createRow(), ...data.slice(row + 1)])
-      setActiveCell((a) => a && { ...a, row: row + 1 })
+      onChange([
+        ...data.slice(0, row + 1),
+        ...new Array(count).fill(0).map(createRow),
+        ...data.slice(row + 1),
+      ])
+      setActiveCell((a) => ({ col: a?.col || 0, row: row + count }))
     },
     [createRow, data, lockRows, onChange]
   )
@@ -572,7 +600,9 @@ export function DataSheetGrid<TRow = any>({
           : null
       )
 
-      event.preventDefault()
+      if (clickInside) {
+        event.preventDefault()
+      }
     },
     [
       getCursorIndex,
@@ -724,6 +754,8 @@ export function DataSheetGrid<TRow = any>({
   )
   useDocumentEventListener('keydown', onKeyDown)
 
+  const CounterComponent = counterComponent
+
   return (
     <DataSheetGridContext.Provider
       value={{
@@ -761,12 +793,31 @@ export function DataSheetGrid<TRow = any>({
         />
 
         {createRow && !lockRows && (
-          <button
-            className='dsg-add-row'
-            onClick={() => onInsertRowAfter(data?.length - 1)}
+          <form
+            onSubmit={(e) => {
+              onInsertRowAfter(data?.length - 1, addRowsBatchSize)
+              e.preventDefault()
+            }}
           >
-            Add
-          </button>
+            <button
+              className='dsg-add-row'
+              type='submit'
+              onClick={(e) => {
+                // @ts-ignore
+                if (e.target.tagName === 'INPUT') {
+                  e.preventDefault()
+                }
+              }}
+            >
+              <CounterComponent
+                value={addRowsBatchSize}
+                onChange={(value) => {
+                  const v = Math.round(Number(value) || 0)
+                  setAddRowsBatchSize(Math.max(1, v))
+                }}
+              />
+            </button>
+          </form>
         )}
       </div>
     </DataSheetGridContext.Provider>

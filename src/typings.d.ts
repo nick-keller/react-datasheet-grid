@@ -2,7 +2,7 @@
  * Default CSS definition for typescript,
  * will be overridden with file-specific definitions by rollup
  */
-import { ReactNode } from 'react'
+import { ReactNode, Element } from 'react'
 
 declare module '*.css' {
   const content: { [className: string]: string }
@@ -19,6 +19,11 @@ declare module '*.svg' {
   export { svgComponent as ReactComponent }
 }
 
+interface CounterComponentProps {
+  value: number
+  onChange: (value: number) => void
+}
+
 interface DataSheetGridProps<TRow = any> {
   data?: TRow[]
   onChange?: (data: TRow[]) => void
@@ -32,6 +37,10 @@ interface DataSheetGridProps<TRow = any> {
   isRowEmpty?: ({ rowData }: { rowData: TRow }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
+  counterComponent?: ({
+    value,
+    onChange,
+  }: CounterComponentProps) => Element | null
 }
 
 interface ColumnRenderFunctionOptions<TRow = any> {

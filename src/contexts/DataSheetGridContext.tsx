@@ -7,6 +7,8 @@ export const DataSheetGridContext = React.createContext<GridContext>({
   headerRowHeight: 0,
   rowHeight: 0,
   columnWidths: [],
+  columnOffsets: [],
+  innerWidth: 0,
   data: [],
   columns: [],
   selection: null,
