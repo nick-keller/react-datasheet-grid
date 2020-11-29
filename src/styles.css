@@ -58,6 +58,17 @@
 
 :global(.dsg-cell-gutter.dsg-cell-header) {
   z-index: 3;
+  box-shadow: 1px 0 0 rgb(232, 235, 237), 0 1px 0 rgb(232, 235, 237), 0 2px 0 white;
+}
+
+:global(.dsg-cell-gutter.dsg-cell-header:before) {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: rgb(232, 235, 237);
+  bottom: -2px;
+  left: -1px;
 }
 
 :global(.dsg-cell-header-active), :global(.dsg-cell-gutter-active) {

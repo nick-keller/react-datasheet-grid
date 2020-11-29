@@ -6,15 +6,17 @@
 
 An Airtable-like / Excel-like component to create spreadsheets.
 
+![Preview](./images/preview.png)
+
 Feature rich:
-- Dead simple to setup
+- Dead simple to setup and to use
 - Supports copy / pasting to and from Excel, Google-sheet...
 - Keyboard navigation and shortcuts fully-supported
+- Supports custom widgets
 - Blazing fast, optimized for speed
 - Smooth animations
 - Virtualized, supports hundreds of thousands of rows
-- Build around typed columns,each column can have its own widget
-- Extensively customizable, control every behavior, plug your own widgets
+- Extensively customizable, controllable behaviors
 
 ## Install
 
@@ -54,7 +56,38 @@ const Example = () => {
 }
 ```
 
-## API
+## Columns based spreadsheet
+`react-datasheet-grid` is more like Airtable or Notion and less like Excel in
+the sense that instead of dealing with individual cells it deals with entire
+rows, and each column is responsible for a single property of each row.
+
+Columns support widgets likes checkboxes, selectors, money input, or any
+component you wish to implement. Each individual columns is responsible for
+formatting, typing, validation, and controlling any other behavior related to
+the property it handles.
+
+Columns are simple objects:
+```tsx
+const columns = [
+  { title: 'Column A', width: 1, minWidth: 200, /*...*/ },
+  { title: 'Column B', width: 1, minWidth: 200, /*...*/ },
+]
+```
+
+This makes it terribly easy to extend and re-use existing columns:
+```tsx
+const defaultSize = { width: 1, minWidth: 200 }
+const columnA = { title: 'Column A', ...defaultSize, /*...*/ }
+
+const columns = [
+  columnA,
+  { title: 'Column B', ...columnA },
+]
+```
+
+All available properties are [listed here](#columns-definition).
+
+## API reference
 ### Props
 #### data
 > `any[]`
@@ -69,7 +102,7 @@ This function is called when the data is updated.
 #### columns
 > `Column[]`
 
-List of columns. [Learn more](#columns-1).
+List of columns. [Learn more](#columns-definition).
 
 #### height
 > `number` default to `400`
@@ -143,7 +176,7 @@ Used to replace the content of the "Add row" button, enables:
 
 View [default implementation](src/components/AddRowsCounter.tsx).
 
-### Columns
+### Columns definition
 
 #### title
 > `ReactNode` default to `null`
@@ -175,6 +208,10 @@ Maximum width of the column in pixels. Can be `null` for no maximum value.
 Usually when the user is editing a cell, pressing the up, down, or return key will exit editing mode.
 Setting `disableKeys` to `true` will prevent this behavior.
 
+This is used when the widget needs to handle the up and down keys itself
+(eg. to increase the value, or select a choice). Usually the widget also needs to
+handle to return key by calling [done](#done).
+
 #### disabled
 > `boolean | (({ rowData }) => boolean)` default to `false`
 
@@ -203,6 +240,41 @@ If the value should be ignored, it should still return the unchanged row.
 
 The `value` is always a string and should therefore be casted to whatever type is needed.
 
+#### render
+> `({ rowData, rowIndex, ... }) => ReactNode`
+
+A function to render a cell. Arguments are defined [here](#render-function).
+
+### Render function
+#### rowData
+The row object from wich tha value of the cell should be extracted.
+
+#### rowIndex and columnIndex
+Row and column index.
+
+#### active
+> `boolean`
+
+True when the cell is active / highlighted.
+
+#### focus
+> `boolean`
+
+True when the cell is focused / being edited.
+
+#### setRowData
+> `(rowData) => void`
+
+Function to call to update the row.
+
+#### done
+> `({ nextRow = true }) => void`
+
+This function can be called to exit edit mode manually.
+This is mainly used when [disableKeys](#disablekeys) is true but it can have other use-cases.
+
+Optionally you can pass the `nextRow` parameter to `false` so the active / highlighted
+cell stays on the current cell.
 
 ## License
 

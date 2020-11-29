@@ -486,7 +486,7 @@ export function DataSheetGrid<TRow = any>({
           for (
             let columnIndex = 0;
             columnIndex < pasteData[0].length &&
-            min.col + columnIndex < columns.length - 2;
+            min.col + columnIndex < columns.length - 1;
             columnIndex++
           ) {
             const { pasteValue } = columns[min.col + columnIndex + 1]

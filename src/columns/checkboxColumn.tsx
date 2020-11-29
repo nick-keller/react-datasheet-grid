@@ -18,16 +18,16 @@ const FALSY = [
   'negative',
 ]
 
-const Component = ({ focus, active, onChange, value, onDoneEditing }) => {
+const Component = ({ focus, active, onChange, value, done }) => {
   const ref = useRef<HTMLInputElement>(null)
 
   useLayoutEffect(() => {
     if (focus) {
       onChange(!value)
-      onDoneEditing({ nextRow: false })
+      done({ nextRow: false })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focus, onDoneEditing])
+  }, [focus, done])
 
   return (
     <input
@@ -46,12 +46,12 @@ export function checkboxColumn<TRow = any>({
   ...rest
 }: Partial<Column<TRow>> & { key: string }): Partial<Column<TRow>> {
   return {
-    render: ({ focus, active, setRowData, rowData, onDoneEditing }) => (
+    render: ({ focus, active, setRowData, rowData, done }) => (
       <Component
         value={rowData[key]}
         focus={focus}
         active={active}
-        onDoneEditing={onDoneEditing}
+        done={done}
         onChange={(value) => setRowData({ ...rowData, [key]: value })}
       />
     ),

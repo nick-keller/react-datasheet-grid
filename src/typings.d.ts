@@ -50,7 +50,7 @@ interface ColumnRenderFunctionOptions<TRow = any> {
   active: boolean
   focus: boolean
   setRowData: (rowData: TRow) => void
-  onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
+  done: ({ nextRow }: { nextRow: boolean }) => void
 }
 
 interface ColumnRenderFunction<TRow = any> {

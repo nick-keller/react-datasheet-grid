@@ -14,7 +14,7 @@ export const AddRowsCounter = ({ value, onChange }: CounterComponentProps) => {
         onBlur={() => setRawValue(String(value))}
         onChange={(e) => {
           setRawValue(e.target.value)
-          onChange(Number(e.target.value))
+          onChange(parseInt(e.target.value))
         }}
       />
       rows

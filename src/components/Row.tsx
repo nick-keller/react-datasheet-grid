@@ -72,7 +72,7 @@ export const Row = ({
               rowIndex: rowIndex - 1,
               rowData: data[rowIndex - 1],
               columnIndex: columnIndex - 1,
-              onDoneEditing,
+              done: onDoneEditing,
               setRowData: (rowData) =>
                 onChange([
                   ...data.slice(0, rowIndex - 1),
