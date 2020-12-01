@@ -118,6 +118,23 @@
   background: none;
   padding: 0 10px;
   font-size: 1rem;
+  outline: none;
+}
+
+:global(.dsg-input-align-right) {
+  text-align: right;
+}
+
+:global(.dsg-input-suffix) {
+  margin-right: 10px;
+}
+
+:global(.dsg-input-progress-indicator) {
+  position: absolute;
+  height: 4px;
+  background: #a7c78f;
+  left: 0;
+  bottom: 0;
 }
 
 :global(.dsg-add-row) {

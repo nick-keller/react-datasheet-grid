@@ -25,7 +25,7 @@ const Component = ({ focus, onChange, value }) => {
 
   return (
     <input
-      className='dsg-input'
+      className='dsg-input dsg-input-align-right'
       ref={ref}
       style={{ pointerEvents: focus ? 'auto' : 'none' }}
       value={rawValue}

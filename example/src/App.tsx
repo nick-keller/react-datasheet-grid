@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { DataSheetGrid, textColumn, checkboxColumn } from 'react-datasheet-grid'
+import { DataSheetGrid, textColumn, checkboxColumn, progressColumn } from 'react-datasheet-grid'
 import 'react-datasheet-grid/dist/index.css'
 
 const App = () => {
@@ -13,6 +13,7 @@ const App = () => {
     checkboxColumn({ title: 'Active', key: 'active' }),
     textColumn({ title: 'First name', key: 'firstName' }),
     textColumn({ title: 'Last name', key: 'lastName' }),
+    progressColumn({ key: 'number' })
   ]
 
   return (
