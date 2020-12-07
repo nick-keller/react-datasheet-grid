@@ -51,6 +51,7 @@ export function DataSheetGrid<TRow = any>({
     render: () => null,
     disableKeys: false,
     disabled: false,
+    keepFocus: false,
     deleteValue: ({ rowData }) => rowData,
     copyValue: () => null,
     pasteValue: ({ rowData }) => rowData,
@@ -562,6 +563,15 @@ export function DataSheetGrid<TRow = any>({
         containerRef.current?.contains(event.target as Node) || false
       const cursorIndex = clickInside ? getCursorIndex(event, true) : null
 
+      if (
+        !clickInside &&
+        editing &&
+        activeCell &&
+        columns[activeCell.col + 1].keepFocus
+      ) {
+        return
+      }
+
       const clickOnActiveCell =
         cursorIndex &&
         activeCell &&
@@ -604,14 +614,7 @@ export function DataSheetGrid<TRow = any>({
         event.preventDefault()
       }
     },
-    [
-      getCursorIndex,
-      activeCell,
-      isCellDisabled,
-      editing,
-      columns.length,
-      data.length,
-    ]
+    [getCursorIndex, activeCell, isCellDisabled, editing, columns, data.length]
   )
   useDocumentEventListener('mousedown', onMouseDown)
 

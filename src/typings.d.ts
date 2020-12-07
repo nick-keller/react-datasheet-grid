@@ -66,6 +66,7 @@ interface Column<TRow = any> {
   render: ColumnRenderFunction<TRow>
   disableKeys: boolean
   disabled: boolean | (({ rowData }: { rowData: TRow }) => boolean)
+  keepFocus: boolean
   deleteValue: ({ rowData }: { rowData: TRow }) => TRow
   copyValue: ({ rowData }: { rowData: TRow }) => number | string | null
   pasteValue: ({ rowData, value }: { rowData: TRow; value: string }) => TRow
