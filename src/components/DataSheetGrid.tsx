@@ -687,7 +687,7 @@ export function DataSheetGrid<TRow = any>({
         setSelectionCell(null)
 
         if (editing) {
-          if (!columns[activeCell.col].disableKeys) {
+          if (!columns[activeCell.col + 1].disableKeys) {
             onDoneEditing()
           }
         } else if (!isCellDisabled(activeCell)) {
