@@ -648,24 +648,29 @@ export function DataSheetGrid<TRow = any>({
             row: Math.max(0, Math.min(data.length - 1, cell.row + y)),
           }
 
-        const direction = {
-          ArrowDown: [0, 1],
-          ArrowUp: [0, -1],
-          ArrowLeft: [-1, 0],
-          ArrowRight: [1, 0],
-          Tab: [1, 0],
-        }[event.key]
-
-        if (event.ctrlKey || event.metaKey) {
-          direction[0] *= columns.length
-          direction[1] *= data.length
-        }
-
-        if (event.shiftKey) {
-          setSelectionCell((cell) => add(direction, cell || activeCell))
-        } else {
-          setActiveCell((cell) => add(direction, cell))
+        if (event.key === 'Tab' && event.shiftKey) {
+          setActiveCell((cell) => add([-1, 0], cell))
           setSelectionCell(null)
+        } else {
+          const direction = {
+            ArrowDown: [0, 1],
+            ArrowUp: [0, -1],
+            ArrowLeft: [-1, 0],
+            ArrowRight: [1, 0],
+            Tab: [1, 0],
+          }[event.key]
+
+          if (event.ctrlKey || event.metaKey) {
+            direction[0] *= columns.length
+            direction[1] *= data.length
+          }
+
+          if (event.shiftKey) {
+            setSelectionCell((cell) => add(direction, cell || activeCell))
+          } else {
+            setActiveCell((cell) => add(direction, cell))
+            setSelectionCell(null)
+          }
         }
         setEditing(false)
 
