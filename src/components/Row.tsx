@@ -5,10 +5,7 @@ import { ListChildComponentProps } from 'react-window'
 import { useContext } from 'react'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 
-export const Row = ({
-  style,
-  index: rowIndex,
-}: ListChildComponentProps) => {
+export const Row = ({ style, index: rowIndex }: ListChildComponentProps) => {
   const {
     selection,
     data,
@@ -41,14 +38,17 @@ export const Row = ({
         const active =
           activeCell?.col === columnIndex - 1 && activeCell.row === rowIndex - 1
 
+        const disabled = isCellDisabled({
+          col: columnIndex - 1,
+          row: rowIndex - 1,
+        })
+
         return (
           <div
             key={columnIndex}
             className={cx({
               'dsg-cell': true,
-              'dsg-cell-disabled':
-                !headerRow &&
-                isCellDisabled({ col: columnIndex - 1, row: rowIndex - 1 }),
+              'dsg-cell-disabled': !headerRow && disabled,
               'dsg-cell-gutter': gutterColumn,
               'dsg-cell-last-column': columnIndex === columns.length - 1,
               'dsg-cell-last-row': rowIndex === data.length,
@@ -63,7 +63,7 @@ export const Row = ({
               width: `${width}px`,
               left: `${columnOffsets[columnIndex - 1] || 0}px`,
               height: `${rowHeight}px`,
-              top: 0
+              top: 0,
             }}
           >
             {columns[columnIndex].render({
@@ -73,6 +73,7 @@ export const Row = ({
               rowData: data[rowIndex - 1],
               columnIndex: columnIndex - 1,
               done: onDoneEditing,
+              disabled,
               setRowData: (rowData) =>
                 onChange([
                   ...data.slice(0, rowIndex - 1),

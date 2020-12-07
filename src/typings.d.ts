@@ -49,6 +49,7 @@ interface ColumnRenderFunctionOptions<TRow = any> {
   columnIndex: number
   active: boolean
   focus: boolean
+  disabled: boolean
   setRowData: (rowData: TRow) => void
   done: ({ nextRow }: { nextRow: boolean }) => void
 }
