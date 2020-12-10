@@ -991,31 +991,26 @@ export function DataSheetGrid<TRow = any>({
         />
 
         {createRow && !lockRows && (
-          <form
-            onSubmit={(e) => {
-              onInsertRowAfter(data?.length - 1, addRowsBatchSize)
-              e.preventDefault()
+          <button
+            className='dsg-add-row'
+            onClick={(e) => {
+              // @ts-ignore
+              if (e.target.tagName !== 'INPUT') {
+                onInsertRowAfter(data?.length - 1, addRowsBatchSize)
+              }
             }}
           >
-            <button
-              className='dsg-add-row'
-              type='submit'
-              onClick={(e) => {
-                // @ts-ignore
-                if (e.target.tagName === 'INPUT') {
-                  e.preventDefault()
-                }
+            <CounterComponent
+              value={addRowsBatchSize}
+              onChange={(value) => {
+                const v = Math.round(Number(value) || 0)
+                setAddRowsBatchSize(Math.max(1, v))
               }}
-            >
-              <CounterComponent
-                value={addRowsBatchSize}
-                onChange={(value) => {
-                  const v = Math.round(Number(value) || 0)
-                  setAddRowsBatchSize(Math.max(1, v))
-                }}
-              />
-            </button>
-          </form>
+              onPressEnter={() =>
+                onInsertRowAfter(data?.length - 1, addRowsBatchSize)
+              }
+            />
+          </button>
         )}
 
         {contextMenu && contextMenuItems.length > 0 && (
