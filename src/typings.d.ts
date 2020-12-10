@@ -24,6 +24,25 @@ interface CounterComponentProps {
   onChange: (value: number) => void
 }
 
+type ContextMenuItem =
+  | {
+      type: 'INSERT_ROW_BELLOW' | 'DELETE_ROW' | 'DUPLICATE_ROW'
+      action: () => void
+    }
+  | {
+      type: 'DELETE_ROWS' | 'DUPLICATE_ROWS'
+      action: () => void
+      fromRow: number
+      toRow: number
+    }
+
+interface ContextMenuProps {
+  clientX: number
+  clientY: number
+  items: ContextMenuItem[]
+  close: () => void
+}
+
 interface DataSheetGridProps<TRow = any> {
   data?: TRow[]
   onChange?: (data: TRow[]) => void
@@ -37,10 +56,9 @@ interface DataSheetGridProps<TRow = any> {
   isRowEmpty?: ({ rowData }: { rowData: TRow }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
-  counterComponent?: ({
-    value,
-    onChange,
-  }: CounterComponentProps) => Element | null
+  disableContextMenu?: boolean
+  counterComponent?: (props: CounterComponentProps) => Element | null
+  contextMenuComponent?: (props: ContextMenuProps) => Element | null
 }
 
 interface ColumnRenderFunctionOptions<TRow = any> {

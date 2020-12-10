@@ -1,8 +1,4 @@
 import * as React from 'react'
-import { VariableSizeList } from 'react-window'
-import { Row as RowComponent } from './Row'
-
-import { useColumnWidths } from '../hooks/useColumnWidths'
 import {
   useCallback,
   useEffect,
@@ -11,15 +7,20 @@ import {
   useRef,
   useState,
 } from 'react'
+import { VariableSizeList } from 'react-window'
+import { Row as RowComponent } from './Row'
+
+import { useColumnWidths } from '../hooks/useColumnWidths'
 import { InnerContainer } from './InnerContainer'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import { useGetBoundingRect } from '../hooks/useGetBoundingRect'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
-import { Cell, Column, DataSheetGridProps } from '../typings'
+import { Cell, Column, ContextMenuItem, DataSheetGridProps } from '../typings'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useScrollbarWidth } from '../hooks/useScrollbarWidth'
 import { AddRowsCounter } from './AddRowsCounter'
+import { ContextMenu } from './ContextMenu'
 
 export function DataSheetGrid<TRow = any>({
   data = [],
@@ -33,8 +34,10 @@ export function DataSheetGrid<TRow = any>({
   duplicateRow = ({ rowData }) => ({ ...rowData }),
   isRowEmpty = ({ rowData }) => Object.values(rowData).every((value) => !value),
   counterComponent = AddRowsCounter,
+  contextMenuComponent = ContextMenu,
   autoAddRow = false,
   lockRows = false,
+  disableContextMenu = false,
 }: DataSheetGridProps<TRow>) {
   // Add gutter column
   const columns: Column[] = [
@@ -98,6 +101,17 @@ export function DataSheetGrid<TRow = any>({
 
   // True when the active cell is being edited
   const [editing, setEditing] = useState(false)
+
+  // x,y coordinates of the right click
+  const [contextMenu, setContextMenu] = useState<{
+    x: number
+    y: number
+  } | null>(null)
+
+  // Items of the context menu
+  const [contextMenuItems, setContextMenuItems] = useState<ContextMenuItem[]>(
+    []
+  )
 
   // Highlighted cell, null when not focused
   const [activeCell, setActiveCell] = useState<Cell | null>(null)
@@ -559,9 +573,14 @@ export function DataSheetGrid<TRow = any>({
 
   const onMouseDown = useCallback(
     (event: MouseEvent) => {
+      const rightClick = event.button === 2
       const clickInside =
         containerRef.current?.contains(event.target as Node) || false
       const cursorIndex = clickInside ? getCursorIndex(event, true) : null
+
+      if (contextMenuItems.length) {
+        return
+      }
 
       if (
         !clickInside &&
@@ -583,16 +602,54 @@ export function DataSheetGrid<TRow = any>({
         return
       }
 
-      setEditing(clickOnActiveCell || false)
+      const rightClickInSelection =
+        rightClick &&
+        selection &&
+        cursorIndex &&
+        cursorIndex.row >= selection.min.row &&
+        cursorIndex.row <= selection.max.row &&
+        cursorIndex.col >= selection.min.col &&
+        cursorIndex.col <= selection.max.col
+
+      const rightClickOnSelectedHeaders =
+        rightClick &&
+        selection &&
+        cursorIndex &&
+        cursorIndex.row === -1 &&
+        cursorIndex.col >= selection.min.col &&
+        cursorIndex.col <= selection.max.col
+
+      const rightClickOnSelectedGutter =
+        rightClick &&
+        selection &&
+        cursorIndex &&
+        cursorIndex.row >= selection.min.row &&
+        cursorIndex.row <= selection.max.row &&
+        cursorIndex.col === -1
+
+      if (rightClick && !disableContextMenu) {
+        setTimeout(
+          () => setContextMenu({ x: event.clientX, y: event.clientY }),
+          0
+        )
+      }
+
+      setEditing((clickOnActiveCell && !rightClick) || false)
 
       setActiveCell(
         cursorIndex && {
-          col: Math.max(0, cursorIndex.col),
-          row: Math.max(0, cursorIndex.row),
+          col:
+            (rightClickInSelection || rightClickOnSelectedHeaders) && activeCell
+              ? activeCell.col
+              : Math.max(0, cursorIndex.col),
+          row:
+            (rightClickInSelection || rightClickOnSelectedGutter) && activeCell
+              ? activeCell.row
+              : Math.max(0, cursorIndex.row),
         }
       )
 
-      if (cursorIndex) {
+      if (cursorIndex && !rightClick) {
         setSelectionMode({
           columns: cursorIndex.col !== -1,
           rows: cursorIndex.row !== -1,
@@ -600,21 +657,49 @@ export function DataSheetGrid<TRow = any>({
         })
       }
 
-      setSelectionCell(
-        cursorIndex?.col === -1 || cursorIndex?.row === -1
-          ? {
-              col:
-                cursorIndex.col === -1 ? columns.length - 1 : cursorIndex.col,
-              row: cursorIndex.row === -1 ? data.length - 1 : cursorIndex.row,
-            }
-          : null
-      )
+      if (!rightClickInSelection) {
+        if (cursorIndex?.col === -1 || cursorIndex?.row === -1) {
+          let col = cursorIndex.col
+          let row = cursorIndex.row
+
+          if (cursorIndex.col === -1) {
+            col = columns.length - 1
+          }
+
+          if (cursorIndex.row === -1) {
+            row = data.length - 1
+          }
+
+          if (rightClickOnSelectedHeaders && selectionCell) {
+            col = selectionCell.col
+          }
+
+          if (rightClickOnSelectedGutter && selectionCell) {
+            row = selectionCell.row
+          }
+
+          setSelectionCell({ col, row })
+        } else {
+          setSelectionCell(null)
+        }
+      }
 
       if (clickInside) {
         event.preventDefault()
       }
     },
-    [getCursorIndex, activeCell, isCellDisabled, editing, columns, data.length]
+    [
+      disableContextMenu,
+      selectionCell,
+      getCursorIndex,
+      activeCell,
+      isCellDisabled,
+      editing,
+      columns,
+      data.length,
+      selection,
+      contextMenuItems.length,
+    ]
   )
   useDocumentEventListener('mousedown', onMouseDown)
 
@@ -626,6 +711,28 @@ export function DataSheetGrid<TRow = any>({
     })
   }, [])
   useDocumentEventListener('mouseup', onMouseUp)
+
+  const onContextMenu = useCallback(
+    (event: MouseEvent) => {
+      const clickInside =
+        containerRef.current?.contains(event.target as Node) || false
+
+      const cursorIndex = clickInside ? getCursorIndex(event, true) : null
+
+      const clickOnActiveCell =
+        cursorIndex &&
+        activeCell &&
+        activeCell.col === cursorIndex.col &&
+        activeCell.row === cursorIndex.row &&
+        editing
+
+      if (clickInside && !clickOnActiveCell) {
+        event.preventDefault()
+      }
+    },
+    [getCursorIndex, activeCell, editing]
+  )
+  useDocumentEventListener('contextmenu', onContextMenu)
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -762,7 +869,90 @@ export function DataSheetGrid<TRow = any>({
   )
   useDocumentEventListener('keydown', onKeyDown)
 
+  useEffect(() => {
+    if (!contextMenu && contextMenuItems.length) {
+      setContextMenuItems([])
+    }
+
+    if (contextMenu && !contextMenuItems.length) {
+      const items: ContextMenuItem[] = []
+
+      if (selection) {
+        items.push({
+          type: 'INSERT_ROW_BELLOW',
+          action: () => {
+            setContextMenu(null)
+            onInsertRowAfter(selection.max.row)
+          },
+        })
+      } else if (activeCell) {
+        items.push({
+          type: 'INSERT_ROW_BELLOW',
+          action: () => {
+            setContextMenu(null)
+            onInsertRowAfter(activeCell.row)
+          },
+        })
+      }
+
+      if (selection && selection.min.row !== selection.max.row) {
+        items.push({
+          type: 'DUPLICATE_ROWS',
+          fromRow: selection.min.row + 1,
+          toRow: selection.max.row + 1,
+          action: () => {
+            setContextMenu(null)
+            onDuplicateRows(selection.min.row, selection.max.row)
+          },
+        })
+      } else if (activeCell) {
+        items.push({
+          type: 'DUPLICATE_ROW',
+          action: () => {
+            setContextMenu(null)
+            onDuplicateRows(activeCell.row)
+          },
+        })
+      }
+
+      if (selection && selection.min.row !== selection.max.row) {
+        items.push({
+          type: 'DELETE_ROWS',
+          fromRow: selection.min.row + 1,
+          toRow: selection.max.row + 1,
+          action: () => {
+            setContextMenu(null)
+            onDeleteRows(selection.min.row, selection.max.row)
+          },
+        })
+      } else if (activeCell) {
+        items.push({
+          type: 'DELETE_ROW',
+          action: () => {
+            setContextMenu(null)
+            onDeleteRows(activeCell.row)
+          },
+        })
+      }
+
+      if (items.length) {
+        setContextMenuItems(items)
+      } else {
+        setContextMenu(null)
+      }
+    }
+  }, [
+    contextMenu,
+    selection,
+    onInsertRowAfter,
+    onDeleteRows,
+    onDuplicateRows,
+    contextMenuItems.length,
+    activeCell,
+  ])
+
   const CounterComponent = counterComponent
+  const ContextMenuComponent = contextMenuComponent
 
   return (
     <DataSheetGridContext.Provider
@@ -826,6 +1016,15 @@ export function DataSheetGrid<TRow = any>({
               />
             </button>
           </form>
+        )}
+
+        {contextMenu && contextMenuItems.length > 0 && (
+          <ContextMenuComponent
+            clientX={contextMenu.x}
+            clientY={contextMenu.y}
+            items={contextMenuItems}
+            close={() => setContextMenu(null)}
+          />
         )}
       </div>
     </DataSheetGridContext.Provider>
