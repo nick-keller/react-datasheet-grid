@@ -993,6 +993,7 @@ export function DataSheetGrid<TRow = any>({
         {createRow && !lockRows && (
           <button
             className='dsg-add-row'
+            type='button'
             onClick={(e) => {
               // @ts-ignore
               if (e.target.tagName !== 'INPUT') {
