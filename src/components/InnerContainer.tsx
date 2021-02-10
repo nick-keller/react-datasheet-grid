@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { CSSProperties, forwardRef, useContext, useMemo } from 'react'
+import { forwardRef, useContext, useMemo } from 'react'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import cx from 'classnames'
 

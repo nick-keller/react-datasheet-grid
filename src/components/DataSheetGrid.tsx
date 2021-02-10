@@ -16,23 +16,43 @@ import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 import { useGetBoundingRect } from '../hooks/useGetBoundingRect'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import deepEqual from 'fast-deep-equal'
-import { Cell, Column, ContextMenuItem, DataSheetGridProps } from '../typings'
+import {
+  Cell,
+  Column,
+  ContextMenuItem,
+  DataSheetGridProps,
+  GridContext,
+} from '../typings'
 import useResizeObserver from '@react-hook/resize-observer'
 import { useScrollbarWidth } from '../hooks/useScrollbarWidth'
 import { AddRowsCounter } from './AddRowsCounter'
 import { ContextMenu } from './ContextMenu'
 
+const DEFAULT_DATA = []
+const DEFAULT_COLUMNS = []
+const DEFAULT_CREATE_ROW = () => ({})
+const DEFAULT_ON_CHANGE = () => null
+const DEFAULT_DUPLICATE_ROW = ({ rowData }) => ({ ...rowData })
+const DEFAULT_IS_ROW_EMPTY = ({ rowData }) =>
+  Object.values(rowData).every((value) => !value)
+
+function setStateDeepEqual<T>(newValue: T) {
+  return (oldValue: T): T => {
+    return deepEqual(oldValue, newValue) ? oldValue : newValue
+  }
+}
+
 export function DataSheetGrid<TRow = any>({
-  data = [],
-  onChange = () => null,
-  columns: rawColumns = [],
+  data = DEFAULT_DATA,
+  onChange = DEFAULT_ON_CHANGE,
+  columns: rawColumns = DEFAULT_COLUMNS,
   height = 400,
   rowHeight = 40,
   headerRowHeight = rowHeight,
   gutterColumnWidth = '0 0 40px',
-  createRow = () => ({} as TRow),
-  duplicateRow = ({ rowData }) => ({ ...rowData }),
-  isRowEmpty = ({ rowData }) => Object.values(rowData).every((value) => !value),
+  createRow = DEFAULT_CREATE_ROW as () => TRow,
+  duplicateRow = DEFAULT_DUPLICATE_ROW,
+  isRowEmpty = DEFAULT_IS_ROW_EMPTY,
   counterComponent = AddRowsCounter,
   contextMenuComponent = ContextMenu,
   autoAddRow = false,
@@ -40,26 +60,30 @@ export function DataSheetGrid<TRow = any>({
   disableContextMenu = false,
 }: DataSheetGridProps<TRow>) {
   // Add gutter column
-  const columns: Column[] = [
-    {
-      width: gutterColumnWidth,
-      minWidth: 0,
-      title: <div className='dsg-corner-indicator' />,
-      render: ({ rowIndex }) => rowIndex + 1,
-    },
-    ...rawColumns,
-  ].map((column) => ({
-    width: 1,
-    minWidth: 100,
-    render: () => null,
-    disableKeys: false,
-    disabled: false,
-    keepFocus: false,
-    deleteValue: ({ rowData }) => rowData,
-    copyValue: () => null,
-    pasteValue: ({ rowData }) => rowData,
-    ...column,
-  }))
+  const columns = useMemo<Column[]>(
+    () =>
+      [
+        {
+          width: gutterColumnWidth,
+          minWidth: 0,
+          title: <div className='dsg-corner-indicator' />,
+          render: ({ rowIndex }) => rowIndex + 1,
+        },
+        ...rawColumns,
+      ].map((column) => ({
+        width: 1,
+        minWidth: 100,
+        render: () => null,
+        disableKeys: false,
+        disabled: false,
+        keepFocus: false,
+        deleteValue: ({ rowData }) => rowData,
+        copyValue: () => null,
+        pasteValue: ({ rowData }) => rowData,
+        ...column,
+      })),
+    [gutterColumnWidth, rawColumns]
+  )
 
   // Outer width (including borders) of the outer container
   const [width, setWidth] = useState<number>(0)
@@ -650,11 +674,13 @@ export function DataSheetGrid<TRow = any>({
       )
 
       if (cursorIndex && !rightClick) {
-        setSelectionMode({
-          columns: cursorIndex.col !== -1,
-          rows: cursorIndex.row !== -1,
-          active: true,
-        })
+        setSelectionMode(
+          setStateDeepEqual({
+            columns: cursorIndex.col !== -1,
+            rows: cursorIndex.row !== -1,
+            active: true as boolean,
+          })
+        )
       }
 
       if (!rightClickInSelection) {
@@ -704,11 +730,13 @@ export function DataSheetGrid<TRow = any>({
   useDocumentEventListener('mousedown', onMouseDown)
 
   const onMouseUp = useCallback(() => {
-    setSelectionMode({
-      columns: false,
-      rows: false,
-      active: false,
-    })
+    setSelectionMode(
+      setStateDeepEqual({
+        columns: false as boolean,
+        rows: false as boolean,
+        active: false as boolean,
+      })
+    )
   }, [])
   useDocumentEventListener('mouseup', onMouseUp)
 
@@ -951,28 +979,60 @@ export function DataSheetGrid<TRow = any>({
     activeCell,
   ])
 
-  const CounterComponent = counterComponent
   const ContextMenuComponent = contextMenuComponent
 
+  // Counter components and props
+  const CounterComponent = counterComponent
+
+  const counterOnPressEnter = useCallback(
+    () => onInsertRowAfter(data?.length - 1, addRowsBatchSize),
+    [addRowsBatchSize, data?.length, onInsertRowAfter]
+  )
+
+  const counterOnChange = useCallback((value) => {
+    const v = Math.round(Number(value) || 0)
+    setAddRowsBatchSize(Math.max(1, v))
+  }, [])
+
+  // Grid context
+  const focus = Boolean(activeCell)
+  const gridContext = useMemo<GridContext>(
+    () => ({
+      focus: focus,
+      editing,
+      activeCell: activeCell,
+      columnWidths: columnWidths || columns.map(() => 0),
+      columnOffsets: columnOffsets || columns.map(() => 0),
+      innerWidth: innerWidth || 0,
+      rowHeight,
+      headerRowHeight,
+      selection,
+      columns,
+      data,
+      onChange,
+      onDoneEditing,
+      isCellDisabled,
+    }),
+    [
+      focus,
+      editing,
+      activeCell,
+      columnWidths,
+      columnOffsets,
+      innerWidth,
+      rowHeight,
+      headerRowHeight,
+      selection,
+      columns,
+      data,
+      onChange,
+      onDoneEditing,
+      isCellDisabled,
+    ]
+  )
+
   return (
-    <DataSheetGridContext.Provider
-      value={{
-        focus: Boolean(activeCell),
-        editing,
-        activeCell: activeCell,
-        columnWidths: columnWidths || columns.map(() => 0),
-        columnOffsets: columnOffsets || columns.map(() => 0),
-        innerWidth: innerWidth || 0,
-        rowHeight,
-        headerRowHeight,
-        selection,
-        columns,
-        data,
-        onChange,
-        onDoneEditing,
-        isCellDisabled,
-      }}
-    >
+    <DataSheetGridContext.Provider value={gridContext}>
       <div ref={outsideContainerRef}>
         <VariableSizeList
           ref={listRef}
@@ -1003,13 +1063,8 @@ export function DataSheetGrid<TRow = any>({
           >
             <CounterComponent
               value={addRowsBatchSize}
-              onChange={(value) => {
-                const v = Math.round(Number(value) || 0)
-                setAddRowsBatchSize(Math.max(1, v))
-              }}
-              onPressEnter={() =>
-                onInsertRowAfter(data?.length - 1, addRowsBatchSize)
-              }
+              onChange={counterOnChange}
+              onPressEnter={counterOnPressEnter}
             />
           </button>
         )}
