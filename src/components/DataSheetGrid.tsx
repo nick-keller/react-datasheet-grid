@@ -36,9 +36,12 @@ const DEFAULT_DUPLICATE_ROW = ({ rowData }) => ({ ...rowData })
 const DEFAULT_IS_ROW_EMPTY = ({ rowData }) =>
   Object.values(rowData).every((value) => !value)
 
-function setStateDeepEqual<T>(newValue: T) {
+function setStateDeepEqual<T>(newValue: T | ((old: T) => T)) {
   return (oldValue: T): T => {
-    return deepEqual(oldValue, newValue) ? oldValue : newValue
+    const newVal =
+      // @ts-ignore
+      typeof newValue === 'function' ? newValue(oldValue) : newValue
+    return deepEqual(oldValue, newVal) ? oldValue : newVal
   }
 }
 
@@ -309,7 +312,9 @@ export function DataSheetGrid<TRow = any>({
         ...new Array(count).fill(0).map(createRow),
         ...data.slice(row + 1),
       ])
-      setActiveCell((a) => ({ col: a?.col || 0, row: row + count }))
+      setActiveCell(
+        setStateDeepEqual((a) => ({ col: a?.col || 0, row: row + count }))
+      )
     },
     [createRow, data, lockRows, onChange]
   )
@@ -326,7 +331,7 @@ export function DataSheetGrid<TRow = any>({
         setEditing(false)
 
         if (nextRow) {
-          setActiveCell((a) => a && { ...a, row: a.row + 1 })
+          setActiveCell(setStateDeepEqual((a) => a && { ...a, row: a.row + 1 }))
         }
       }
     },
@@ -346,11 +351,15 @@ export function DataSheetGrid<TRow = any>({
           .map((rowData) => duplicateRow({ rowData })),
         ...data.slice(rowMax + 1),
       ])
-      setActiveCell({ col: 0, row: rowMax + 1 })
-      setSelectionCell({
-        col: columns.length - 2,
-        row: 2 * rowMax - rowMin + 1,
-      })
+      setActiveCell(
+        setStateDeepEqual<Cell | null>({ col: 0, row: rowMax + 1 })
+      )
+      setSelectionCell(
+        setStateDeepEqual<Cell | null>({
+          col: columns.length - 2,
+          row: 2 * rowMax - rowMin + 1,
+        })
+      )
       setEditing(false)
     },
     [columns.length, data, duplicateRow, lockRows, onChange]
@@ -363,15 +372,17 @@ export function DataSheetGrid<TRow = any>({
       }
 
       setEditing(false)
-      setActiveCell((a) => {
-        const row = Math.min(data.length - 2 - rowMax + rowMin, rowMin)
+      setActiveCell(
+        setStateDeepEqual((a) => {
+          const row = Math.min(data.length - 2 - rowMax + rowMin, rowMin)
 
-        if (row < 0) {
-          return null
-        }
+          if (row < 0) {
+            return null
+          }
 
-        return a && { ...a, row }
-      })
+          return a && { ...a, row }
+        })
+      )
       setSelectionCell(null)
       onChange([...data.slice(0, rowMin), ...data.slice(rowMax + 1)])
     },
@@ -407,8 +418,15 @@ export function DataSheetGrid<TRow = any>({
     }
 
     if (deepEqual(newData, data)) {
-      setActiveCell({ col: 0, row: min.row })
-      setSelectionCell({ col: columns.length - 2, row: max.row })
+      setActiveCell(
+        setStateDeepEqual<Cell | null>({ col: 0, row: min.row })
+      )
+      setSelectionCell(
+        setStateDeepEqual<Cell | null>({
+          col: columns.length - 2,
+          row: max.row,
+        })
+      )
       return
     }
 
@@ -501,11 +519,15 @@ export function DataSheetGrid<TRow = any>({
           }
 
           onChange(newData)
-          setActiveCell({ col: min.col, row: min.row })
-          setSelectionCell({
-            col: min.col + pasteData[0].length - 1,
-            row: max.row,
-          })
+          setActiveCell(
+            setStateDeepEqual<Cell | null>({ col: min.col, row: min.row })
+          )
+          setSelectionCell(
+            setStateDeepEqual<Cell | null>({
+              col: min.col + pasteData[0].length - 1,
+              row: max.row,
+            })
+          )
         } else {
           // Paste multiple rows
           let newData = [...data]
@@ -546,14 +568,18 @@ export function DataSheetGrid<TRow = any>({
           }
 
           onChange(newData)
-          setActiveCell({ col: min.col, row: min.row })
-          setSelectionCell({
-            col: Math.min(
-              min.col + pasteData[0].length - 1,
-              columns.length - 2
-            ),
-            row: min.row + pasteData.length - 1,
-          })
+          setActiveCell(
+            setStateDeepEqual<Cell | null>({ col: min.col, row: min.row })
+          )
+          setSelectionCell(
+            setStateDeepEqual<Cell | null>({
+              col: Math.min(
+                min.col + pasteData[0].length - 1,
+                columns.length - 2
+              ),
+              row: min.row + pasteData.length - 1,
+            })
+          )
         }
 
         event.preventDefault()
@@ -579,14 +605,16 @@ export function DataSheetGrid<TRow = any>({
         const cursorIndex = getCursorIndex(event)
 
         setSelectionCell(
-          cursorIndex && {
-            col: selectionMode.columns
-              ? Math.max(0, cursorIndex.col)
-              : columns.length - 1,
-            row: selectionMode.rows
-              ? Math.max(0, cursorIndex.row)
-              : data.length - 1,
-          }
+          setStateDeepEqual(
+            cursorIndex && {
+              col: selectionMode.columns
+                ? Math.max(0, cursorIndex.col)
+                : columns.length - 2,
+              row: selectionMode.rows
+                ? Math.max(0, cursorIndex.row)
+                : data.length - 1,
+            }
+          )
         )
         setEditing(false)
       }
@@ -661,16 +689,20 @@ export function DataSheetGrid<TRow = any>({
       setEditing((clickOnActiveCell && !rightClick) || false)
 
       setActiveCell(
-        cursorIndex && {
-          col:
-            (rightClickInSelection || rightClickOnSelectedHeaders) && activeCell
-              ? activeCell.col
-              : Math.max(0, cursorIndex.col),
-          row:
-            (rightClickInSelection || rightClickOnSelectedGutter) && activeCell
-              ? activeCell.row
-              : Math.max(0, cursorIndex.row),
-        }
+        setStateDeepEqual<Cell | null>(
+          cursorIndex && {
+            col:
+              (rightClickInSelection || rightClickOnSelectedHeaders) &&
+              activeCell
+                ? activeCell.col
+                : Math.max(0, cursorIndex.col),
+            row:
+              (rightClickInSelection || rightClickOnSelectedGutter) &&
+              activeCell
+                ? activeCell.row
+                : Math.max(0, cursorIndex.row),
+          }
+        )
       )
 
       if (cursorIndex && !rightClick) {
@@ -689,7 +721,7 @@ export function DataSheetGrid<TRow = any>({
           let row = cursorIndex.row
 
           if (cursorIndex.col === -1) {
-            col = columns.length - 1
+            col = columns.length - 2
           }
 
           if (cursorIndex.row === -1) {
@@ -704,7 +736,9 @@ export function DataSheetGrid<TRow = any>({
             row = selectionCell.row
           }
 
-          setSelectionCell({ col, row })
+          setSelectionCell(
+            setStateDeepEqual<Cell | null>({ col, row })
+          )
         } else {
           setSelectionCell(null)
         }
@@ -787,7 +821,7 @@ export function DataSheetGrid<TRow = any>({
           }
 
         if (event.key === 'Tab' && event.shiftKey) {
-          setActiveCell((cell) => add([-1, 0], cell))
+          setActiveCell(setStateDeepEqual((cell) => add([-1, 0], cell)))
           setSelectionCell(null)
         } else {
           const direction = {
@@ -804,9 +838,11 @@ export function DataSheetGrid<TRow = any>({
           }
 
           if (event.shiftKey) {
-            setSelectionCell((cell) => add(direction, cell || activeCell))
+            setSelectionCell(
+              setStateDeepEqual((cell) => add(direction, cell || activeCell))
+            )
           } else {
-            setActiveCell((cell) => add(direction, cell))
+            setActiveCell(setStateDeepEqual((cell) => add(direction, cell)))
             setSelectionCell(null)
           }
         }
@@ -874,8 +910,15 @@ export function DataSheetGrid<TRow = any>({
         }
       } else if (event.key === 'a' && (event.ctrlKey || event.metaKey)) {
         if (!editing) {
-          setActiveCell({ col: 0, row: 0 })
-          setSelectionCell({ col: columns.length - 2, row: data.length - 1 })
+          setActiveCell(
+            setStateDeepEqual<Cell | null>({ col: 0, row: 0 })
+          )
+          setSelectionCell(
+            setStateDeepEqual<Cell | null>({
+              col: columns.length - 2,
+              row: data.length - 1,
+            })
+          )
           event.preventDefault()
         }
       }
