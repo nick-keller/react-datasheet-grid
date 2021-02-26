@@ -20,9 +20,7 @@ declare module '*.svg' {
 }
 
 interface CounterComponentProps {
-  value: number
-  onChange: (value: number) => void
-  onPressEnter: () => void
+  addRows: (batchSize: number) => void
 }
 
 type ContextMenuItem =

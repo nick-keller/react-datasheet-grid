@@ -123,9 +123,6 @@ export function DataSheetGrid<TRow = any>({
     setWidth(entry.contentRect.width)
   )
 
-  // Number of rows to add at once at the end of the grid when the add button is clicked
-  const [addRowsBatchSize, setAddRowsBatchSize] = useState(1)
-
   // True when the active cell is being edited
   const [editing, setEditing] = useState(false)
 
@@ -1027,15 +1024,14 @@ export function DataSheetGrid<TRow = any>({
   // Counter components and props
   const CounterComponent = counterComponent
 
-  const counterOnPressEnter = useCallback(
-    () => onInsertRowAfter(data?.length - 1, addRowsBatchSize),
-    [addRowsBatchSize, data?.length, onInsertRowAfter]
+  const counterAddRows = useCallback(
+    (batchSize: number = 1) =>
+      onInsertRowAfter(
+        data?.length - 1,
+        Math.max(1, Math.round(Number(batchSize)))
+      ),
+    [data?.length, onInsertRowAfter]
   )
-
-  const counterOnChange = useCallback((value) => {
-    const v = Math.round(Number(value) || 0)
-    setAddRowsBatchSize(Math.max(1, v))
-  }, [])
 
   // Grid context
   const focus = Boolean(activeCell)
@@ -1094,22 +1090,7 @@ export function DataSheetGrid<TRow = any>({
         />
 
         {createRow && !lockRows && (
-          <button
-            className='dsg-add-row'
-            type='button'
-            onClick={(e) => {
-              // @ts-ignore
-              if (e.target.tagName !== 'INPUT') {
-                onInsertRowAfter(data?.length - 1, addRowsBatchSize)
-              }
-            }}
-          >
-            <CounterComponent
-              value={addRowsBatchSize}
-              onChange={counterOnChange}
-              onPressEnter={counterOnPressEnter}
-            />
-          </button>
+          <CounterComponent addRows={counterAddRows} />
         )}
 
         {contextMenu && contextMenuItems.length > 0 && (
