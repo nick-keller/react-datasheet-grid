@@ -60,8 +60,10 @@ export function DataSheetGrid<TRow = any>({
   contextMenuComponent = ContextMenu,
   autoAddRow = false,
   lockRows = false,
-  disableContextMenu = false,
+  disableContextMenu: disableContextMenuRaw = false,
 }: DataSheetGridProps<TRow>) {
+  const disableContextMenu = disableContextMenuRaw || lockRows
+
   // Add gutter column
   const columns = useMemo<Column[]>(
     () =>
