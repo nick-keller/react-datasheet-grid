@@ -19,7 +19,9 @@ export const Row = React.memo(
       columnWidths,
       columnOffsets,
       rowHeight,
-      contextMenuItems,
+      onInsertRowAfter,
+      onDuplicateRows,
+      onDeleteRows,
     } = useContext(DataSheetGridContext)
 
     const headerRow = rowIndex === 0
@@ -70,7 +72,21 @@ export const Row = React.memo(
               }}
             >
               {columns[columnIndex].render({
-                contextMenuItems,
+                insertRowBelow: () => {
+                  if (activeCell) {
+                    onInsertRowAfter(activeCell.row)
+                  }
+                },
+                duplicateRow: () => {
+                  if (activeCell) {
+                    onDuplicateRows(activeCell.row)
+                  }
+                },
+                deleteRow: () => {
+                  if (activeCell) {
+                    onDeleteRows(activeCell.row)
+                  }
+                },
                 active,
                 focus: active && editing,
                 rowIndex: rowIndex - 1,
