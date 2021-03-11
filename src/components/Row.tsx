@@ -2,7 +2,7 @@ import * as React from 'react'
 import cx from 'classnames'
 
 import { ListChildComponentProps } from 'react-window'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 
 export const Row = React.memo(
@@ -19,6 +19,7 @@ export const Row = React.memo(
       columnWidths,
       columnOffsets,
       rowHeight,
+      contextMenuItems,
     } = useContext(DataSheetGridContext)
 
     const headerRow = rowIndex === 0
@@ -69,6 +70,7 @@ export const Row = React.memo(
               }}
             >
               {columns[columnIndex].render({
+                items: contextMenuItems,
                 active,
                 focus: active && editing,
                 rowIndex: rowIndex - 1,

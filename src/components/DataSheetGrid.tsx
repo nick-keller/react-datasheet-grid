@@ -1053,6 +1053,7 @@ export function DataSheetGrid<TRow = any>({
       onChange,
       onDoneEditing,
       isCellDisabled,
+      contextMenuItems,
     }),
     [
       focus,
@@ -1069,6 +1070,7 @@ export function DataSheetGrid<TRow = any>({
       onChange,
       onDoneEditing,
       isCellDisabled,
+      contextMenuItems,
     ]
   )
 
