@@ -1098,7 +1098,9 @@ export function DataSheetGrid<TRow = any>({
           itemCount={(columnWidths && data.length + 1) || 0}
           className='dsg-container'
           width={
-            columnWidths ? columnWidths.reduce((a, b) => a + b, 0) : '100%'
+            columnWidths
+              ? `${columnWidths.reduce((a, b) => a + b, 0)}px`
+              : '100%'
           }
           children={RowComponent}
         />
