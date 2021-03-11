@@ -69,7 +69,9 @@ interface ColumnRenderFunctionOptions<TRow = any> {
   disabled: boolean
   setRowData: (rowData: TRow) => void
   done: ({ nextRow }: { nextRow: boolean }) => void
-  contextMenuItems: ContextMenuItem[]
+  insertRowBelow: () => void
+  duplicateRow: () => void
+  deleteRow: () => void
 }
 
 interface ColumnRenderFunction<TRow = any> {
@@ -113,5 +115,7 @@ interface GridContext<TRow = any> {
   columns: Column<TRow>[]
   isCellDisabled: (cell: Cell) => boolean
   onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
-  contextMenuItems: ContextMenuItem[]
+  onInsertRowAfter: (row: number, count = 1) => void
+  onDuplicateRows: (rowMin, rowMax = rowMin) => void
+  onDeleteRows: (rowMin, rowMax = rowMin) => void
 }
