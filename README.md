@@ -142,6 +142,11 @@ This function is called everytime a cell needs to be rendered.
 | disabled    | `boolean`                      | True when the cell is disabled                                                                                                                                                                                                                                    |
 | setRowData  | `(rowData) => void`            | Function to call to update the row.                                                                                                                                                                                                                               |
 | done        | `({ nextRow = true }) => void` | This function can be called to exit edit mode manually. This is mainly used when  `disableKeys` is true but it can have other use-cases.  Optionally you can pass the `nextRow`  parameter to `false` so the active / highlighted cell stays on the current cell. |
+| insertRowBelow        | `() => void` | This function can be called to insert a row below the current one. |
+| duplicateRow        | `() => void` | This function can be called to duplicate the current row below. |
+| deleteRow        | `() => void` | This function can be called to delete the current row. |
+
+
 
 ## License
 
