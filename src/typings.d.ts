@@ -69,6 +69,7 @@ interface ColumnRenderFunctionOptions<TRow = any> {
   disabled: boolean
   setRowData: (rowData: TRow) => void
   done: ({ nextRow }: { nextRow: boolean }) => void
+  items: ContextMenuItem[]
 }
 
 interface ColumnRenderFunction<TRow = any> {
@@ -112,4 +113,5 @@ interface GridContext<TRow = any> {
   columns: Column<TRow>[]
   isCellDisabled: (cell: Cell) => boolean
   onDoneEditing: ({ nextRow }: { nextRow: boolean }) => void
+  contextMenuItems: ContextMenuItem[]
 }
