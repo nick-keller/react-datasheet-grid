@@ -69,7 +69,7 @@ interface ColumnRenderFunctionOptions<TRow = any> {
   disabled: boolean
   setRowData: (rowData: TRow) => void
   done: ({ nextRow }: { nextRow: boolean }) => void
-  items: ContextMenuItem[]
+  contextMenuItems: ContextMenuItem[]
 }
 
 interface ColumnRenderFunction<TRow = any> {
