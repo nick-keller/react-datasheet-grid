@@ -503,16 +503,18 @@ export function DataSheetGrid<TRow = any>({
             columnIndex < pasteData[0].length;
             columnIndex++
           ) {
-            const { pasteValue } = columns[min.col + columnIndex + 1]
+            const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
 
-            for (let rowIndex = min.row; rowIndex <= max.row; rowIndex++) {
-              if (
-                !isCellDisabled({ col: columnIndex + min.col, row: rowIndex })
-              ) {
-                newData[rowIndex] = await pasteValue({
-                  rowData: newData[rowIndex],
-                  value: pasteData[0][columnIndex],
-                })
+            if (pasteValue) {
+              for (let rowIndex = min.row; rowIndex <= max.row; rowIndex++) {
+                if (
+                  !isCellDisabled({ col: columnIndex + min.col, row: rowIndex })
+                ) {
+                  newData[rowIndex] = await pasteValue({
+                    rowData: newData[rowIndex],
+                    value: pasteData[0][columnIndex],
+                  })
+                }
               }
             }
           }
@@ -549,19 +551,21 @@ export function DataSheetGrid<TRow = any>({
             min.col + columnIndex < columns.length - 1;
             columnIndex++
           ) {
-            const { pasteValue } = columns[min.col + columnIndex + 1]
+            const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
 
-            for (let rowIndex = 0; rowIndex < pasteData.length; rowIndex++) {
-              if (
-                !isCellDisabled({
-                  col: min.col + columnIndex,
-                  row: min.row + rowIndex,
-                })
-              ) {
-                newData[min.row + rowIndex] = await pasteValue({
-                  rowData: newData[min.row + rowIndex],
-                  value: pasteData[rowIndex][columnIndex],
-                })
+            if (pasteValue) {
+              for (let rowIndex = 0; rowIndex < pasteData.length; rowIndex++) {
+                if (
+                  !isCellDisabled({
+                    col: min.col + columnIndex,
+                    row: min.row + rowIndex,
+                  })
+                ) {
+                  newData[min.row + rowIndex] = await pasteValue({
+                    rowData: newData[min.row + rowIndex],
+                    value: pasteData[rowIndex][columnIndex],
+                  })
+                }
               }
             }
           }
@@ -1093,7 +1097,9 @@ export function DataSheetGrid<TRow = any>({
           )}
           itemCount={(columnWidths && data.length + 1) || 0}
           className='dsg-container'
-          width='100%'
+          width={
+            columnWidths ? columnWidths.reduce((a, b) => a + b, 0) : '100%'
+          }
           children={RowComponent}
         />
 
