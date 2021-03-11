@@ -8,6 +8,7 @@ import { DataSheetGridContext } from '../contexts/DataSheetGridContext'
 export const Row = React.memo(
   ({ style, index: rowIndex }: ListChildComponentProps) => {
     const {
+      innerWidth,
       selection,
       data,
       columns,
@@ -35,7 +36,7 @@ export const Row = React.memo(
         className={cx({
           'dsg-row': true,
         })}
-        style={style}
+        style={{ ...style, width: `${innerWidth}px` }}
       >
         {columnWidths.map((width, columnIndex) => {
           const gutterColumn = columnIndex === 0
