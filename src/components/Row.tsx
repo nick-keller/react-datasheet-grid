@@ -73,19 +73,13 @@ export const Row = React.memo(
             >
               {columns[columnIndex].render({
                 insertRowBelow: () => {
-                  if (activeCell) {
-                    onInsertRowAfter(activeCell.row)
-                  }
+                  onInsertRowAfter(rowIndex - 1)
                 },
                 duplicateRow: () => {
-                  if (activeCell) {
-                    onDuplicateRows(activeCell.row)
-                  }
+                  onDuplicateRows(rowIndex - 1)
                 },
                 deleteRow: () => {
-                  if (activeCell) {
-                    onDeleteRows(activeCell.row)
-                  }
+                  onDeleteRows(rowIndex - 1)
                 },
                 active,
                 focus: active && editing,
