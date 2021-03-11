@@ -70,7 +70,7 @@ export const Row = React.memo(
               }}
             >
               {columns[columnIndex].render({
-                items: contextMenuItems,
+                contextMenuItems,
                 active,
                 focus: active && editing,
                 rowIndex: rowIndex - 1,
