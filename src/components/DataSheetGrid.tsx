@@ -62,7 +62,7 @@ export function DataSheetGrid<TRow = any>({
   autoAddRow = false,
   lockRows = false,
   disableContextMenu: disableContextMenuRaw = false,
-  renderGutterColumn = ({ rowIndex }) => rowIndex + 1,
+  renderGutterColumn = DEFAULT_RENDER_GUTTER_COLUMN,
 }: DataSheetGridProps<TRow>) {
   const disableContextMenu = disableContextMenuRaw || lockRows
 
