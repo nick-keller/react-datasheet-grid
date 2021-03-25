@@ -58,6 +58,7 @@ interface DataSheetGridProps<TRow = any> {
   disableContextMenu?: boolean
   counterComponent?: (props: CounterComponentProps) => Element | null
   contextMenuComponent?: (props: ContextMenuProps) => Element | null
+  renderGutterColumn: ColumnRenderFunction<TRow>
 }
 
 interface ColumnRenderFunctionOptions<TRow = any> {
