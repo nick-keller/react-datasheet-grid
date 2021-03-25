@@ -35,6 +35,7 @@ const DEFAULT_ON_CHANGE = () => null
 const DEFAULT_DUPLICATE_ROW = ({ rowData }) => ({ ...rowData })
 const DEFAULT_IS_ROW_EMPTY = ({ rowData }) =>
   Object.values(rowData).every((value) => !value)
+const DEFAULT_RENDER_GUTTER_COLUMN = ({ rowIndex }) => rowIndex + 1
 
 function setStateDeepEqual<T>(newValue: T | ((old: T) => T)) {
   return (oldValue: T): T => {
@@ -61,6 +62,7 @@ export function DataSheetGrid<TRow = any>({
   autoAddRow = false,
   lockRows = false,
   disableContextMenu: disableContextMenuRaw = false,
+  renderGutterColumn = DEFAULT_RENDER_GUTTER_COLUMN,
 }: DataSheetGridProps<TRow>) {
   const disableContextMenu = disableContextMenuRaw || lockRows
 
@@ -72,7 +74,7 @@ export function DataSheetGrid<TRow = any>({
           width: gutterColumnWidth,
           minWidth: 0,
           title: <div className='dsg-corner-indicator' />,
-          render: ({ rowIndex }) => rowIndex + 1,
+          render: renderGutterColumn,
         },
         ...rawColumns,
       ].map((column) => ({
@@ -87,7 +89,7 @@ export function DataSheetGrid<TRow = any>({
         pasteValue: ({ rowData }) => rowData,
         ...column,
       })),
-    [gutterColumnWidth, rawColumns]
+    [gutterColumnWidth, rawColumns, renderGutterColumn]
   )
 
   // Outer width (including borders) of the outer container

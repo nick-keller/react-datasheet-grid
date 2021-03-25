@@ -110,6 +110,7 @@ All available properties are [listed bellow](#columns-definition).
 | disableContextMenu   | `boolean`                                           | `false`                                                                  | When true, no context menu is shown when right clicking.                                                                                                                                                                          |
 | counterComponent     | A React component                                   |                                                                          | Used to replace the content of the "Add row" button for translations, custom inputs, icons... View [default implementation](./src/components/AddRowsCounter.tsx).                                                                 |
 | contextMenuComponent | A React component                                   |                                                                          | Used to customize the context menu when right clicking. View [default implementation](./src/components/ContextMenu.tsx).                                                                                                          |
+renderGutterColumn | ({ rowData, rowIndex, ... }) => ReactNode | ({ rowIndex }) => rowIndex + 1 | The render function of the column on the left of the datasheet. 
 
 ### Columns definition
 For columns implementation examples got to [src/columns](./src/columns).
