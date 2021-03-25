@@ -1038,7 +1038,7 @@ export function DataSheetGrid<TRow = any>({
         data?.length - 1,
         Math.max(1, Math.round(Number(batchSize)))
       ),
-    [data, onInsertRowAfter]
+    [data?.length, onInsertRowAfter]
   )
 
   // Grid context
