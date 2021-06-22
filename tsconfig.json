@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+     "incremental": true,
+    "target": "es5",
+    "module": "commonjs",
+     "allowJs": false,
+     "jsx": "react",
+     "declaration": true,
+     "declarationMap": true,
+     "sourceMap": true,
+    "rootDir": "src",
+    "lib": ["DOM", "ESNext"],
+     "outDir": "dist",
+     "downlevelIteration": true,
+     "isolatedModules": true,
+    "strict": true,
+     "alwaysStrict": true,
+    "noImplicitReturns": true,
+     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "dist", "example"],
+  "include": ["src/**/*"]
+}

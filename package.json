@@ -1,0 +1,33 @@
+{
+  "name": "react-datasheet-grid",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf ./dist && tsc && cpx \"src/**/*.css\" dist",
+    "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
+    "format": "prettier --write src/. && prettier --write example/src/."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^17.0.11",
+    "@types/react-window": "^1.8.3",
+    "concurrently": "^6.2.0",
+    "cpx": "^1.5.0",
+    "prettier": "^2.3.1",
+    "react": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.3"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "react-resize-detector": "^6.7.2",
+    "react-window": "^1.8.6"
+  }
+}

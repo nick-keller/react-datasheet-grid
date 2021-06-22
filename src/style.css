@@ -1,0 +1,11 @@
+.dsg-row {
+  background: white;
+  box-shadow: 0 1px #e8ebed inset;
+}
+
+.dsg-cell {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  box-shadow: 1px 0 #e8ebed inset;
+}
