@@ -1,11 +1,29 @@
+.dsg-container {
+  border: solid 1px #e8ebed;
+  border-top: none;
+  border-left: none;
+}
+
 .dsg-row {
   background: white;
   box-shadow: 0 1px #e8ebed inset;
+  display: flex;
 }
 
 .dsg-cell {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  box-shadow: 1px 0 #e8ebed inset;
+  background: white;
+  border: solid 1px #e8ebed;
+  border-bottom: none;
+  border-right: none;
+  box-shadow: 1px 1px #e8ebed;
+}
+
+.dsg-cell-gutter {
+  position: sticky;
+  left: 0;
+}
+
+.dsg-cell-sticky-right {
+  position: sticky;
+  right: 0;
 }

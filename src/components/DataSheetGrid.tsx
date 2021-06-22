@@ -14,7 +14,8 @@ export const DataSheetGrid = React.memo(
     columns: rawColumns = [],
     rowHeight = 40,
     headerRowHeight = rowHeight,
-    gutterColumnWidth = '0 0 40px',
+    gutterColumn,
+    stickyRightColumn,
   }: DataSheetGridProps<T>): JSX.Element => {
     console.log('render DataSheetGrid')
 
@@ -23,12 +24,22 @@ export const DataSheetGrid = React.memo(
       () =>
         [
           {
-            width: gutterColumnWidth,
+            width: '0 0 40px',
             minWidth: 0,
             title: <div className="dsg-corner-indicator" />,
+            ...gutterColumn,
             // render: renderGutterColumn,
           },
           ...rawColumns,
+          ...(stickyRightColumn
+            ? [
+                {
+                  width: '0 0 40px',
+                  minWidth: 0,
+                  ...stickyRightColumn,
+                },
+              ]
+            : []),
         ].map((column) => ({
           width: 1,
           minWidth: 100,
@@ -41,12 +52,11 @@ export const DataSheetGrid = React.memo(
           // pasteValue: ({ rowData }) => rowData,
           ...column,
         })),
-      [gutterColumnWidth, rawColumns]
+      [gutterColumn, stickyRightColumn, rawColumns]
     )
 
     const innerRef = useRef<HTMLElement>(null)
     const outerRef = useRef<HTMLElement>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
 
     // Outer width (including borders) of the outer container
     const { width, height } = useResizeDetector({
@@ -63,8 +73,9 @@ export const DataSheetGrid = React.memo(
     } = useColumnWidths(columns, width)
 
     return (
-      <div ref={containerRef}>
+      <div>
         <FixedSizeList
+          className="dsg-container"
           width="100%"
           height={outerHeight}
           itemCount={data.length}
@@ -73,8 +84,7 @@ export const DataSheetGrid = React.memo(
             data,
             contentWidth: fullWidth ? undefined : contentWidth,
             columns,
-            columnWidths,
-            columnRights,
+            hasStickyRightColumn: Boolean(stickyRightColumn),
           }}
           outerRef={outerRef}
           innerRef={innerRef}

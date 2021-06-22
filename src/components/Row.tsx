@@ -10,11 +10,11 @@ const RowComponent = React.memo(
     data,
     isScrolling,
     columns,
-    columnWidths,
-    columnRights,
+    hasStickyRightColumn,
   }: RowProps<T>) => {
     console.log(data)
 
+    // Used to detect first render
     const firstRenderRef = useRef(true)
     const firstRender = firstRenderRef.current
     firstRenderRef.current = false
@@ -22,22 +22,28 @@ const RowComponent = React.memo(
     // True when we should render the light version (when we are scrolling)
     const renderLight = isScrolling && firstRender
 
-    if (renderLight || !columnWidths || !columnRights) {
+    // When columnWidths or columnRights is not defined we render the light version
+    if (renderLight) {
       return (
         <div className={cx('dsg-row', 'dsg-row-light')} style={style}>
-          {columnWidths &&
-            columnRights &&
-            columns.map((column, i) => (
-              <div
-                className={cx('dsg-cell', 'dsg-cell-light')}
-                key={i}
-                style={{
-                  width: i === columns.length - 1 ? undefined : columnWidths[i],
-                  right: i === columns.length - 1 ? 0 : undefined,
-                  left: columnRights[i - 1] ?? 0,
-                }}
-              />
-            ))}
+          {columns.map((column, i) => (
+            <div
+              className={cx(
+                'dsg-cell',
+                i === 0 && 'dsg-cell-gutter',
+                hasStickyRightColumn &&
+                  i === columns.length - 1 &&
+                  'dsg-cell-sticky-right',
+                'dsg-cell-light'
+              )}
+              key={i}
+              style={{
+                flex: String(column.width),
+                minWidth: column.minWidth,
+                maxWidth: column.maxWidth,
+              }}
+            />
+          ))}
         </div>
       )
     }
@@ -46,12 +52,18 @@ const RowComponent = React.memo(
       <div className="dsg-row" style={style}>
         {columns.map((column, i) => (
           <div
-            className="dsg-cell"
+            className={cx(
+              'dsg-cell',
+              i === 0 && 'dsg-cell-gutter',
+              hasStickyRightColumn &&
+                i === columns.length - 1 &&
+                'dsg-cell-sticky-right'
+            )}
             key={i}
             style={{
-              width: i === columns.length - 1 ? undefined : columnWidths[i],
-              right: i === columns.length - 1 ? 0 : undefined,
-              left: columnRights[i - 1] ?? 0,
+              flex: String(column.width),
+              minWidth: column.minWidth,
+              maxWidth: column.maxWidth,
             }}
           />
         ))}
@@ -78,13 +90,11 @@ export const Row = <T extends any>({
       index={index}
       data={data.data[index]}
       columns={data.columns}
-      columnWidths={data.columnWidths}
-      columnRights={data.columnRights}
       style={{
         ...style,
-        width: data.contentWidth ? data.contentWidth : undefined,
-        right: data.contentWidth ? undefined : 0,
+        width: data.contentWidth ? data.contentWidth : '100%',
       }}
+      hasStickyRightColumn={data.hasStickyRightColumn}
       isScrolling={isScrolling}
     />
   )

@@ -20,8 +20,7 @@ export type ListItemData<T> = {
   data: T[]
   contentWidth?: number
   columns: Column<T>[]
-  columnWidths?: number[]
-  columnRights?: number[]
+  hasStickyRightColumn: boolean
 }
 
 export type RowProps<T> = {
@@ -30,16 +29,19 @@ export type RowProps<T> = {
   style: React.CSSProperties
   isScrolling?: boolean
   columns: Column<T>[]
-  columnWidths?: number[]
-  columnRights?: number[]
+  hasStickyRightColumn: boolean
 }
 
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
   columns?: Column<T>[]
+  gutterColumn?: Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
+  stickyRightColumn?: Pick<
+    Column<T>,
+    'title' | 'maxWidth' | 'minWidth' | 'width'
+  >
   height?: number
   rowHeight?: number
   headerRowHeight?: number
-  gutterColumnWidth?: ColumnWidth
 }
