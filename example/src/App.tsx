@@ -21,8 +21,15 @@ function App() {
     'p',
   ])
   const [count, setCount] = useState(0)
-  const columns = useMemo<Partial<Column<string>>[]>(
-    () => [{ title: 'First name' }, {}, {}, {}, {}, {}],
+  const columns = useMemo<Column<string>[]>(
+    () => [
+      { title: 'First name' },
+      { title: 'Last name' },
+      { title: 'Age' },
+      { title: 'Job' },
+      {},
+      {},
+    ],
     []
   )
 

@@ -2,6 +2,11 @@ import React from 'react'
 
 export type ColumnWidth = string | number
 
+export type Cell = {
+  col: number
+  row: number
+}
+
 export type Column<T> = {
   title?: React.ReactNode
   width: ColumnWidth
@@ -29,6 +34,8 @@ export type HeaderContextType<T> = {
   contentWidth?: number
   hasStickyRightColumn: boolean
   height: number
+  activeColMin?: number
+  activeColMax?: number
 }
 
 export type RowProps<T> = {
@@ -40,16 +47,16 @@ export type RowProps<T> = {
   hasStickyRightColumn: boolean
 }
 
+export type SimpleColumn<T> = Partial<
+  Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
+>
+
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
   columns?: Partial<Column<T>>[]
-  gutterColumn?: Partial<
-    Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
-  >
-  stickyRightColumn?: Partial<
-    Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
-  >
+  gutterColumn?: SimpleColumn<T>
+  stickyRightColumn?: SimpleColumn<T>
   height?: number
   rowHeight?: number
   headerRowHeight?: number

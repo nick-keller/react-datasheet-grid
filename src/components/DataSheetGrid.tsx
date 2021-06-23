@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, DataSheetGridProps, HeaderContextType } from '../types'
+import React, { useMemo, useRef, useState } from 'react'
+import { Cell, DataSheetGridProps, HeaderContextType } from '../types'
 import { VariableSizeList } from 'react-window'
 import '../style.css'
 import { Row } from './Row'
@@ -7,6 +7,8 @@ import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useResizeDetector } from 'react-resize-detector'
 import { InnerContainer } from './InnerContainer'
 import { HeaderContext } from '../contexts/HeaderContext'
+import { useColumns } from '../hooks/useColumns'
+import { useMemoObject } from '../hooks/useMemoObject'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -21,47 +23,11 @@ export const DataSheetGrid = React.memo(
   }: DataSheetGridProps<T>): JSX.Element => {
     console.log('render DataSheetGrid')
 
-    // Add gutter column and default values
-    const columns = useMemo<Column<T>[]>(() => {
-      const partialColumns: Partial<Column<T>>[] = [
-        {
-          width: '0 0 40px',
-          minWidth: 0,
-          title: <div className="dsg-corner-indicator" />,
-          ...gutterColumn,
-          // render: renderGutterColumn,
-        },
-        ...rawColumns,
-        ...(stickyRightColumn
-          ? [
-              {
-                width: '0 0 40px',
-                minWidth: 0,
-                ...stickyRightColumn,
-              },
-            ]
-          : []),
-      ]
-
-      return partialColumns.map<Column<T>>((column) => ({
-        width: 1,
-        minWidth: 100,
-        renderWhenScrolling: true,
-        // render: () => null,
-        // disableKeys: false,
-        // disabled: false,
-        // keepFocus: false,
-        // deleteValue: ({ rowData }) => rowData,
-        // copyValue: () => null,
-        // pasteValue: ({ rowData }) => rowData,
-        ...column,
-      }))
-    }, [gutterColumn, stickyRightColumn, rawColumns])
-
+    const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
     const innerRef = useRef<HTMLElement>(null)
     const outerRef = useRef<HTMLElement>(null)
 
-    // Outer width (including borders) of the outer container
+    // Width and height of the scrollable area
     const { width, height } = useResizeDetector({
       targetRef: outerRef,
       refreshMode: 'throttle',
@@ -75,20 +41,43 @@ export const DataSheetGrid = React.memo(
       columnRights,
     } = useColumnWidths(columns, width)
 
-    const headerContext = useMemo<HeaderContextType<T>>(
-      () => ({
-        hasStickyRightColumn: Boolean(stickyRightColumn),
-        height: headerRowHeight,
-        contentWidth: fullWidth ? undefined : contentWidth,
-        columns,
-      }),
-      [
-        Boolean(stickyRightColumn),
-        headerRowHeight,
-        columns,
-        fullWidth ? undefined : contentWidth,
-      ]
+    // Highlighted cell, null when not focused
+    const [activeCell, setActiveCell] = useState<Cell | null>({
+      col: 1,
+      row: 2,
+    })
+
+    // The selection cell and the active cell are the two corners of the selection, null when nothing is selected
+    const [selectionCell, setSelectionCell] = useState<Cell | null>({
+      col: 2,
+      row: 4,
+    })
+
+    // Min and max of the current selection (rectangle defined by the active cell and the selection cell), null when nothing is selected
+    const selection = useMemo<{ min: Cell; max: Cell } | null>(
+      () =>
+        activeCell &&
+        selectionCell && {
+          min: {
+            col: Math.min(activeCell.col, selectionCell.col),
+            row: Math.min(activeCell.row, selectionCell.row),
+          },
+          max: {
+            col: Math.max(activeCell.col, selectionCell.col),
+            row: Math.max(activeCell.row, selectionCell.row),
+          },
+        },
+      [activeCell, selectionCell]
     )
+
+    const headerContext = useMemoObject<HeaderContextType<T>>({
+      hasStickyRightColumn: Boolean(stickyRightColumn),
+      height: headerRowHeight,
+      contentWidth: fullWidth ? undefined : contentWidth,
+      columns,
+      activeColMin: selection?.min.col ?? activeCell?.col,
+      activeColMax: selection?.max.col ?? activeCell?.col,
+    })
 
     return (
       <div>

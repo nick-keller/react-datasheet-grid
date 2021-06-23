@@ -5,8 +5,14 @@ import { Cell } from './Cell'
 
 export const HeaderRow = React.memo(() => {
   console.log('header')
-  const { columns, contentWidth, height, hasStickyRightColumn } =
-    useContext(HeaderContext)
+  const {
+    columns,
+    contentWidth,
+    height,
+    hasStickyRightColumn,
+    activeColMin,
+    activeColMax,
+  } = useContext(HeaderContext)
 
   return (
     <div
@@ -22,7 +28,14 @@ export const HeaderRow = React.memo(() => {
           gutter={i === 0}
           stickyRight={hasStickyRightColumn && i === columns.length - 1}
           column={column}
-          className="dsg-cell-header"
+          className={cx(
+            'dsg-cell-header',
+            activeColMin !== undefined &&
+              activeColMax !== undefined &&
+              activeColMin <= i - 1 &&
+              activeColMax >= i - 1 &&
+              'dsg-cell-header-active'
+          )}
         >
           {column.title}
         </Cell>

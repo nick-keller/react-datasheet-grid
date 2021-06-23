@@ -55,3 +55,7 @@
   padding: 0 5px;
   justify-content: center;
 }
+
+.dsg-cell-header-active, .dsg-cell-gutter-active {
+  color: black;
+}
