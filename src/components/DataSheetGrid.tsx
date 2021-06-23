@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Column, DataSheetGridProps } from '../types'
-import { FixedSizeList } from 'react-window'
+import { VariableSizeList } from 'react-window'
 import '../style.css'
 import { Row } from './Row'
 import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useResizeDetector } from 'react-resize-detector'
+import { InnerContainer } from './InnerContainer'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -20,40 +21,41 @@ export const DataSheetGrid = React.memo(
     console.log('render DataSheetGrid')
 
     // Add gutter column and default values
-    const columns = useMemo<Column<T>[]>(
-      () =>
-        [
-          {
-            width: '0 0 40px',
-            minWidth: 0,
-            title: <div className="dsg-corner-indicator" />,
-            ...gutterColumn,
-            // render: renderGutterColumn,
-          },
-          ...rawColumns,
-          ...(stickyRightColumn
-            ? [
-                {
-                  width: '0 0 40px',
-                  minWidth: 0,
-                  ...stickyRightColumn,
-                },
-              ]
-            : []),
-        ].map((column) => ({
-          width: 1,
-          minWidth: 100,
-          // render: () => null,
-          // disableKeys: false,
-          // disabled: false,
-          // keepFocus: false,
-          // deleteValue: ({ rowData }) => rowData,
-          // copyValue: () => null,
-          // pasteValue: ({ rowData }) => rowData,
-          ...column,
-        })),
-      [gutterColumn, stickyRightColumn, rawColumns]
-    )
+    const columns = useMemo<Column<T>[]>(() => {
+      const partialColumns: Partial<Column<T>>[] = [
+        {
+          width: '0 0 40px',
+          minWidth: 0,
+          title: <div className="dsg-corner-indicator" />,
+          ...gutterColumn,
+          // render: renderGutterColumn,
+        },
+        ...rawColumns,
+        ...(stickyRightColumn
+          ? [
+              {
+                width: '0 0 40px',
+                minWidth: 0,
+                ...stickyRightColumn,
+              },
+            ]
+          : []),
+      ]
+
+      return partialColumns.map<Column<T>>((column) => ({
+        width: 1,
+        minWidth: 100,
+        renderWhenScrolling: true,
+        // render: () => null,
+        // disableKeys: false,
+        // disabled: false,
+        // keepFocus: false,
+        // deleteValue: ({ rowData }) => rowData,
+        // copyValue: () => null,
+        // pasteValue: ({ rowData }) => rowData,
+        ...column,
+      }))
+    }, [gutterColumn, stickyRightColumn, rawColumns])
 
     const innerRef = useRef<HTMLElement>(null)
     const outerRef = useRef<HTMLElement>(null)
@@ -74,12 +76,13 @@ export const DataSheetGrid = React.memo(
 
     return (
       <div>
-        <FixedSizeList
+        <VariableSizeList
           className="dsg-container"
           width="100%"
           height={outerHeight}
-          itemCount={data.length}
-          itemSize={rowHeight}
+          itemCount={data.length + 1}
+          itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
+          estimatedItemSize={rowHeight}
           itemData={{
             data,
             contentWidth: fullWidth ? undefined : contentWidth,
@@ -88,6 +91,7 @@ export const DataSheetGrid = React.memo(
           }}
           outerRef={outerRef}
           innerRef={innerRef}
+          innerElementType={InnerContainer}
           children={Row}
           useIsScrolling
         />

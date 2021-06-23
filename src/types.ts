@@ -4,9 +4,10 @@ export type ColumnWidth = string | number
 
 export type Column<T> = {
   title?: React.ReactNode
-  width?: ColumnWidth
-  minWidth?: number
+  width: ColumnWidth
+  minWidth: number
   maxWidth?: number
+  renderWhenScrolling: boolean
   // render: ColumnRenderFunction<TRow>
   // disableKeys: boolean
   // disabled: boolean | (({ rowData }: { rowData: TRow }) => boolean)
@@ -35,11 +36,12 @@ export type RowProps<T> = {
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
-  columns?: Column<T>[]
-  gutterColumn?: Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
-  stickyRightColumn?: Pick<
-    Column<T>,
-    'title' | 'maxWidth' | 'minWidth' | 'width'
+  columns?: Partial<Column<T>>[]
+  gutterColumn?: Partial<
+    Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
+  >
+  stickyRightColumn?: Partial<
+    Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
   >
   height?: number
   rowHeight?: number

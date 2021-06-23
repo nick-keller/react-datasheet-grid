@@ -22,32 +22,6 @@ const RowComponent = React.memo(
     // True when we should render the light version (when we are scrolling)
     const renderLight = isScrolling && firstRender
 
-    // When columnWidths or columnRights is not defined we render the light version
-    if (renderLight) {
-      return (
-        <div className={cx('dsg-row', 'dsg-row-light')} style={style}>
-          {columns.map((column, i) => (
-            <div
-              className={cx(
-                'dsg-cell',
-                i === 0 && 'dsg-cell-gutter',
-                hasStickyRightColumn &&
-                  i === columns.length - 1 &&
-                  'dsg-cell-sticky-right',
-                'dsg-cell-light'
-              )}
-              key={i}
-              style={{
-                flex: String(column.width),
-                minWidth: column.minWidth,
-                maxWidth: column.maxWidth,
-              }}
-            />
-          ))}
-        </div>
-      )
-    }
-
     return (
       <div className="dsg-row" style={style}>
         {columns.map((column, i) => (
@@ -57,7 +31,8 @@ const RowComponent = React.memo(
               i === 0 && 'dsg-cell-gutter',
               hasStickyRightColumn &&
                 i === columns.length - 1 &&
-                'dsg-cell-sticky-right'
+                'dsg-cell-sticky-right',
+              !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
             )}
             key={i}
             style={{
@@ -65,7 +40,9 @@ const RowComponent = React.memo(
               minWidth: column.minWidth,
               maxWidth: column.maxWidth,
             }}
-          />
+          >
+            {(column.renderWhenScrolling || !renderLight) && (data as string)}
+          </div>
         ))}
       </div>
     )
@@ -85,10 +62,15 @@ export const Row = <T extends any>({
   data,
   isScrolling,
 }: ListChildComponentProps<ListItemData<T>>) => {
+  // Do not render header row, it is rendered by the InnerContainer
+  if (index === 0) {
+    return null
+  }
+
   return (
     <RowComponent
-      index={index}
-      data={data.data[index]}
+      index={index - 1}
+      data={data.data[index - 1]}
       columns={data.columns}
       style={{
         ...style,
