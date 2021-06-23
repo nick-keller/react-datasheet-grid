@@ -2,6 +2,7 @@ import { areEqual, ListChildComponentProps } from 'react-window'
 import { ListItemData, RowProps } from '../types'
 import React, { useRef } from 'react'
 import cx from 'classnames'
+import { Cell } from './Cell'
 
 const RowComponent = React.memo(
   <T extends any>({
@@ -25,24 +26,17 @@ const RowComponent = React.memo(
     return (
       <div className="dsg-row" style={style}>
         {columns.map((column, i) => (
-          <div
+          <Cell
+            key={i}
+            gutter={i === 0}
+            stickyRight={hasStickyRightColumn && i === columns.length - 1}
+            column={column}
             className={cx(
-              'dsg-cell',
-              i === 0 && 'dsg-cell-gutter',
-              hasStickyRightColumn &&
-                i === columns.length - 1 &&
-                'dsg-cell-sticky-right',
               !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
             )}
-            key={i}
-            style={{
-              flex: String(column.width),
-              minWidth: column.minWidth,
-              maxWidth: column.maxWidth,
-            }}
           >
             {(column.renderWhenScrolling || !renderLight) && (data as string)}
-          </div>
+          </Cell>
         ))}
       </div>
     )

@@ -24,6 +24,13 @@ export type ListItemData<T> = {
   hasStickyRightColumn: boolean
 }
 
+export type HeaderContextType<T> = {
+  columns: Column<T>[]
+  contentWidth?: number
+  hasStickyRightColumn: boolean
+  height: number
+}
+
 export type RowProps<T> = {
   index: number
   data: T

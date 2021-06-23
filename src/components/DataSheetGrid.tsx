@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Column, DataSheetGridProps } from '../types'
+import { Column, DataSheetGridProps, HeaderContextType } from '../types'
 import { VariableSizeList } from 'react-window'
 import '../style.css'
 import { Row } from './Row'
 import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useResizeDetector } from 'react-resize-detector'
 import { InnerContainer } from './InnerContainer'
+import { HeaderContext } from '../contexts/HeaderContext'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -74,27 +75,44 @@ export const DataSheetGrid = React.memo(
       columnRights,
     } = useColumnWidths(columns, width)
 
+    const headerContext = useMemo<HeaderContextType<T>>(
+      () => ({
+        hasStickyRightColumn: Boolean(stickyRightColumn),
+        height: headerRowHeight,
+        contentWidth: fullWidth ? undefined : contentWidth,
+        columns,
+      }),
+      [
+        Boolean(stickyRightColumn),
+        headerRowHeight,
+        columns,
+        fullWidth ? undefined : contentWidth,
+      ]
+    )
+
     return (
       <div>
-        <VariableSizeList
-          className="dsg-container"
-          width="100%"
-          height={outerHeight}
-          itemCount={data.length + 1}
-          itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
-          estimatedItemSize={rowHeight}
-          itemData={{
-            data,
-            contentWidth: fullWidth ? undefined : contentWidth,
-            columns,
-            hasStickyRightColumn: Boolean(stickyRightColumn),
-          }}
-          outerRef={outerRef}
-          innerRef={innerRef}
-          innerElementType={InnerContainer}
-          children={Row}
-          useIsScrolling
-        />
+        <HeaderContext.Provider value={headerContext}>
+          <VariableSizeList
+            className="dsg-container"
+            width="100%"
+            height={outerHeight}
+            itemCount={data.length + 1}
+            itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
+            estimatedItemSize={rowHeight}
+            itemData={{
+              data,
+              contentWidth: fullWidth ? undefined : contentWidth,
+              columns,
+              hasStickyRightColumn: Boolean(stickyRightColumn),
+            }}
+            outerRef={outerRef}
+            innerRef={innerRef}
+            innerElementType={InnerContainer}
+            children={Row}
+            useIsScrolling
+          />
+        </HeaderContext.Provider>
       </div>
     )
   }
