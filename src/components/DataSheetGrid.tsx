@@ -1,5 +1,10 @@
 import React, { useMemo, useRef, useState } from 'react'
-import { Cell, DataSheetGridProps, HeaderContextType } from '../types'
+import {
+  Cell,
+  DataSheetGridProps,
+  HeaderContextType,
+  SelectionContextType,
+} from '../types'
 import { VariableSizeList } from 'react-window'
 import '../style.css'
 import { Row } from './Row'
@@ -9,6 +14,7 @@ import { InnerContainer } from './InnerContainer'
 import { HeaderContext } from '../contexts/HeaderContext'
 import { useColumns } from '../hooks/useColumns'
 import { useMemoObject } from '../hooks/useMemoObject'
+import { SelectionContext } from '../contexts/SelectionContext'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -43,14 +49,14 @@ export const DataSheetGrid = React.memo(
 
     // Highlighted cell, null when not focused
     const [activeCell, setActiveCell] = useState<Cell | null>({
-      col: 1,
-      row: 2,
+      col: 0,
+      row: 0,
     })
 
     // The selection cell and the active cell are the two corners of the selection, null when nothing is selected
     const [selectionCell, setSelectionCell] = useState<Cell | null>({
-      col: 2,
-      row: 4,
+      col: 1,
+      row: 1,
     })
 
     // Min and max of the current selection (rectangle defined by the active cell and the selection cell), null when nothing is selected
@@ -79,28 +85,46 @@ export const DataSheetGrid = React.memo(
       activeColMax: selection?.max.col ?? activeCell?.col,
     })
 
+    const selectionContext = useMemoObject<SelectionContextType>({
+      columnRights,
+      columnWidths,
+      activeCell,
+      selection,
+      headerRowHeight,
+      rowHeight,
+      hasStickyRightColumn: Boolean(stickyRightColumn),
+      dataLength: data.length,
+      viewHeight: height,
+      viewWidth: width,
+      contentWidth: fullWidth ? undefined : contentWidth,
+    })
+
     return (
       <div>
         <HeaderContext.Provider value={headerContext}>
-          <VariableSizeList
-            className="dsg-container"
-            width="100%"
-            height={outerHeight}
-            itemCount={data.length + 1}
-            itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
-            estimatedItemSize={rowHeight}
-            itemData={{
-              data,
-              contentWidth: fullWidth ? undefined : contentWidth,
-              columns,
-              hasStickyRightColumn: Boolean(stickyRightColumn),
-            }}
-            outerRef={outerRef}
-            innerRef={innerRef}
-            innerElementType={InnerContainer}
-            children={Row}
-            useIsScrolling
-          />
+          <SelectionContext.Provider value={selectionContext}>
+            <VariableSizeList
+              className="dsg-container"
+              width="100%"
+              height={outerHeight}
+              itemCount={data.length + 1}
+              itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
+              estimatedItemSize={rowHeight}
+              itemData={{
+                data,
+                contentWidth: fullWidth ? undefined : contentWidth,
+                columns,
+                hasStickyRightColumn: Boolean(stickyRightColumn),
+              }}
+              outerRef={outerRef}
+              innerRef={innerRef}
+              innerElementType={InnerContainer}
+              children={Row}
+              useIsScrolling={columns.some(
+                ({ renderWhenScrolling }) => !renderWhenScrolling
+              )}
+            />
+          </SelectionContext.Provider>
         </HeaderContext.Provider>
       </div>
     )

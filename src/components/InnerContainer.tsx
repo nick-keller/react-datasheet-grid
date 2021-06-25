@@ -1,5 +1,6 @@
 import React from 'react'
 import { HeaderRow } from './HeaderRow'
+import { SelectionRect } from './SelectionRect'
 
 export const InnerContainer = React.forwardRef<
   HTMLDivElement,
@@ -9,6 +10,7 @@ export const InnerContainer = React.forwardRef<
     <div ref={ref} {...rest}>
       <HeaderRow />
       {children}
+      <SelectionRect />
     </div>
   )
 })

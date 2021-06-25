@@ -19,16 +19,32 @@ function App() {
     'n',
     'o',
     'p',
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
   ])
   const [count, setCount] = useState(0)
   const columns = useMemo<Column<string>[]>(
     () => [
-      { title: 'First name' },
-      { title: 'Last name' },
-      { title: 'Age' },
-      { title: 'Job' },
-      {},
-      {},
+      { minWidth: 450, title: 'First name' },
+      { minWidth: 70, title: 'Last name' },
+      { minWidth: 90, title: 'Age' },
+      { minWidth: 110, title: 'Job' },
+      { minWidth: 30 },
+      { minWidth: 450 },
     ],
     []
   )

@@ -20,7 +20,7 @@
 .dsg-row-header {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 4;
 }
 
 .dsg-cell {
@@ -37,6 +37,7 @@
 .dsg-cell-sticky-right {
   position: sticky;
   right: 0;
+  z-index: 3;
 }
 
 .dsg-cell-disabled {
@@ -47,6 +48,15 @@
   color: rgb(157, 166, 171);
   padding: 0 10px;
   transition: color .1s;
+  box-shadow: none;
+}
+
+.dsg-cell-header.dsg-cell-gutter {
+  box-shadow: 1px 0 #e8ebed, 0 1px #e8ebed;
+}
+
+.dsg-cell-header.dsg-cell-sticky-right {
+  box-shadow: 0 1px #e8ebed;
 }
 
 .dsg-cell-gutter {
@@ -54,8 +64,142 @@
   left: 0;
   padding: 0 5px;
   justify-content: center;
+  z-index: 3;
 }
 
 .dsg-cell-header-active, .dsg-cell-gutter-active {
   color: black;
+}
+
+.dsg-active-cell, .dsg-selection-rect {
+  position: absolute;
+  border: solid 2px rgb(69, 128, 230);
+  box-sizing: border-box;
+  border-radius: 2px;
+  transition: all .1s;
+  pointer-events: none;
+}
+
+.dsg-active-cell-focus {
+  box-shadow: 0 2px 5px rgba(0,0,0,.4);
+}
+
+.dsg-active-cell-disabled, .dsg-selection-rect-disabled {
+  border-color: #9DA6AB;
+}
+
+.dsg-selection-rect {
+  background: rgba(69, 128, 230, 0.04);
+}
+
+.dsg-selection-rect-disabled {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dsg-scrollable-view-container {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+}
+
+.dsg-scrollable-view {
+  position: sticky;
+  z-index: 1;
+  box-sizing: border-box;
+  border: solid 1px #e8ebed;
+  border-bottom: none;
+  border-right: none;
+  transition: box-shadow .2s;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-t {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-r {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-b {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-l {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-t.dsg-scrollable-view-r {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-r.dsg-scrollable-view-b {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-b.dsg-scrollable-view-l {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-l.dsg-scrollable-view-t {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-t.dsg-scrollable-view-b {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-l.dsg-scrollable-view-r {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-b.dsg-scrollable-view-l.dsg-scrollable-view-t {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-l.dsg-scrollable-view-t.dsg-scrollable-view-r {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+}
+
+.dsg-selection-col-marker-container {
+  position: absolute;
+  top: 0;
+}
+
+.dsg-selection-col-marker {
+  background: rgb(69, 128, 230);
+  position: sticky;
+  width: 100%;
+  height: 2px;
+}
+
+.dsg-selection-row-marker-container {
+  position: absolute;
+  left: 0;
+}
+
+.dsg-selection-row-marker {
+  background: rgb(69, 128, 230);
+  position: sticky;
+  height: 100%;
+  width: 2px;
+}
+
+.dsg-selection-col-marker-container, .dsg-selection-col-marker, .dsg-selection-row-marker-container, .dsg-selection-row-marker {
+  z-index: 2;
+  transition: all .1s;
+  pointer-events: none;
 }

@@ -38,6 +38,20 @@ export type HeaderContextType<T> = {
   activeColMax?: number
 }
 
+export type SelectionContextType = {
+  columnRights?: number[]
+  columnWidths?: number[]
+  activeCell: Cell | null
+  selection: { min: Cell; max: Cell } | null
+  dataLength: number
+  rowHeight: number
+  hasStickyRightColumn: boolean
+  headerRowHeight: number
+  viewWidth?: number
+  viewHeight?: number
+  contentWidth?: number
+}
+
 export type RowProps<T> = {
   index: number
   data: T
