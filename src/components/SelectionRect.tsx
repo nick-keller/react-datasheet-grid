@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { SelectionContext } from '../contexts/SelectionContext'
+import cx from 'classnames'
 
 const buildSquare = (
   top: number | string,
@@ -52,6 +53,7 @@ export const SelectionRect = React.memo(() => {
     viewWidth,
     viewHeight,
     contentWidth,
+    edges,
   } = useContext(SelectionContext)
 
   if (!columnWidths || !columnRights) {
@@ -95,7 +97,13 @@ export const SelectionRect = React.memo(() => {
         }}
       >
         <div
-          className="dsg-scrollable-view"
+          className={cx({
+            'dsg-scrollable-view': true,
+            'dsg-scrollable-view-t': !edges.top,
+            'dsg-scrollable-view-r': !edges.right,
+            'dsg-scrollable-view-b': !edges.bottom,
+            'dsg-scrollable-view-l': !edges.left,
+          })}
           style={{
             top: headerRowHeight,
             left: columnWidths[0],

@@ -110,68 +110,68 @@
   border: solid 1px #e8ebed;
   border-bottom: none;
   border-right: none;
-  transition: box-shadow .2s;
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  transition: box-shadow .3s;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-t {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-r {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-b {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-l {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-b {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-r {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 0 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 0 -7px 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 0 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 7px 7px -7px rgba(0,0,0,.3) inset, -7px 0 7px -7px rgba(0,0,0,.3) inset, 0 0 7px -7px rgba(0,0,0,.3) inset, 7px 0 7px -7px rgba(0,0,0,.3) inset;
+  box-shadow: 0 7px 7px -7px rgba(0,0,0,.2) inset, -7px 0 7px -7px rgba(0,0,0,.2) inset, 0 -7px 7px -7px rgba(0,0,0,.2) inset, 7px 0 7px -7px rgba(0,0,0,.2) inset;
 }
 
 .dsg-selection-col-marker-container {

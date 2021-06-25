@@ -50,6 +50,7 @@ export type SelectionContextType = {
   viewWidth?: number
   viewHeight?: number
   contentWidth?: number
+  edges: { top: boolean; right: boolean; bottom: boolean; left: boolean }
 }
 
 export type RowProps<T> = {

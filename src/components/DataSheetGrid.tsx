@@ -15,6 +15,7 @@ import { HeaderContext } from '../contexts/HeaderContext'
 import { useColumns } from '../hooks/useColumns'
 import { useMemoObject } from '../hooks/useMemoObject'
 import { SelectionContext } from '../contexts/SelectionContext'
+import { useEdges } from '../hooks/useEdges'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -40,6 +41,8 @@ export const DataSheetGrid = React.memo(
       refreshRate: 100,
     })
 
+    const edges = useEdges(outerRef, width, height)
+
     const {
       fullWidth,
       totalWidth: contentWidth,
@@ -49,14 +52,14 @@ export const DataSheetGrid = React.memo(
 
     // Highlighted cell, null when not focused
     const [activeCell, setActiveCell] = useState<Cell | null>({
-      col: 0,
-      row: 0,
+      col: 1,
+      row: 1,
     })
 
     // The selection cell and the active cell are the two corners of the selection, null when nothing is selected
     const [selectionCell, setSelectionCell] = useState<Cell | null>({
-      col: 1,
-      row: 1,
+      col: 2,
+      row: 5,
     })
 
     // Min and max of the current selection (rectangle defined by the active cell and the selection cell), null when nothing is selected
@@ -97,6 +100,7 @@ export const DataSheetGrid = React.memo(
       viewHeight: height,
       viewWidth: width,
       contentWidth: fullWidth ? undefined : contentWidth,
+      edges,
     })
 
     return (
