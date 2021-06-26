@@ -39,13 +39,13 @@ function App() {
   const [count, setCount] = useState(0)
   const columns = useMemo<Column<string>[]>(
     () => [
-      // { minWidth: 450, title: 'First name' },
+      { minWidth: 150, title: 'First name' },
       { minWidth: 70, title: 'Last name' },
       { minWidth: 90, title: 'Age' },
       { minWidth: 110, title: 'Job' },
-      {},
-      {},
-      {},
+      // {},
+      // {},
+      // {},
       {},
       {},
       {},
@@ -61,7 +61,7 @@ function App() {
       style={{
         margin: '50px',
         padding: '50px',
-        maxWidth: '500px',
+        maxWidth: '900px',
         background: '#f3f3f3',
       }}
     >
@@ -72,9 +72,10 @@ function App() {
       <DataSheetGrid
         data={data}
         headerRowHeight={100}
+        rowHeight={40}
         onChange={setData}
         columns={columns}
-        // stickyRightColumn={{}}
+        stickyRightColumn={{}}
       />
     </div>
   )

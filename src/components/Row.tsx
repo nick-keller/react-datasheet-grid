@@ -73,11 +73,8 @@ export const Row = <T extends any>({
       hasStickyRightColumn={data.hasStickyRightColumn}
       isScrolling={isScrolling}
       active={
-        index - 1 === data.activeCell?.row ||
-        (data.selection &&
-          index - 1 >= data.selection?.min.row &&
-          index - 1 <= data.selection?.max.row) ||
-        false
+        index - 1 >= (data.selectionMinRow ?? Infinity) &&
+        index - 1 <= (data.selectionMaxRow ?? -Infinity)
       }
     />
   )

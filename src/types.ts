@@ -30,7 +30,8 @@ export type ListItemData<T> = {
   columns: Column<T>[]
   hasStickyRightColumn: boolean
   activeCell: Cell | null
-  selection: Selection | null
+  selectionMinRow?: number
+  selectionMaxRow?: number
 }
 
 export type HeaderContextType<T> = {

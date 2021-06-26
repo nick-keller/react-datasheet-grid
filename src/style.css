@@ -2,6 +2,8 @@
   border: solid 1px #e8ebed;
   border-top: none;
   border-left: none;
+  cursor: cell;
+  user-select: none;
 }
 
 .dsg-corner-indicator {
