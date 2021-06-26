@@ -7,12 +7,14 @@ export const Cell: FC<{
   stickyRight: boolean
   column: Column<unknown>
   className: string
-}> = ({ children, gutter, stickyRight, column, className }) => {
+  active?: boolean
+}> = ({ children, gutter, stickyRight, column, active, className }) => {
   return (
     <div
       className={cx(
         'dsg-cell',
         gutter && 'dsg-cell-gutter',
+        gutter && active && 'dsg-cell-gutter-active',
         stickyRight && 'dsg-cell-sticky-right',
         className
       )}

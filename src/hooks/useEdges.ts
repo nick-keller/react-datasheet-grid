@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { throttle } from 'throttle-debounce'
+import { useDeepEqualState } from './useDeepEqualState'
 
 export const useEdges = (
   ref: React.RefObject<HTMLElement>,
   width?: number,
   height?: number
 ) => {
-  const [edges, setEdges] = useState({
+  const [edges, setEdges] = useDeepEqualState({
     top: true,
     right: true,
     bottom: true,
@@ -15,7 +16,7 @@ export const useEdges = (
 
   useEffect(() => {
     const onScroll = throttle(100, () => {
-      const newEdges = {
+      setEdges({
         top: ref.current?.scrollTop === 0,
         right:
           ref.current?.scrollLeft ===
@@ -24,19 +25,6 @@ export const useEdges = (
           ref.current?.scrollTop ===
           (ref.current?.scrollHeight ?? 0) - (height ?? 0),
         left: ref.current?.scrollLeft === 0,
-      }
-
-      setEdges((prevEdges) => {
-        if (
-          prevEdges.top !== newEdges.top ||
-          prevEdges.right !== newEdges.right ||
-          prevEdges.bottom !== newEdges.bottom ||
-          prevEdges.left !== newEdges.left
-        ) {
-          return newEdges
-        }
-
-        return prevEdges
       })
     })
 

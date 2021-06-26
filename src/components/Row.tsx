@@ -3,6 +3,7 @@ import { ListItemData, RowProps } from '../types'
 import React, { useRef } from 'react'
 import cx from 'classnames'
 import { Cell } from './Cell'
+import { useFirstRender } from '../hooks/useFirstRender'
 
 const RowComponent = React.memo(
   <T extends any>({
@@ -12,13 +13,11 @@ const RowComponent = React.memo(
     isScrolling,
     columns,
     hasStickyRightColumn,
+    active,
   }: RowProps<T>) => {
     console.log(data)
 
-    // Used to detect first render
-    const firstRenderRef = useRef(true)
-    const firstRender = firstRenderRef.current
-    firstRenderRef.current = false
+    const firstRender = useFirstRender()
 
     // True when we should render the light version (when we are scrolling)
     const renderLight = isScrolling && firstRender
@@ -31,6 +30,7 @@ const RowComponent = React.memo(
             gutter={i === 0}
             stickyRight={hasStickyRightColumn && i === columns.length - 1}
             column={column}
+            active={active}
             className={cx(
               !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
             )}
@@ -72,6 +72,13 @@ export const Row = <T extends any>({
       }}
       hasStickyRightColumn={data.hasStickyRightColumn}
       isScrolling={isScrolling}
+      active={
+        index - 1 === data.activeCell?.row ||
+        (data.selection &&
+          index - 1 >= data.selection?.min.row &&
+          index - 1 <= data.selection?.max.row) ||
+        false
+      }
     />
   )
 }

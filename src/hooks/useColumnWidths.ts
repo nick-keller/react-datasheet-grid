@@ -1,10 +1,11 @@
 import { Column } from '../types'
 import { useEffect, useMemo, useState } from 'react'
+import { useDeepEqualState } from './useDeepEqualState'
 
 export const useColumnWidths = (columns: Column<any>[], width?: number) => {
-  const [columnWidths, setColumnWidths] = useState<number[] | undefined>(
-    undefined
-  )
+  const [columnWidths, setColumnWidths] = useDeepEqualState<
+    number[] | undefined
+  >(undefined)
   const [prevWidth, setPrevWidth] = useState(width)
 
   const { totalWidth, columnRights } = useMemo(() => {
@@ -58,19 +59,7 @@ export const useColumnWidths = (columns: Column<any>[], width?: number) => {
     children.forEach((child) => el.appendChild(child))
     document.body.insertBefore(el, null)
 
-    const newColumnWidths = children.map((child) => child.offsetWidth)
-
-    setColumnWidths((prev) => {
-      // Return the same array if they are deep equal
-      if (
-        prev?.length === children.length &&
-        prev.every((value, i) => newColumnWidths[i] === value)
-      ) {
-        return prev
-      }
-
-      return newColumnWidths
-    })
+    setColumnWidths(children.map((child) => child.offsetWidth))
     setPrevWidth(width)
 
     el.remove()

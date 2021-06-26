@@ -3,6 +3,7 @@ import {
   Cell,
   DataSheetGridProps,
   HeaderContextType,
+  Selection,
   SelectionContextType,
 } from '../types'
 import { VariableSizeList } from 'react-window'
@@ -16,6 +17,7 @@ import { useColumns } from '../hooks/useColumns'
 import { useMemoObject } from '../hooks/useMemoObject'
 import { SelectionContext } from '../contexts/SelectionContext'
 import { useEdges } from '../hooks/useEdges'
+import { useDeepEqualState } from '../hooks/useDeepEqualState'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -51,19 +53,19 @@ export const DataSheetGrid = React.memo(
     } = useColumnWidths(columns, width)
 
     // Highlighted cell, null when not focused
-    const [activeCell, setActiveCell] = useState<Cell | null>({
+    const [activeCell, setActiveCell] = useDeepEqualState<Cell | null>({
       col: 1,
       row: 1,
     })
 
     // The selection cell and the active cell are the two corners of the selection, null when nothing is selected
-    const [selectionCell, setSelectionCell] = useState<Cell | null>({
+    const [selectionCell, setSelectionCell] = useDeepEqualState<Cell | null>({
       col: 2,
       row: 5,
     })
 
     // Min and max of the current selection (rectangle defined by the active cell and the selection cell), null when nothing is selected
-    const selection = useMemo<{ min: Cell; max: Cell } | null>(
+    const selection = useMemo<Selection | null>(
       () =>
         activeCell &&
         selectionCell && {
@@ -119,6 +121,8 @@ export const DataSheetGrid = React.memo(
                 contentWidth: fullWidth ? undefined : contentWidth,
                 columns,
                 hasStickyRightColumn: Boolean(stickyRightColumn),
+                selection,
+                activeCell,
               }}
               outerRef={outerRef}
               innerRef={innerRef}

@@ -7,6 +7,8 @@ export type Cell = {
   row: number
 }
 
+export type Selection = { min: Cell; max: Cell }
+
 export type Column<T> = {
   title?: React.ReactNode
   width: ColumnWidth
@@ -27,6 +29,8 @@ export type ListItemData<T> = {
   contentWidth?: number
   columns: Column<T>[]
   hasStickyRightColumn: boolean
+  activeCell: Cell | null
+  selection: Selection | null
 }
 
 export type HeaderContextType<T> = {
@@ -42,7 +46,7 @@ export type SelectionContextType = {
   columnRights?: number[]
   columnWidths?: number[]
   activeCell: Cell | null
-  selection: { min: Cell; max: Cell } | null
+  selection: Selection | null
   dataLength: number
   rowHeight: number
   hasStickyRightColumn: boolean
@@ -60,6 +64,7 @@ export type RowProps<T> = {
   isScrolling?: boolean
   columns: Column<T>[]
   hasStickyRightColumn: boolean
+  active: boolean
 }
 
 export type SimpleColumn<T> = Partial<
