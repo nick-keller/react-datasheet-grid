@@ -3,6 +3,7 @@ import {
   Cell,
   DataSheetGridProps,
   HeaderContextType,
+  ListItemData,
   Selection,
   SelectionContextType,
 } from '../types'
@@ -101,17 +102,6 @@ export const DataSheetGrid = React.memo(
     const getInnerBoundingClientRect = useGetBoundingClientRect(innerRef)
     const getOuterBoundingClientRect = useGetBoundingClientRect(outerRef)
 
-    const _ = useRefObject({
-      data,
-      getInnerBoundingClientRect,
-      getOuterBoundingClientRect,
-      columnRights,
-      columnWidths,
-      headerRowHeight,
-      rowHeight,
-      hasStickyRightColumn: Boolean(stickyRightColumn),
-    })
-
     // Extract the coordinates of the cursor from a mouse event
     const getCursorIndex = useCallback(
       (
@@ -119,74 +109,123 @@ export const DataSheetGrid = React.memo(
         force: boolean = false,
         includeSticky: boolean = false
       ): Cell | null => {
-        const innerBoundingClientRect =
-          _.current.getInnerBoundingClientRect(force)
+        const innerBoundingClientRect = getInnerBoundingClientRect(force)
         const outerBoundingClientRect =
-          includeSticky && _.current.getOuterBoundingClientRect(force)
+          includeSticky && getOuterBoundingClientRect(force)
 
-        if (
-          innerBoundingClientRect &&
-          _.current.columnRights &&
-          _.current.columnWidths
-        ) {
+        if (innerBoundingClientRect && columnRights && columnWidths) {
           let x = event.clientX - innerBoundingClientRect.left
           let y = event.clientY - innerBoundingClientRect.top
 
           if (outerBoundingClientRect) {
             if (
               event.clientY - outerBoundingClientRect.top <=
-              _.current.headerRowHeight
+              headerRowHeight
             ) {
               y = 0
             }
 
             if (
               event.clientX - outerBoundingClientRect.left <=
-              _.current.columnWidths[0]
+              columnWidths[0]
             ) {
               x = 0
             }
 
             if (
-              _.current.hasStickyRightColumn &&
+              stickyRightColumn &&
               outerBoundingClientRect.right - event.clientX <=
-                _.current.columnWidths[_.current.columnWidths.length - 1]
+                columnWidths[columnWidths.length - 1]
             ) {
-              x = _.current.columnRights[_.current.columnRights.length - 2] + 1
+              x = columnRights[columnRights.length - 2] + 1
             }
           }
 
           return {
-            col: _.current.columnRights.findIndex((right) => x < right) - 1,
+            col: columnRights.findIndex((right) => x < right) - 1,
             row: Math.min(
-              _.current.data.length - 1,
-              Math.max(
-                -1,
-                Math.floor(
-                  (y - _.current.headerRowHeight) / _.current.rowHeight
-                )
-              )
+              data.length - 1,
+              Math.max(-1, Math.floor((y - headerRowHeight) / rowHeight))
             ),
           }
         }
 
         return null
       },
-      [_]
+      [
+        columnRights,
+        columnWidths,
+        data.length,
+        getInnerBoundingClientRect,
+        getOuterBoundingClientRect,
+        headerRowHeight,
+        rowHeight,
+        stickyRightColumn,
+      ]
+    )
+
+    const isCellDisabled = useCallback(
+      (cell: Cell): boolean => {
+        const disabled = columns[cell.col + 1].disabled
+
+        return Boolean(
+          typeof disabled === 'function'
+            ? disabled({ rowData: data[cell.row] })
+            : disabled
+        )
+      },
+      [columns, data]
     )
 
     const onMouseDown = useCallback(
       (event: MouseEvent) => {
-        const rightClick = event.button === 2
         const clickInside =
           innerRef.current?.contains(event.target as Node) || false
 
         const cursorIndex = clickInside
           ? getCursorIndex(event, true, true)
           : null
-        console.log(cursorIndex)
+
+        if (
+          !clickInside &&
+          editing &&
+          activeCell &&
+          columns[activeCell.col + 1].keepFocus
+        ) {
+          return
+        }
+
+        const clickOnActiveCell =
+          cursorIndex &&
+          activeCell &&
+          activeCell.col === cursorIndex.col &&
+          activeCell.row === cursorIndex.row &&
+          !isCellDisabled(activeCell)
+
+        if (clickOnActiveCell && editing) {
+          return
+        }
+
+        const clickOnStickyRightColumn =
+          cursorIndex?.col === columns.length - 2 && stickyRightColumn
+
+        setEditing(Boolean(clickOnActiveCell))
+        setActiveCell(
+          cursorIndex && {
+            col: Math.max(0, cursorIndex.col),
+            row: Math.max(0, cursorIndex.row),
+          }
+        )
       },
-      [getCursorIndex]
+      [
+        activeCell,
+        columns,
+        editing,
+        getCursorIndex,
+        isCellDisabled,
+        setActiveCell,
+        stickyRightColumn,
+      ]
     )
     useDocumentEventListener('mousedown', onMouseDown)
 
@@ -218,7 +257,7 @@ export const DataSheetGrid = React.memo(
       <div>
         <HeaderContext.Provider value={headerContext}>
           <SelectionContext.Provider value={selectionContext}>
-            <VariableSizeList
+            <VariableSizeList<ListItemData<T>>
               className="dsg-container"
               width="100%"
               ref={listRef}

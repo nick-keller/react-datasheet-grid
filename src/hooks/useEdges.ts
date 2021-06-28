@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { throttle } from 'throttle-debounce'
 import { useDeepEqualState } from './useDeepEqualState'
 
@@ -28,14 +28,15 @@ export const useEdges = (
       })
     })
 
-    ref.current?.addEventListener('scroll', onScroll)
+    const current = ref.current
+    current?.addEventListener('scroll', onScroll)
     onScroll()
 
     return () => {
-      ref.current?.removeEventListener('scroll', onScroll)
+      current?.removeEventListener('scroll', onScroll)
       onScroll.cancel()
     }
-  }, [height, width])
+  }, [height, width, ref, setEdges])
 
   return edges
 }

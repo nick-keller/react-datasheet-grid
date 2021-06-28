@@ -1,12 +1,12 @@
 import { areEqual, ListChildComponentProps } from 'react-window'
 import { ListItemData, RowProps } from '../types'
-import React, { useRef } from 'react'
+import React from 'react'
 import cx from 'classnames'
 import { Cell } from './Cell'
 import { useFirstRender } from '../hooks/useFirstRender'
 
 const RowComponent = React.memo(
-  <T extends any>({
+  ({
     index,
     style,
     data,
@@ -14,7 +14,7 @@ const RowComponent = React.memo(
     columns,
     hasStickyRightColumn,
     active,
-  }: RowProps<T>) => {
+  }: RowProps<any>) => {
     console.log(data)
 
     const firstRender = useFirstRender()
@@ -28,6 +28,11 @@ const RowComponent = React.memo(
           <Cell
             key={i}
             gutter={i === 0}
+            disabled={
+              column.disabled === true ||
+              (typeof column.disabled === 'function' &&
+                column.disabled({ rowData: data }))
+            }
             stickyRight={hasStickyRightColumn && i === columns.length - 1}
             column={column}
             active={active}
@@ -49,6 +54,8 @@ const RowComponent = React.memo(
     return nextIsScrolling || (!prevIsScrolling && areEqual(prevRest, nextRest))
   }
 )
+
+RowComponent.displayName = 'RowComponent'
 
 export const Row = <T extends any>({
   index,

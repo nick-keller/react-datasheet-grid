@@ -10,8 +10,9 @@ export const useDeepEqualState = <T>(
     (newValue: SetStateAction<T>) => {
       setValue((prevValue) => {
         const nextValue =
-          // @ts-ignore
-          typeof newValue === 'function' ? newValue(prevValue) : newValue
+          typeof newValue === 'function'
+            ? (newValue as (prev: T) => T)(prevValue)
+            : newValue
 
         return deepEqual(nextValue, prevValue) ? prevValue : nextValue
       })

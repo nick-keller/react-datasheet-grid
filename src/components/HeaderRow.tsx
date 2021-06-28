@@ -43,3 +43,5 @@ export const HeaderRow = React.memo(() => {
     </div>
   )
 })
+
+HeaderRow.displayName = 'HeaderRow'

@@ -14,3 +14,5 @@ export const InnerContainer = React.forwardRef<
     </div>
   )
 })
+
+InnerContainer.displayName = 'InnerContainer'

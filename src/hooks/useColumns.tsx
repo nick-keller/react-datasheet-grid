@@ -30,12 +30,12 @@ export const useColumns = <T extends any>(
       minWidth: 100,
       renderWhenScrolling: true,
       // render: () => null,
-      // disableKeys: false,
-      // disabled: false,
-      // keepFocus: false,
-      // deleteValue: ({ rowData }) => rowData,
-      // copyValue: () => null,
-      // pasteValue: ({ rowData }) => rowData,
+      disableKeys: false,
+      disabled: false,
+      keepFocus: false,
+      deleteValue: ({ rowData }) => rowData,
+      copyValue: () => null,
+      pasteValue: ({ rowData }) => rowData,
       ...column,
     }))
   }, [gutterColumn, stickyRightColumn, columns])

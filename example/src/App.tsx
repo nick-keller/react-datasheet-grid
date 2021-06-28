@@ -40,9 +40,13 @@ function App() {
   const columns = useMemo<Column<string>[]>(
     () => [
       { minWidth: 150, title: 'First name' },
-      { minWidth: 70, title: 'Last name' },
-      { minWidth: 90, title: 'Age' },
-      { minWidth: 110, title: 'Job' },
+      {
+        minWidth: 70,
+        title: 'Last name',
+        disabled: ({ rowData }) => rowData === 'c',
+      },
+      { minWidth: 90, title: 'Age', disabled: false },
+      { minWidth: 110, title: 'Job', disabled: true },
       // {},
       // {},
       // {},
@@ -75,7 +79,7 @@ function App() {
         rowHeight={40}
         onChange={setData}
         columns={columns}
-        stickyRightColumn={{}}
+        // stickyRightColumn={{}}
       />
     </div>
   )

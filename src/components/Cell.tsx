@@ -5,15 +5,25 @@ import { Column } from '../types'
 export const Cell: FC<{
   gutter: boolean
   stickyRight: boolean
-  column: Column<unknown>
+  disabled?: boolean
+  column: Column<any>
   className: string
   active?: boolean
-}> = ({ children, gutter, stickyRight, column, active, className }) => {
+}> = ({
+  children,
+  gutter,
+  stickyRight,
+  column,
+  active,
+  disabled,
+  className,
+}) => {
   return (
     <div
       className={cx(
         'dsg-cell',
         gutter && 'dsg-cell-gutter',
+        disabled && 'dsg-cell-disabled',
         gutter && active && 'dsg-cell-gutter-active',
         stickyRight && 'dsg-cell-sticky-right',
         className

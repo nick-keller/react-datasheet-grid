@@ -1,4 +1,4 @@
-import { RefObject, useRef } from 'react'
+import { useRef } from 'react'
 
 export const useRefObject = <T>(object: T): { current: T } => {
   const ref = useRef<T>(object)

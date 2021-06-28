@@ -8,4 +8,10 @@ export const SelectionContext = React.createContext<SelectionContextType>({
   rowHeight: 0,
   hasStickyRightColumn: false,
   dataLength: 0,
+  edges: {
+    top: true,
+    left: true,
+    bottom: true,
+    right: true,
+  },
 })
