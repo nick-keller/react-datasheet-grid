@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
+import { unstable_batchedUpdates } from 'react-dom'
 
 export const useDocumentEventListener = (
   type: string,
-  listener: (event: any) => void
+  listener: (...args: any[]) => void
 ) => {
   useEffect(() => {
     document.addEventListener(type, listener)

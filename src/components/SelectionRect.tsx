@@ -174,3 +174,5 @@ export const SelectionRect = React.memo(() => {
     </>
   )
 })
+
+SelectionRect.displayName = 'SelectionRect'

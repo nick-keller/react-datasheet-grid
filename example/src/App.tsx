@@ -36,6 +36,7 @@ function App() {
     'o',
     'p',
   ])
+  const [data2, setData2] = useState(['a', 'b', 'c'])
   const [count, setCount] = useState(0)
   const columns = useMemo<Column<string>[]>(
     () => [
@@ -70,17 +71,31 @@ function App() {
       }}
     >
       <p>
-        Counter: <b>{count}</b>
+        <button onClick={() => setCount(count + 1)}>Trigger re-render</button>
       </p>
-      <button onClick={() => setCount(count + 1)}>Up</button>
-      <DataSheetGrid
-        data={data}
-        headerRowHeight={100}
-        rowHeight={40}
-        onChange={setData}
-        columns={columns}
-        // stickyRightColumn={{}}
-      />
+      <p>
+        <input />
+      </p>
+      <p>
+        <DataSheetGrid
+          data={data}
+          headerRowHeight={100}
+          rowHeight={40}
+          onChange={setData}
+          columns={columns}
+          // stickyRightColumn={{}}
+        />
+      </p>
+      <p>
+        {/*<DataSheetGrid*/}
+        {/*  data={data2}*/}
+        {/*  headerRowHeight={30}*/}
+        {/*  rowHeight={40}*/}
+        {/*  onChange={setData2}*/}
+        {/*  columns={columns}*/}
+        {/*  // stickyRightColumn={{}}*/}
+        {/*/>*/}
+      </p>
     </div>
   )
 }

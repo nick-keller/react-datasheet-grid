@@ -21,7 +21,6 @@ import { useEdges } from '../hooks/useEdges'
 import { useDeepEqualState } from '../hooks/useDeepEqualState'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { useGetBoundingClientRect } from '../hooks/useGetBoundingClientRect'
-import { useRefObject } from '../hooks/useRefObject'
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
@@ -90,7 +89,7 @@ export const DataSheetGrid = React.memo(
     )
 
     // Behavior of the selection when the user drags the mouse around
-    const [selectionMode, setSelectionMode] = useState({
+    const [selectionMode, setSelectionMode] = useDeepEqualState({
       // True when the position of the cursor should impact the columns of the selection
       columns: false,
       // True when the position of the cursor should impact the rows of the selection
@@ -209,6 +208,11 @@ export const DataSheetGrid = React.memo(
         const clickOnStickyRightColumn =
           cursorIndex?.col === columns.length - 2 && stickyRightColumn
 
+        if (clickOnStickyRightColumn) {
+          // TODO
+          return
+        }
+
         setEditing(Boolean(clickOnActiveCell))
         setActiveCell(
           cursorIndex && {
@@ -216,18 +220,94 @@ export const DataSheetGrid = React.memo(
             row: Math.max(0, cursorIndex.row),
           }
         )
+        setSelectionMode(
+          cursorIndex
+            ? {
+                columns: cursorIndex.col !== -1,
+                rows: cursorIndex.row !== -1,
+                active: true,
+              }
+            : {
+                columns: false,
+                rows: false,
+                active: false,
+              }
+        )
+
+        if (cursorIndex?.col === -1 || cursorIndex?.row === -1) {
+          let col = cursorIndex.col
+          let row = cursorIndex.row
+
+          if (cursorIndex.col === -1) {
+            col = columns.length - 2
+          }
+
+          if (cursorIndex.row === -1) {
+            row = data.length - 1
+          }
+
+          setSelectionCell({ col, row })
+        } else {
+          setSelectionCell(null)
+        }
+
+        if (clickInside) {
+          event.preventDefault()
+        }
       },
       [
         activeCell,
         columns,
+        data.length,
         editing,
         getCursorIndex,
         isCellDisabled,
         setActiveCell,
+        setSelectionCell,
+        setSelectionMode,
         stickyRightColumn,
       ]
     )
     useDocumentEventListener('mousedown', onMouseDown)
+
+    const onMouseUp = useCallback(() => {
+      setSelectionMode({
+        columns: false,
+        rows: false,
+        active: false,
+      })
+    }, [setSelectionMode])
+    useDocumentEventListener('mouseup', onMouseUp)
+
+    const onMouseMove = useCallback(
+      (event: MouseEvent) => {
+        if (selectionMode.active) {
+          const cursorIndex = getCursorIndex(event)
+
+          setSelectionCell(
+            cursorIndex && {
+              col: selectionMode.columns
+                ? Math.max(0, cursorIndex.col)
+                : columns.length - 2,
+              row: selectionMode.rows
+                ? Math.max(0, cursorIndex.row)
+                : data.length - 1,
+            }
+          )
+          setEditing(false)
+        }
+      },
+      [
+        selectionMode.active,
+        selectionMode.columns,
+        selectionMode.rows,
+        getCursorIndex,
+        setSelectionCell,
+        columns.length,
+        data.length,
+      ]
+    )
+    useDocumentEventListener('mousemove', onMouseMove)
 
     const headerContext = useMemoObject<HeaderContextType<T>>({
       hasStickyRightColumn: Boolean(stickyRightColumn),
@@ -253,6 +333,21 @@ export const DataSheetGrid = React.memo(
       edges,
     })
 
+    const itemData = useMemoObject<ListItemData<T>>({
+      data,
+      contentWidth: fullWidth ? undefined : contentWidth,
+      columns,
+      hasStickyRightColumn: Boolean(stickyRightColumn),
+      activeCell,
+      selectionMinRow: selection?.min.row ?? activeCell?.row,
+      selectionMaxRow: selection?.max.row ?? activeCell?.row,
+    })
+
+    const itemSize = useCallback(
+      (index) => (index === 0 ? headerRowHeight : rowHeight),
+      [headerRowHeight, rowHeight]
+    )
+
     return (
       <div>
         <HeaderContext.Provider value={headerContext}>
@@ -263,17 +358,9 @@ export const DataSheetGrid = React.memo(
               ref={listRef}
               height={outerHeight}
               itemCount={data.length + 1}
-              itemSize={(index) => (index === 0 ? headerRowHeight : rowHeight)}
+              itemSize={itemSize}
               estimatedItemSize={rowHeight}
-              itemData={{
-                data,
-                contentWidth: fullWidth ? undefined : contentWidth,
-                columns,
-                hasStickyRightColumn: Boolean(stickyRightColumn),
-                activeCell,
-                selectionMinRow: selection?.min.row ?? activeCell?.row,
-                selectionMaxRow: selection?.max.row ?? activeCell?.row,
-              }}
+              itemData={itemData}
               outerRef={outerRef}
               innerRef={innerRef}
               innerElementType={InnerContainer}
@@ -288,3 +375,7 @@ export const DataSheetGrid = React.memo(
     )
   }
 ) as <T extends any>(props: DataSheetGridProps<T>) => JSX.Element
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+DataSheetGrid.displayName = 'DataSheetGrid'
