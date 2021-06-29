@@ -76,6 +76,7 @@ function App() {
       <p>
         <input />
       </p>
+      <p>Lorem ipsum</p>
       <p>
         <DataSheetGrid
           data={data}
@@ -87,14 +88,14 @@ function App() {
         />
       </p>
       <p>
-        {/*<DataSheetGrid*/}
-        {/*  data={data2}*/}
-        {/*  headerRowHeight={30}*/}
-        {/*  rowHeight={40}*/}
-        {/*  onChange={setData2}*/}
-        {/*  columns={columns}*/}
-        {/*  // stickyRightColumn={{}}*/}
-        {/*/>*/}
+        <DataSheetGrid
+          data={data2}
+          headerRowHeight={30}
+          rowHeight={40}
+          onChange={setData2}
+          columns={columns}
+          // stickyRightColumn={{}}
+        />
       </p>
     </div>
   )

@@ -176,6 +176,72 @@ export const DataSheetGrid = React.memo(
       [columns, data]
     )
 
+    // Scroll to any given cell making sure it is in view
+    const scrollTo = useCallback(
+      (cell: Cell) => {
+        if (!height || !width) {
+          return
+        }
+
+        // Align top
+        const topMax = cell.row * rowHeight
+        // Align bottom
+        const topMin = (cell.row + 1) * rowHeight + headerRowHeight - height + 1
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const scrollTop = listRef.current?.state.scrollOffset as number
+
+        if (scrollTop > topMax) {
+          listRef.current?.scrollTo(topMax)
+        } else if (scrollTop < topMin) {
+          listRef.current?.scrollTo(topMin)
+        }
+
+        if (columnRights && columnWidths && outerRef.current) {
+          // Align left
+          const leftMax = columnRights[cell.col] - columnRights[0]
+          // Align right
+          const leftMin =
+            columnRights[cell.col] +
+            columnWidths[cell.col + 1] +
+            (stickyRightColumn ? columnWidths[columnWidths.length - 1] : 0) -
+            width +
+            1
+
+          const scrollLeft = outerRef.current.scrollLeft
+
+          if (scrollLeft > leftMax) {
+            outerRef.current.scrollLeft = leftMax
+          } else if (scrollLeft < leftMin) {
+            outerRef.current.scrollLeft = leftMin
+          }
+        }
+      },
+      [
+        height,
+        width,
+        rowHeight,
+        headerRowHeight,
+        columnRights,
+        columnWidths,
+        stickyRightColumn,
+      ]
+    )
+
+    // Scroll to the selectionCell cell when it changes
+    useEffect(() => {
+      if (selectionCell) {
+        scrollTo(selectionCell)
+      }
+    }, [selectionCell, scrollTo])
+
+    // Scroll to the active cell when it changes
+    useEffect(() => {
+      if (activeCell) {
+        scrollTo(activeCell)
+      }
+    }, [activeCell, scrollTo])
+
     const onMouseDown = useCallback(
       (event: MouseEvent) => {
         const clickInside =
@@ -239,7 +305,7 @@ export const DataSheetGrid = React.memo(
           let row = cursorIndex.row
 
           if (cursorIndex.col === -1) {
-            col = columns.length - 2
+            col = columns.length - (stickyRightColumn ? 3 : 2)
           }
 
           if (cursorIndex.row === -1) {
@@ -284,11 +350,13 @@ export const DataSheetGrid = React.memo(
         if (selectionMode.active) {
           const cursorIndex = getCursorIndex(event)
 
+          const lastColumnIndex = columns.length - (stickyRightColumn ? 3 : 2)
+
           setSelectionCell(
             cursorIndex && {
               col: selectionMode.columns
-                ? Math.max(0, cursorIndex.col)
-                : columns.length - 2,
+                ? Math.max(0, Math.min(lastColumnIndex, cursorIndex.col))
+                : lastColumnIndex,
               row: selectionMode.rows
                 ? Math.max(0, cursorIndex.row)
                 : data.length - 1,
@@ -302,8 +370,9 @@ export const DataSheetGrid = React.memo(
         selectionMode.columns,
         selectionMode.rows,
         getCursorIndex,
-        setSelectionCell,
         columns.length,
+        stickyRightColumn,
+        setSelectionCell,
         data.length,
       ]
     )
@@ -349,7 +418,13 @@ export const DataSheetGrid = React.memo(
     )
 
     return (
-      <div>
+      <div
+        tabIndex={rawColumns.length && data.length ? 0 : undefined}
+        onFocus={(e) => {
+          e.target.blur()
+          setActiveCell({ col: 0, row: 0 })
+        }}
+      >
         <HeaderContext.Provider value={headerContext}>
           <SelectionContext.Provider value={selectionContext}>
             <VariableSizeList<ListItemData<T>>
