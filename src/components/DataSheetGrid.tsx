@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Cell,
+  Column,
   DataSheetGridProps,
   HeaderContextType,
   ListItemData,
@@ -21,17 +22,37 @@ import { useEdges } from '../hooks/useEdges'
 import { useDeepEqualState } from '../hooks/useDeepEqualState'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { useGetBoundingClientRect } from '../hooks/useGetBoundingClientRect'
+import { AddRows } from './AddRows'
+import { useDebounceState } from '../hooks/useDebounceState'
+import { debounce } from 'throttle-debounce'
+
+const DEFAULT_DATA: any[] = []
+const DEFAULT_COLUMNS: Column<any>[] = []
+const DEFAULT_CREATE_ROW: DataSheetGridProps<any>['createRow'] = () => ({})
+const DEFAULT_ON_CHANGE: DataSheetGridProps<any>['onChange'] = () => null
+const DEFAULT_DUPLICATE_ROW: DataSheetGridProps<any>['duplicateRow'] = ({
+  rowData,
+}) => ({ ...rowData })
+const DEFAULT_IS_ROW_EMPTY: DataSheetGridProps<any>['isRowEmpty'] = ({
+  rowData,
+}) => Object.values(rowData).every((value) => !value)
 
 export const DataSheetGrid = React.memo(
   <T extends any>({
-    data = [],
-    height: outerHeight = 400,
-    onChange = () => null,
-    columns: rawColumns = [],
+    data = DEFAULT_DATA,
+    height: maxHeight = 400,
+    onChange = DEFAULT_ON_CHANGE,
+    columns: rawColumns = DEFAULT_COLUMNS,
     rowHeight = 40,
     headerRowHeight = rowHeight,
     gutterColumn,
     stickyRightColumn,
+    addRowsComponent: AddRowsComponent = AddRows,
+    createRow = DEFAULT_CREATE_ROW as () => T,
+    autoAddRow = false,
+    lockRows = false,
+    duplicateRow = DEFAULT_DUPLICATE_ROW,
+    isRowEmpty = DEFAULT_IS_ROW_EMPTY,
   }: DataSheetGridProps<T>): JSX.Element => {
     console.log('render DataSheetGrid')
 
@@ -44,12 +65,22 @@ export const DataSheetGrid = React.memo(
       listRef.current?.resetAfterIndex(0)
     }, [headerRowHeight, rowHeight])
 
+    const [heightDiff, setHeightDiff] = useDebounceState(0, 100)
+
+    // Height of the list (including scrollbars and borders) to display
+    const displayHeight = Math.min(
+      maxHeight,
+      headerRowHeight + data.length * rowHeight + heightDiff
+    )
+
     // Width and height of the scrollable area
     const { width, height } = useResizeDetector({
       targetRef: outerRef,
       refreshMode: 'throttle',
       refreshRate: 100,
     })
+
+    setHeightDiff(height ? displayHeight - height : 0)
 
     const edges = useEdges(outerRef, width, height)
 
@@ -100,6 +131,14 @@ export const DataSheetGrid = React.memo(
 
     const getInnerBoundingClientRect = useGetBoundingClientRect(innerRef)
     const getOuterBoundingClientRect = useGetBoundingClientRect(outerRef)
+
+    // Blur any element on focusing the grid
+    useEffect(() => {
+      if (activeCell !== null) {
+        ;(document.activeElement as HTMLElement).blur()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeCell !== null])
 
     // Extract the coordinates of the cursor from a mouse event
     const getCursorIndex = useCallback(
@@ -174,6 +213,25 @@ export const DataSheetGrid = React.memo(
         )
       },
       [columns, data]
+    )
+
+    const insertRowAfter = useCallback(
+      (row: number, count = 1) => {
+        if (lockRows) {
+          return
+        }
+
+        setSelectionCell(null)
+        setEditing(false)
+
+        onChange([
+          ...data.slice(0, row + 1),
+          ...new Array(count).fill(0).map(createRow),
+          ...data.slice(row + 1),
+        ])
+        setActiveCell((a) => ({ col: a?.col || 0, row: row + count }))
+      },
+      [createRow, data, lockRows, onChange, setActiveCell, setSelectionCell]
     )
 
     // Scroll to any given cell making sure it is in view
@@ -419,11 +477,11 @@ export const DataSheetGrid = React.memo(
 
     return (
       <div
-        tabIndex={rawColumns.length && data.length ? 0 : undefined}
-        onFocus={(e) => {
-          e.target.blur()
-          setActiveCell({ col: 0, row: 0 })
-        }}
+      // tabIndex={rawColumns.length && data.length ? 0 : undefined}
+      // onFocus={(e) => {
+      //   e.target.blur()
+      //   setActiveCell({ col: 0, row: 0 })
+      // }}
       >
         <HeaderContext.Provider value={headerContext}>
           <SelectionContext.Provider value={selectionContext}>
@@ -431,7 +489,7 @@ export const DataSheetGrid = React.memo(
               className="dsg-container"
               width="100%"
               ref={listRef}
-              height={outerHeight}
+              height={displayHeight}
               itemCount={data.length + 1}
               itemSize={itemSize}
               estimatedItemSize={rowHeight}
@@ -446,6 +504,9 @@ export const DataSheetGrid = React.memo(
             />
           </SelectionContext.Provider>
         </HeaderContext.Provider>
+        <AddRowsComponent
+          addRows={(count) => insertRowAfter(data.length - 1, count)}
+        />
       </div>
     )
   }

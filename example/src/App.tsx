@@ -1,40 +1,41 @@
 import React, { useMemo, useState } from 'react'
 import { DataSheetGrid, Column } from 'react-datasheet-grid'
+import './style.css'
 
 function App() {
   const [data, setData] = useState([
     'a',
     'b',
     'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
+    // 'd',
+    // 'e',
+    // 'f',
+    // 'g',
+    // 'h',
+    // 'i',
+    // 'j',
+    // 'k',
+    // 'l',
+    // 'm',
+    // 'n',
+    // 'o',
+    // 'p',
+    // 'a',
+    // 'b',
+    // 'c',
+    // 'd',
+    // 'e',
+    // 'f',
+    // 'g',
+    // 'h',
+    // 'i',
+    // 'j',
+    // 'k',
+    // 'l',
+    // 'm',
+    // 'n',
+    // 'o',
+    // 'p',
   ])
   const [data2, setData2] = useState(['a', 'b', 'c'])
   const [count, setCount] = useState(0)
@@ -80,22 +81,24 @@ function App() {
       <p>
         <DataSheetGrid
           data={data}
-          headerRowHeight={100}
-          rowHeight={40}
+          // headerRowHeight={100}
+          // rowHeight={40}
           onChange={setData}
           columns={columns}
+          createRow={() => 'plop'}
           // stickyRightColumn={{}}
         />
       </p>
       <p>
-        <DataSheetGrid
-          data={data2}
-          headerRowHeight={30}
-          rowHeight={40}
-          onChange={setData2}
-          columns={columns}
-          // stickyRightColumn={{}}
-        />
+        {/*<DataSheetGrid*/}
+        {/*  data={data2}*/}
+        {/*  headerRowHeight={30}*/}
+        {/*  rowHeight={40}*/}
+        {/*  onChange={setData2}*/}
+        {/*  columns={columns}*/}
+        {/*  createRow={() => 'plop'}*/}
+        {/*  // stickyRightColumn={{}}*/}
+        {/*/>*/}
       </p>
     </div>
   )

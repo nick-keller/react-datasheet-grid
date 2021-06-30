@@ -72,6 +72,10 @@ export type SimpleColumn<T> = Partial<
   Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
 >
 
+export type AddRowsComponentProps = {
+  addRows: (count?: number) => void
+}
+
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
@@ -81,4 +85,10 @@ export type DataSheetGridProps<T> = {
   height?: number
   rowHeight?: number
   headerRowHeight?: number
+  addRowsComponent?: (props: AddRowsComponentProps) => JSX.Element
+  createRow?: () => T
+  duplicateRow?: ({ rowData }: { rowData: T }) => T
+  isRowEmpty?: ({ rowData }: { rowData: T }) => boolean
+  autoAddRow?: boolean
+  lockRows?: boolean
 }
