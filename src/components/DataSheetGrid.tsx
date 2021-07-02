@@ -458,6 +458,8 @@ export const DataSheetGrid = React.memo(
       viewWidth: width,
       contentWidth: fullWidth ? undefined : contentWidth,
       edges,
+      editing,
+      isCellDisabled,
     })
 
     const itemData = useMemoObject<ListItemData<T>>({

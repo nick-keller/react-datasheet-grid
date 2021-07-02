@@ -83,7 +83,7 @@
 }
 
 .dsg-active-cell-focus {
-  box-shadow: 0 2px 5px rgba(0,0,0,.4);
+  box-shadow: 0 2px 5px rgba(0,0,0,.3);
 }
 
 .dsg-active-cell-disabled, .dsg-selection-rect-disabled {
@@ -204,6 +204,10 @@
   z-index: 2;
   transition: all .1s;
   pointer-events: none;
+}
+
+.dsg-selection-col-marker-disabled ,.dsg-selection-row-marker-disabled {
+  background: #9DA6AB;
 }
 
 .dsg-add-row {

@@ -86,19 +86,19 @@ function App() {
           onChange={setData}
           columns={columns}
           createRow={() => 'plop'}
-          // stickyRightColumn={{}}
+          stickyRightColumn={{}}
         />
       </p>
       <p>
-        {/*<DataSheetGrid*/}
-        {/*  data={data2}*/}
-        {/*  headerRowHeight={30}*/}
-        {/*  rowHeight={40}*/}
-        {/*  onChange={setData2}*/}
-        {/*  columns={columns}*/}
-        {/*  createRow={() => 'plop'}*/}
-        {/*  // stickyRightColumn={{}}*/}
-        {/*/>*/}
+        <DataSheetGrid
+          data={data2}
+          headerRowHeight={30}
+          rowHeight={40}
+          onChange={setData2}
+          columns={columns}
+          createRow={() => 'plop'}
+          // stickyRightColumn={{}}
+        />
       </p>
     </div>
   )

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { SelectionContext } from '../contexts/SelectionContext'
 import cx from 'classnames'
 
@@ -54,7 +54,27 @@ export const SelectionRect = React.memo(() => {
     viewHeight,
     contentWidth,
     edges,
+    isCellDisabled,
+    editing,
   } = useContext(SelectionContext)
+
+  const activeCellIsDisabled = activeCell ? isCellDisabled(activeCell) : false
+
+  const selectionIsDisabled = useMemo(() => {
+    if (!selection) {
+      return activeCellIsDisabled
+    }
+
+    for (let col = selection.min.col; col <= selection.max.col; ++col) {
+      for (let row = selection.min.row; row <= selection.max.row; ++row) {
+        if (!isCellDisabled({ col, row })) {
+          return false
+        }
+      }
+    }
+
+    return true
+  }, [activeCellIsDisabled, isCellDisabled, selection])
 
   if (!columnWidths || !columnRights) {
     return null
@@ -134,7 +154,10 @@ export const SelectionRect = React.memo(() => {
           }}
         >
           <div
-            className="dsg-selection-col-marker"
+            className={cx(
+              'dsg-selection-col-marker',
+              selectionIsDisabled && 'dsg-selection-col-marker-disabled'
+            )}
             style={{ top: headerRowHeight }}
           />
         </div>
@@ -149,17 +172,29 @@ export const SelectionRect = React.memo(() => {
           }}
         >
           <div
-            className="dsg-selection-row-marker"
+            className={cx(
+              'dsg-selection-row-marker',
+              selectionIsDisabled && 'dsg-selection-row-marker-disabled'
+            )}
             style={{ left: columnWidths[0] }}
           />
         </div>
       )}
-      {activeCellRect && (
-        <div className="dsg-active-cell" style={activeCellRect} />
+      {activeCellRect && activeCell && (
+        <div
+          className={cx('dsg-active-cell', {
+            'dsg-active-cell-focus': editing,
+            'dsg-active-cell-disabled': activeCellIsDisabled,
+          })}
+          style={activeCellRect}
+        />
       )}
       {selectionRect && activeCellRect && (
         <div
-          className="dsg-selection-rect"
+          className={cx(
+            'dsg-selection-rect',
+            selectionIsDisabled && 'dsg-selection-rect-disabled'
+          )}
           style={{
             ...selectionRect,
             clipPath: buildClipPath(

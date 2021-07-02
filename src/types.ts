@@ -51,6 +51,8 @@ export type SelectionContextType = {
   dataLength: number
   rowHeight: number
   hasStickyRightColumn: boolean
+  editing: boolean
+  isCellDisabled: (cell: Cell) => boolean
   headerRowHeight: number
   viewWidth?: number
   viewHeight?: number
