@@ -51,6 +51,7 @@ export type ListItemData<T> = {
   selectionMinRow?: number
   selectionMaxRow?: number
   editing: boolean
+  setRowData: (rowIndex: number, item: T) => void
 }
 
 export type HeaderContextType<T> = {
@@ -87,7 +88,9 @@ export type RowProps<T> = {
   columns: Column<T, any>[]
   hasStickyRightColumn: boolean
   active: boolean
-  editingColIndex: number | null
+  activeColIndex: number | null
+  editing: boolean
+  setRowData: (rowIndex: number, item: T) => void
 }
 
 export type SimpleColumn<T, C> = Partial<

@@ -1,9 +1,11 @@
 import { areEqual, ListChildComponentProps } from 'react-window'
 import { ListItemData, RowProps } from '../types'
-import React from 'react'
+import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { Cell } from './Cell'
 import { useFirstRender } from '../hooks/useFirstRender'
+
+const nullfunc = () => null
 
 const RowComponent = React.memo(
   ({
@@ -14,12 +16,22 @@ const RowComponent = React.memo(
     columns,
     hasStickyRightColumn,
     active,
-    editingColIndex,
+    activeColIndex,
+    editing,
+    setRowData,
   }: RowProps<any>) => {
+    console.log('row', index)
     const firstRender = useFirstRender()
 
     // True when we should render the light version (when we are scrolling)
     const renderLight = isScrolling && firstRender
+
+    const setGivenRowData = useCallback(
+      (rowData: any) => {
+        setRowData(index, rowData)
+      },
+      [index, setRowData]
+    )
 
     return (
       <div className="dsg-row" style={style}>
@@ -47,15 +59,15 @@ const RowComponent = React.memo(
                 <Component
                   rowData={data}
                   disabled={disabled}
-                  active={active}
+                  active={activeColIndex === i - 1}
                   columnIndex={i - 1}
                   rowIndex={index}
-                  focus={editingColIndex === i - 1}
-                  deleteRow={() => null}
-                  duplicateRow={() => null}
-                  done={() => null}
-                  insertRowBelow={() => null}
-                  setRowData={() => null}
+                  focus={activeColIndex === i - 1 && editing}
+                  deleteRow={nullfunc}
+                  duplicateRow={nullfunc}
+                  done={nullfunc}
+                  insertRowBelow={nullfunc}
+                  setRowData={setGivenRowData}
                   columnData={column.columnData}
                 />
               )}
@@ -98,16 +110,16 @@ export const Row = <T extends any>({
       }}
       hasStickyRightColumn={data.hasStickyRightColumn}
       isScrolling={isScrolling}
-      active={
+      active={Boolean(
         index - 1 >= (data.selectionMinRow ?? Infinity) &&
-        index - 1 <= (data.selectionMaxRow ?? -Infinity)
+          index - 1 <= (data.selectionMaxRow ?? -Infinity) &&
+          data.activeCell
+      )}
+      activeColIndex={
+        (data.activeCell?.row === index - 1 && data.activeCell.col) || null
       }
-      editingColIndex={
-        (data.activeCell?.row === index - 1 &&
-          data.editing &&
-          data.activeCell.col) ||
-        null
-      }
+      editing={Boolean(data.activeCell?.row === index - 1 && data.editing)}
+      setRowData={data.setRowData}
     />
   )
 }

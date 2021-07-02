@@ -266,3 +266,15 @@
   width: 2px;
   height: 10px;
 }
+
+.dsg-input {
+  display: block;
+  flex: 1;
+  border: none;
+  align-self: stretch;
+  box-sizing: border-box;
+  background: none;
+  padding: 0 10px;
+  font-size: 1rem;
+  outline: none;
+}

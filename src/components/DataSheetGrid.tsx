@@ -336,13 +336,13 @@ export const DataSheetGrid = React.memo(
           return
         }
 
-        setEditing(Boolean(clickOnActiveCell))
         setActiveCell(
           cursorIndex && {
             col: Math.max(0, cursorIndex.col),
             row: Math.max(0, cursorIndex.row),
           }
         )
+        setEditing(Boolean(clickOnActiveCell))
         setSelectionMode(
           cursorIndex
             ? {
@@ -444,6 +444,20 @@ export const DataSheetGrid = React.memo(
       activeColMax: selection?.max.col ?? activeCell?.col,
     })
 
+    const dataRef = useRef(data)
+    dataRef.current = data
+
+    const setRowData = useCallback(
+      (rowIndex: number, item: T) => {
+        onChange([
+          ...dataRef.current?.slice(0, rowIndex),
+          item,
+          ...dataRef.current?.slice(rowIndex + 1),
+        ])
+      },
+      [onChange]
+    )
+
     const selectionContext = useMemoObject<SelectionContextType>({
       columnRights,
       columnWidths,
@@ -470,6 +484,7 @@ export const DataSheetGrid = React.memo(
       selectionMinRow: selection?.min.row ?? activeCell?.row,
       selectionMaxRow: selection?.max.row ?? activeCell?.row,
       editing,
+      setRowData,
     })
 
     const itemSize = useCallback(
