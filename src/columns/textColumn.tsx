@@ -30,6 +30,7 @@ TextComponent.displayName = 'TextComponent'
 
 export const textColumn: Partial<Column<string | null, any>> = {
   component: TextComponent as CellComponent<string | null, any>,
+  deleteValue: () => null,
   copyValue: ({ rowData }) => rowData,
-  pasteValue: ({ value }) => value,
+  pasteValue: ({ value }) => value || null,
 }

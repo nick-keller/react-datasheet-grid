@@ -44,6 +44,10 @@ export const keyColumn = <T extends Record<string, any>>(
   component: KeyComponent,
   copyValue: ({ rowData }) =>
     column.copyValue?.({ rowData: rowData[key] }) ?? null,
+  deleteValue: ({ rowData }) => ({
+    ...rowData,
+    [key]: column.deleteValue?.({ rowData: rowData[key] }) ?? null,
+  }),
   pasteValue: ({ rowData, value }) => ({
     ...rowData,
     [key]: column.pasteValue?.({ rowData: rowData[key], value }) ?? null,

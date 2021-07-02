@@ -24,6 +24,7 @@ import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { useGetBoundingClientRect } from '../hooks/useGetBoundingClientRect'
 import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
+import deepEqual from 'fast-deep-equal'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
@@ -299,6 +300,106 @@ export const DataSheetGrid = React.memo(
       }
     }, [activeCell, scrollTo])
 
+    const dataRef = useRef(data)
+    dataRef.current = data
+
+    const setRowData = useCallback(
+      (rowIndex: number, item: T) => {
+        onChange([
+          ...dataRef.current?.slice(0, rowIndex),
+          item,
+          ...dataRef.current?.slice(rowIndex + 1),
+        ])
+      },
+      [onChange]
+    )
+
+    const deleteRows = useCallback(
+      (rowMin, rowMax = rowMin) => {
+        if (lockRows) {
+          return
+        }
+
+        setEditing(false)
+        setActiveCell((a) => {
+          const row = Math.min(
+            dataRef.current.length - 2 - rowMax + rowMin,
+            rowMin
+          )
+
+          if (row < 0) {
+            return null
+          }
+
+          return a && { ...a, row }
+        })
+        setSelectionCell(null)
+        onChange([
+          ...dataRef.current.slice(0, rowMin),
+          ...dataRef.current.slice(rowMax + 1),
+        ])
+      },
+      [lockRows, onChange, setActiveCell, setSelectionCell]
+    )
+
+    const deleteSelection = useCallback(
+      (smartDelete = true) => {
+        if (!activeCell) {
+          return
+        }
+
+        const min: Cell = selection?.min || activeCell
+        const max: Cell = selection?.max || activeCell
+
+        if (
+          data
+            .slice(min.row, max.row + 1)
+            .every((rowData) => isRowEmpty({ rowData }))
+        ) {
+          if (smartDelete) {
+            deleteRows(min.row, max.row)
+          }
+          return
+        }
+
+        const newData = [...data]
+
+        for (let row = min.row; row <= max.row; ++row) {
+          for (let col = min.col; col <= max.col; ++col) {
+            if (!isCellDisabled({ col, row })) {
+              const { deleteValue = ({ rowData }) => rowData } =
+                columns[col + 1]
+              newData[row] = deleteValue({ rowData: newData[row] })
+            }
+          }
+        }
+
+        if (smartDelete && deepEqual(newData, data)) {
+          setActiveCell({ col: 0, row: min.row })
+          setSelectionCell({
+            col: columns.length - 2,
+            row: max.row,
+          })
+          return
+        }
+
+        onChange(newData)
+      },
+      [
+        activeCell,
+        columns,
+        data,
+        deleteRows,
+        isCellDisabled,
+        isRowEmpty,
+        onChange,
+        selection?.max,
+        selection?.min,
+        setActiveCell,
+        setSelectionCell,
+      ]
+    )
+
     const onCopy = useCallback(
       (event: ClipboardEvent) => {
         if (!editing && activeCell) {
@@ -326,6 +427,18 @@ export const DataSheetGrid = React.memo(
       [activeCell, columns, data, editing, selection]
     )
     useDocumentEventListener('copy', onCopy)
+
+    const onCut = useCallback(
+      (event: ClipboardEvent) => {
+        if (!editing && activeCell) {
+          onCopy(event)
+          deleteSelection(false)
+          event.preventDefault()
+        }
+      },
+      [activeCell, deleteSelection, editing, onCopy]
+    )
+    useDocumentEventListener('cut', onCut)
 
     const onPaste = useCallback(
       async (event: ClipboardEvent) => {
@@ -594,20 +707,6 @@ export const DataSheetGrid = React.memo(
       activeColMin: selection?.min.col ?? activeCell?.col,
       activeColMax: selection?.max.col ?? activeCell?.col,
     })
-
-    const dataRef = useRef(data)
-    dataRef.current = data
-
-    const setRowData = useCallback(
-      (rowIndex: number, item: T) => {
-        onChange([
-          ...dataRef.current?.slice(0, rowIndex),
-          item,
-          ...dataRef.current?.slice(rowIndex + 1),
-        ])
-      },
-      [onChange]
-    )
 
     const selectionContext = useMemoObject<SelectionContextType>({
       columnRights,
