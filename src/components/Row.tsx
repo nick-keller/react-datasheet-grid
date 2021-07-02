@@ -19,6 +19,10 @@ const RowComponent = React.memo(
     activeColIndex,
     editing,
     setRowData,
+    deleteRows,
+    insertRowAfter,
+    duplicateRows,
+    stopEditing,
   }: RowProps<any>) => {
     console.log('row', index)
     const firstRender = useFirstRender()
@@ -32,6 +36,18 @@ const RowComponent = React.memo(
       },
       [index, setRowData]
     )
+
+    const deleteGivenRow = useCallback(() => {
+      deleteRows(index)
+    }, [deleteRows, index])
+
+    const duplicateGivenRow = useCallback(() => {
+      duplicateRows(index)
+    }, [duplicateRows, index])
+
+    const insertAfterGivenRow = useCallback(() => {
+      insertRowAfter(index)
+    }, [insertRowAfter, index])
 
     return (
       <div className="dsg-row" style={style}>
@@ -63,10 +79,14 @@ const RowComponent = React.memo(
                   columnIndex={i - 1}
                   rowIndex={index}
                   focus={activeColIndex === i - 1 && editing}
-                  deleteRow={nullfunc}
-                  duplicateRow={nullfunc}
-                  done={nullfunc}
-                  insertRowBelow={nullfunc}
+                  deleteRow={deleteGivenRow}
+                  duplicateRow={duplicateGivenRow}
+                  stopEditing={
+                    activeColIndex === i - 1 && editing && stopEditing
+                      ? stopEditing
+                      : nullfunc
+                  }
+                  insertRowBelow={insertAfterGivenRow}
                   setRowData={setGivenRowData}
                   columnData={column.columnData}
                 />
@@ -116,10 +136,18 @@ export const Row = <T extends any>({
           data.activeCell
       )}
       activeColIndex={
-        (data.activeCell?.row === index - 1 && data.activeCell.col) || null
+        data.activeCell?.row === index - 1 ? data.activeCell.col : null
       }
       editing={Boolean(data.activeCell?.row === index - 1 && data.editing)}
       setRowData={data.setRowData}
+      deleteRows={data.deleteRows}
+      insertRowAfter={data.insertRowAfter}
+      duplicateRows={data.duplicateRows}
+      stopEditing={
+        data.activeCell?.row === index - 1 && data.editing
+          ? data.stopEditing
+          : undefined
+      }
     />
   )
 }

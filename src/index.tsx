@@ -9,4 +9,5 @@ export type CellComponent<T = any, C = any> = CellComponentBase<T, C>
 export type CellProps<T = any, C = any> = CellPropsBase<T, C>
 export { DataSheetGrid } from './components/DataSheetGrid'
 export { textColumn } from './columns/textColumn'
+export { checkboxColumn } from './columns/checkboxColumn'
 export { keyColumn } from './columns/keyColumn'

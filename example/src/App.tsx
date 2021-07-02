@@ -3,6 +3,7 @@ import {
   DataSheetGrid,
   textColumn,
   keyColumn,
+  checkboxColumn,
   Column,
 } from 'react-datasheet-grid'
 import './style.css'
@@ -16,9 +17,14 @@ function App() {
   const columns = useMemo<Column[]>(
     () => [
       {
+        ...keyColumn('active', checkboxColumn),
         title: 'Active',
       },
-      { ...keyColumn('firstName', textColumn), title: 'First name' },
+      {
+        ...keyColumn('firstName', textColumn),
+        title: 'First name',
+        disabled: true,
+      },
       { ...keyColumn('lastName', textColumn), title: 'Last name' },
     ],
     []
@@ -41,7 +47,16 @@ function App() {
       </p>
       <p>Lorem ipsum</p>
       <p>
-        <DataSheetGrid data={data} onChange={setData} columns={columns} />
+        <DataSheetGrid
+          data={data}
+          onChange={setData}
+          columns={columns}
+          stickyRightColumn={{
+            component: ({ insertRowBelow }) => (
+              <button onClick={insertRowBelow}>R</button>
+            ),
+          }}
+        />
       </p>
     </div>
   )

@@ -271,10 +271,15 @@
   display: block;
   flex: 1;
   border: none;
+  width: 100%;
   align-self: stretch;
   box-sizing: border-box;
   background: none;
   padding: 0 10px;
   font-size: 1rem;
   outline: none;
+}
+
+.dsg-checkbox {
+  margin: auto;
 }

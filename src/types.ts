@@ -18,7 +18,7 @@ export type CellProps<T, C> = {
   disabled: boolean
   columnData: C
   setRowData: (rowData: T) => void
-  done: ({ nextRow }: { nextRow: boolean }) => void
+  stopEditing: ({ nextRow }: { nextRow: boolean }) => void
   insertRowBelow: () => void
   duplicateRow: () => void
   deleteRow: () => void
@@ -52,6 +52,10 @@ export type ListItemData<T> = {
   selectionMaxRow?: number
   editing: boolean
   setRowData: (rowIndex: number, item: T) => void
+  deleteRows: (rowMin: number, rowMax?: number) => void
+  duplicateRows: (rowMin: number, rowMax?: number) => void
+  insertRowAfter: (row: number, count?: number) => void
+  stopEditing: (opts?: { nextRow?: boolean }) => void
 }
 
 export type HeaderContextType<T> = {
@@ -91,6 +95,10 @@ export type RowProps<T> = {
   activeColIndex: number | null
   editing: boolean
   setRowData: (rowIndex: number, item: T) => void
+  deleteRows: (rowMin: number, rowMax?: number) => void
+  duplicateRows: (rowMin: number, rowMax?: number) => void
+  insertRowAfter: (row: number, count?: number) => void
+  stopEditing?: (opts?: { nextRow?: boolean }) => void
 }
 
 export type SimpleColumn<T, C> = Partial<
