@@ -299,6 +299,157 @@ export const DataSheetGrid = React.memo(
       }
     }, [activeCell, scrollTo])
 
+    const onCopy = useCallback(
+      (event: ClipboardEvent) => {
+        if (!editing && activeCell) {
+          const copyData: Array<Array<number | string | null>> = []
+
+          const min: Cell = selection?.min || activeCell
+          const max: Cell = selection?.max || activeCell
+
+          for (let row = min.row; row <= max.row; ++row) {
+            copyData.push([])
+
+            for (let col = min.col; col <= max.col; ++col) {
+              const { copyValue = () => null } = columns[col + 1]
+              copyData[row - min.row].push(copyValue({ rowData: data[row] }))
+            }
+          }
+
+          event.clipboardData?.setData(
+            'text/plain',
+            copyData.map((row) => row.join('\t')).join('\n')
+          )
+          event.preventDefault()
+        }
+      },
+      [activeCell, columns, data, editing, selection]
+    )
+    useDocumentEventListener('copy', onCopy)
+
+    const onPaste = useCallback(
+      async (event: ClipboardEvent) => {
+        if (!editing && activeCell) {
+          const pasteData =
+            event.clipboardData
+              ?.getData('text')
+              .replace(/\r/g, '')
+              .split('\n')
+              .map((row) => row.split('\t')) || []
+
+          const min: Cell = selection?.min || activeCell
+          const max: Cell = selection?.max || activeCell
+
+          // Paste single row
+          if (pasteData.length === 1) {
+            const newData = [...data]
+
+            for (
+              let columnIndex = 0;
+              columnIndex < pasteData[0].length;
+              columnIndex++
+            ) {
+              const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
+
+              if (pasteValue) {
+                for (let rowIndex = min.row; rowIndex <= max.row; rowIndex++) {
+                  if (
+                    !isCellDisabled({
+                      col: columnIndex + min.col,
+                      row: rowIndex,
+                    })
+                  ) {
+                    newData[rowIndex] = await pasteValue({
+                      rowData: newData[rowIndex],
+                      value: pasteData[0][columnIndex],
+                    })
+                  }
+                }
+              }
+            }
+
+            onChange(newData)
+            setActiveCell({ col: min.col, row: min.row })
+            setSelectionCell({
+              col: min.col + pasteData[0].length - 1,
+              row: max.row,
+            })
+          } else {
+            // Paste multiple rows
+            let newData = [...data]
+            const missingRows = min.row + pasteData.length - data.length
+
+            if (missingRows > 0) {
+              if (!lockRows) {
+                newData = [
+                  ...newData,
+                  ...new Array(missingRows).fill(0).map(() => createRow()),
+                ]
+              } else {
+                pasteData.splice(pasteData.length - missingRows, missingRows)
+              }
+            }
+
+            for (
+              let columnIndex = 0;
+              columnIndex < pasteData[0].length &&
+              min.col + columnIndex < columns.length - 1;
+              columnIndex++
+            ) {
+              const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
+
+              if (pasteValue) {
+                for (
+                  let rowIndex = 0;
+                  rowIndex < pasteData.length;
+                  rowIndex++
+                ) {
+                  if (
+                    !isCellDisabled({
+                      col: min.col + columnIndex,
+                      row: min.row + rowIndex,
+                    })
+                  ) {
+                    newData[min.row + rowIndex] = await pasteValue({
+                      rowData: newData[min.row + rowIndex],
+                      value: pasteData[rowIndex][columnIndex],
+                    })
+                  }
+                }
+              }
+            }
+
+            onChange(newData)
+            setActiveCell({ col: min.col, row: min.row })
+            setSelectionCell({
+              col: Math.min(
+                min.col + pasteData[0].length - 1,
+                columns.length - 2
+              ),
+              row: min.row + pasteData.length - 1,
+            })
+          }
+
+          event.preventDefault()
+        }
+      },
+      [
+        activeCell,
+        columns,
+        createRow,
+        data,
+        editing,
+        isCellDisabled,
+        lockRows,
+        onChange,
+        selection?.max,
+        selection?.min,
+        setActiveCell,
+        setSelectionCell,
+      ]
+    )
+    useDocumentEventListener('paste', onPaste)
+
     const onMouseDown = useCallback(
       (event: MouseEvent) => {
         const clickInside =

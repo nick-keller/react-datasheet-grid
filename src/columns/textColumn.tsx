@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useRef } from 'react'
 import { CellComponent, CellProps, Column } from '../types'
 
-const TextComponent = React.memo<CellProps<Record<string, any>, any>>(
-  ({ focus, rowData, columnIndex, rowIndex, columnData: key, setRowData }) => {
+const TextComponent = React.memo<CellProps<string | null, any>>(
+  ({ focus, rowData, columnIndex, rowIndex, setRowData }) => {
     console.log('cell', { rowIndex, columnIndex })
     const ref = useRef<HTMLInputElement>(null)
 
@@ -19,10 +19,8 @@ const TextComponent = React.memo<CellProps<Record<string, any>, any>>(
         className="dsg-input"
         ref={ref}
         style={{ pointerEvents: focus ? 'auto' : 'none' }}
-        value={rowData[key] || ''}
-        onChange={(e) =>
-          setRowData({ ...rowData, [key]: e.target.value || null })
-        }
+        value={rowData || ''}
+        onChange={(e) => setRowData(e.target.value || null)}
       />
     )
   }
@@ -30,9 +28,8 @@ const TextComponent = React.memo<CellProps<Record<string, any>, any>>(
 
 TextComponent.displayName = 'TextComponent'
 
-export const textColumn = <T extends Record<string, any>>(
-  key: keyof T
-): Partial<Column<T, string>> => ({
-  columnData: key as string,
-  component: TextComponent as CellComponent<T, string>,
-})
+export const textColumn: Partial<Column<string | null, any>> = {
+  component: TextComponent as CellComponent<string | null, any>,
+  copyValue: ({ rowData }) => rowData,
+  pasteValue: ({ value }) => value,
+}

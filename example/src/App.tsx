@@ -1,5 +1,10 @@
 import React, { useMemo, useState } from 'react'
-import { DataSheetGrid, textColumn, Column } from 'react-datasheet-grid'
+import {
+  DataSheetGrid,
+  textColumn,
+  keyColumn,
+  Column,
+} from 'react-datasheet-grid'
 import './style.css'
 
 function App() {
@@ -13,8 +18,8 @@ function App() {
       {
         title: 'Active',
       },
-      { ...textColumn('firstName'), title: 'First name' },
-      { ...textColumn('lastName'), title: 'Last name' },
+      { ...keyColumn('firstName', textColumn), title: 'First name' },
+      { ...keyColumn('lastName', textColumn), title: 'Last name' },
     ],
     []
   )
