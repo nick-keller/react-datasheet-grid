@@ -9,13 +9,31 @@ export type Cell = {
 
 export type Selection = { min: Cell; max: Cell }
 
-export type Column<T> = {
+export type CellProps<T, C> = {
+  rowData: T
+  rowIndex: number
+  columnIndex: number
+  active: boolean
+  focus: boolean
+  disabled: boolean
+  columnData: C
+  setRowData: (rowData: T) => void
+  done: ({ nextRow }: { nextRow: boolean }) => void
+  insertRowBelow: () => void
+  duplicateRow: () => void
+  deleteRow: () => void
+}
+
+export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
+
+export type Column<T, C> = {
   title?: React.ReactNode
   width: ColumnWidth
   minWidth: number
   maxWidth?: number
   renderWhenScrolling: boolean
-  // render: ColumnRenderFunction<TRow>
+  component: CellComponent<T, C>
+  columnData?: C
   disableKeys: boolean
   disabled: boolean | (({ rowData }: { rowData: T }) => boolean)
   keepFocus: boolean
@@ -27,15 +45,16 @@ export type Column<T> = {
 export type ListItemData<T> = {
   data: T[]
   contentWidth?: number
-  columns: Column<T>[]
+  columns: Column<T, any>[]
   hasStickyRightColumn: boolean
   activeCell: Cell | null
   selectionMinRow?: number
   selectionMaxRow?: number
+  editing: boolean
 }
 
 export type HeaderContextType<T> = {
-  columns: Column<T>[]
+  columns: Column<T, any>[]
   contentWidth?: number
   hasStickyRightColumn: boolean
   height: number
@@ -65,13 +84,17 @@ export type RowProps<T> = {
   data: T
   style: React.CSSProperties
   isScrolling?: boolean
-  columns: Column<T>[]
+  columns: Column<T, any>[]
   hasStickyRightColumn: boolean
   active: boolean
+  editingColIndex: number | null
 }
 
-export type SimpleColumn<T> = Partial<
-  Pick<Column<T>, 'title' | 'maxWidth' | 'minWidth' | 'width'>
+export type SimpleColumn<T, C> = Partial<
+  Pick<
+    Column<T, C>,
+    'title' | 'maxWidth' | 'minWidth' | 'width' | 'component' | 'columnData'
+  >
 >
 
 export type AddRowsComponentProps = {
@@ -81,9 +104,9 @@ export type AddRowsComponentProps = {
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
-  columns?: Partial<Column<T>>[]
-  gutterColumn?: SimpleColumn<T>
-  stickyRightColumn?: SimpleColumn<T>
+  columns?: Partial<Column<T, any>>[]
+  gutterColumn?: SimpleColumn<T, any>
+  stickyRightColumn?: SimpleColumn<T, any>
   height?: number
   rowHeight?: number
   headerRowHeight?: number

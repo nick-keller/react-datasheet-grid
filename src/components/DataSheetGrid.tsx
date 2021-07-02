@@ -24,10 +24,9 @@ import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { useGetBoundingClientRect } from '../hooks/useGetBoundingClientRect'
 import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
-import { debounce } from 'throttle-debounce'
 
 const DEFAULT_DATA: any[] = []
-const DEFAULT_COLUMNS: Column<any>[] = []
+const DEFAULT_COLUMNS: Column<any, any>[] = []
 const DEFAULT_CREATE_ROW: DataSheetGridProps<any>['createRow'] = () => ({})
 const DEFAULT_ON_CHANGE: DataSheetGridProps<any>['onChange'] = () => null
 const DEFAULT_DUPLICATE_ROW: DataSheetGridProps<any>['duplicateRow'] = ({
@@ -470,6 +469,7 @@ export const DataSheetGrid = React.memo(
       activeCell,
       selectionMinRow: selection?.min.row ?? activeCell?.row,
       selectionMaxRow: selection?.max.row ?? activeCell?.row,
+      editing,
     })
 
     const itemSize = useCallback(

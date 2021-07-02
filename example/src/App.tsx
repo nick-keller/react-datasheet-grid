@@ -4,60 +4,17 @@ import './style.css'
 
 function App() {
   const [data, setData] = useState([
-    'a',
-    'b',
-    'c',
-    // 'd',
-    // 'e',
-    // 'f',
-    // 'g',
-    // 'h',
-    // 'i',
-    // 'j',
-    // 'k',
-    // 'l',
-    // 'm',
-    // 'n',
-    // 'o',
-    // 'p',
-    // 'a',
-    // 'b',
-    // 'c',
-    // 'd',
-    // 'e',
-    // 'f',
-    // 'g',
-    // 'h',
-    // 'i',
-    // 'j',
-    // 'k',
-    // 'l',
-    // 'm',
-    // 'n',
-    // 'o',
-    // 'p',
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
-  const [data2, setData2] = useState(['a', 'b', 'c'])
   const [count, setCount] = useState(0)
-  const columns = useMemo<Column<string>[]>(
+  const columns = useMemo<Column[]>(
     () => [
-      { minWidth: 150, title: 'First name' },
       {
-        minWidth: 70,
-        title: 'Last name',
-        disabled: ({ rowData }) => rowData === 'c',
+        title: 'Active',
       },
-      { minWidth: 90, title: 'Age', disabled: false },
-      { minWidth: 110, title: 'Job', disabled: true },
-      // {},
-      // {},
-      // {},
-      {},
-      {},
-      {},
-      {},
-      // { minWidth: 30 },
-      // { minWidth: 450 },
+      { title: 'First name' },
+      { title: 'Last name' },
     ],
     []
   )
@@ -79,26 +36,7 @@ function App() {
       </p>
       <p>Lorem ipsum</p>
       <p>
-        <DataSheetGrid
-          data={data}
-          // headerRowHeight={100}
-          // rowHeight={40}
-          onChange={setData}
-          columns={columns}
-          createRow={() => 'plop'}
-          stickyRightColumn={{}}
-        />
-      </p>
-      <p>
-        <DataSheetGrid
-          data={data2}
-          headerRowHeight={30}
-          rowHeight={40}
-          onChange={setData2}
-          columns={columns}
-          createRow={() => 'plop'}
-          // stickyRightColumn={{}}
-        />
+        <DataSheetGrid data={data} onChange={setData} columns={columns} />
       </p>
     </div>
   )

@@ -14,9 +14,8 @@ const RowComponent = React.memo(
     columns,
     hasStickyRightColumn,
     active,
+    editingColIndex,
   }: RowProps<any>) => {
-    console.log(data)
-
     const firstRender = useFirstRender()
 
     // True when we should render the light version (when we are scrolling)
@@ -24,25 +23,45 @@ const RowComponent = React.memo(
 
     return (
       <div className="dsg-row" style={style}>
-        {columns.map((column, i) => (
-          <Cell
-            key={i}
-            gutter={i === 0}
-            disabled={
-              column.disabled === true ||
-              (typeof column.disabled === 'function' &&
-                column.disabled({ rowData: data }))
-            }
-            stickyRight={hasStickyRightColumn && i === columns.length - 1}
-            column={column}
-            active={active}
-            className={cx(
-              !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
-            )}
-          >
-            {(column.renderWhenScrolling || !renderLight) && (data as string)}
-          </Cell>
-        ))}
+        {columns.map((column, i) => {
+          const Component = column.component
+
+          const disabled =
+            column.disabled === true ||
+            (typeof column.disabled === 'function' &&
+              column.disabled({ rowData: data }))
+
+          return (
+            <Cell
+              key={i}
+              gutter={i === 0}
+              disabled={disabled}
+              stickyRight={hasStickyRightColumn && i === columns.length - 1}
+              column={column}
+              active={active}
+              className={cx(
+                !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
+              )}
+            >
+              {(column.renderWhenScrolling || !renderLight) && (
+                <Component
+                  rowData={data}
+                  disabled={disabled}
+                  active={active}
+                  columnIndex={i - 1}
+                  rowIndex={index}
+                  focus={editingColIndex === i - 1}
+                  deleteRow={() => null}
+                  duplicateRow={() => null}
+                  done={() => null}
+                  insertRowBelow={() => null}
+                  setRowData={() => null}
+                  columnData={column.columnData}
+                />
+              )}
+            </Cell>
+          )
+        })}
       </div>
     )
   },
@@ -82,6 +101,12 @@ export const Row = <T extends any>({
       active={
         index - 1 >= (data.selectionMinRow ?? Infinity) &&
         index - 1 <= (data.selectionMaxRow ?? -Infinity)
+      }
+      editingColIndex={
+        (data.activeCell?.row === index - 1 &&
+          data.editing &&
+          data.activeCell.col) ||
+        null
       }
     />
   )

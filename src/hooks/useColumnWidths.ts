@@ -2,7 +2,10 @@ import { Column } from '../types'
 import { useEffect, useMemo, useState } from 'react'
 import { useDeepEqualState } from './useDeepEqualState'
 
-export const useColumnWidths = (columns: Column<any>[], width?: number) => {
+export const useColumnWidths = (
+  columns: Column<any, any>[],
+  width?: number
+) => {
   const [columnWidths, setColumnWidths] = useDeepEqualState<
     number[] | undefined
   >(undefined)
