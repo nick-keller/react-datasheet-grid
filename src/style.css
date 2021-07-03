@@ -34,6 +34,7 @@
   border-bottom: none;
   border-right: none;
   box-shadow: 1px 1px #e8ebed;
+  position: relative;
 }
 
 .dsg-cell-sticky-right {

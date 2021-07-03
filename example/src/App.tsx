@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react'
 import {
-  DataSheetGrid,
   DynamicDataSheetGrid,
   textColumn,
   keyColumn,
@@ -50,7 +49,7 @@ function App() {
       </p>
       <p>Lorem ipsum</p>
       <p>
-        <DataSheetGrid
+        <DynamicDataSheetGrid
           data={data}
           onChange={setData}
           columns={columns}

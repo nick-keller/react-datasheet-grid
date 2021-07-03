@@ -18,7 +18,7 @@ export type CellProps<T, C> = {
   disabled: boolean
   columnData: C
   setRowData: (rowData: T) => void
-  stopEditing: ({ nextRow }: { nextRow: boolean }) => void
+  stopEditing: ({ nextRow }?: { nextRow: boolean }) => void
   insertRowBelow: () => void
   duplicateRow: () => void
   deleteRow: () => void
