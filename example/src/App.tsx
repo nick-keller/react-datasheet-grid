@@ -5,6 +5,8 @@ import {
   keyColumn,
   checkboxColumn,
   floatColumn,
+  percentColumn,
+  dateColumn,
   Column,
 } from 'react-datasheet-grid'
 import './style.css'
@@ -28,6 +30,8 @@ function App() {
       },
       { ...keyColumn('lastName', textColumn), title: 'Last name' },
       { ...keyColumn('test', floatColumn), title: 'Test' },
+      { ...keyColumn('test', percentColumn), title: 'percent' },
+      { ...keyColumn('date', dateColumn), title: 'Date' },
     ],
     []
   )

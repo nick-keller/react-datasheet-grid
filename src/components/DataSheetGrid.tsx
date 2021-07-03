@@ -137,6 +137,7 @@ export const DataSheetGrid = React.memo(
     useEffect(() => {
       if (activeCell !== null) {
         ;(document.activeElement as HTMLElement).blur()
+        window.getSelection()?.removeAllRanges()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeCell !== null])

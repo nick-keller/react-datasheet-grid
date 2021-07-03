@@ -272,13 +272,19 @@
   display: block;
   flex: 1;
   border: none;
-  width: 100%;
+  min-width: 0;
   align-self: stretch;
   box-sizing: border-box;
   background: none;
   padding: 0 10px;
   font-size: 1rem;
   outline: none;
+}
+
+.dsg-input-suffix {
+  padding-right: 10px;
+  opacity: .5;
+  margin-left: -5px;
 }
 
 .dsg-input-align-right {
