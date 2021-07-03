@@ -1,11 +1,11 @@
 {
   "name": "react-datasheet-grid",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "An Excel-like React component to create beautiful spreadsheets.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf ./dist && tsc && cpx \"src/**/*.css\" dist",
+    "build": "rm tsconfig.tsbuildinfo && rimraf ./dist && tsc && cpx \"src/**/*.css\" dist",
     "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/. && prettier --write example/src/.",
     "lint": "eslint src/."
