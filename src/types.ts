@@ -112,6 +112,25 @@ export type AddRowsComponentProps = {
   addRows: (count?: number) => void
 }
 
+export type ContextMenuItem =
+  | {
+      type: 'INSERT_ROW_BELLOW' | 'DELETE_ROW' | 'DUPLICATE_ROW'
+      action: () => void
+    }
+  | {
+      type: 'DELETE_ROWS' | 'DUPLICATE_ROWS'
+      action: () => void
+      fromRow: number
+      toRow: number
+    }
+
+export type ContextMenuProps = {
+  clientX: number
+  clientY: number
+  items: ContextMenuItem[]
+  close: () => void
+}
+
 export type DataSheetGridProps<T> = {
   data?: T[]
   onChange?: (value: T[]) => void
@@ -127,4 +146,6 @@ export type DataSheetGridProps<T> = {
   isRowEmpty?: ({ rowData }: { rowData: T }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
+  disableContextMenu?: boolean
+  contextMenuComponent?: (props: ContextMenuProps) => JSX.Element
 }

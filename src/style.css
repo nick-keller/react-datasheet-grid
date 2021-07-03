@@ -294,3 +294,21 @@
 .dsg-checkbox {
   margin: auto;
 }
+
+.dsg-context-menu {
+  position: fixed;
+  background: white;
+  z-index: 10000;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px 2px rgba(60,64,67,.15);
+  padding: 5px 0;
+}
+
+.dsg-context-menu-item {
+  padding: 3px 20px;
+  cursor: default;
+}
+
+.dsg-context-menu-item:hover {
+  background: #fafafa;
+}

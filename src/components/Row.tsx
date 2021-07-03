@@ -24,7 +24,6 @@ const RowComponent = React.memo(
     duplicateRows,
     stopEditing,
   }: RowProps<any>) => {
-    console.log('row', index)
     const firstRender = useFirstRender()
 
     // True when we should render the light version (when we are scrolling)

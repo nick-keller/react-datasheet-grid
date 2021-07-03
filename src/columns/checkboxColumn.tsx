@@ -18,16 +18,7 @@ const FALSY = [
 ]
 
 const CheckboxComponent = React.memo<CellProps<boolean, any>>(
-  ({
-    focus,
-    rowData,
-    columnIndex,
-    rowIndex,
-    setRowData,
-    active,
-    stopEditing,
-  }) => {
-    console.log('cell', { rowIndex, columnIndex })
+  ({ focus, rowData, setRowData, active, stopEditing }) => {
     const ref = useRef<HTMLInputElement>(null)
 
     useLayoutEffect(() => {

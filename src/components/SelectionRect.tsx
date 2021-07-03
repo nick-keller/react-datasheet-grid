@@ -40,7 +40,6 @@ const buildClipPath = (
 }
 
 export const SelectionRect = React.memo(() => {
-  console.log('SelectionRect')
   const {
     columnWidths,
     columnRights,

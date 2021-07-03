@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Cell,
   Column,
+  ContextMenuItem,
   DataSheetGridProps,
   HeaderContextType,
   ListItemData,
@@ -25,6 +26,7 @@ import { useGetBoundingClientRect } from '../hooks/useGetBoundingClientRect'
 import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
+import { ContextMenu } from './ContextMenu'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
@@ -53,9 +55,10 @@ export const DataSheetGrid = React.memo(
     lockRows = false,
     duplicateRow = DEFAULT_DUPLICATE_ROW,
     isRowEmpty = DEFAULT_IS_ROW_EMPTY,
+    contextMenuComponent: ContextMenuComponent = ContextMenu,
+    disableContextMenu: disableContextMenuRaw = false,
   }: DataSheetGridProps<T>): JSX.Element => {
-    console.log('render DataSheetGrid')
-
+    const disableContextMenu = disableContextMenuRaw || lockRows
     const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
     const hasStickyRightColumn = Boolean(stickyRightColumn)
     const listRef = useRef<VariableSizeList>(null)
@@ -91,6 +94,17 @@ export const DataSheetGrid = React.memo(
       columnWidths,
       columnRights,
     } = useColumnWidths(columns, width)
+
+    // x,y coordinates of the right click
+    const [contextMenu, setContextMenu] = useState<{
+      x: number
+      y: number
+    } | null>(null)
+
+    // Items of the context menu
+    const [contextMenuItems, setContextMenuItems] = useState<ContextMenuItem[]>(
+      []
+    )
 
     // True when the active cell is being edited
     const [editing, setEditing] = useState(false)
@@ -620,6 +634,11 @@ export const DataSheetGrid = React.memo(
 
     const onMouseDown = useCallback(
       (event: MouseEvent) => {
+        if (contextMenu && contextMenuItems.length) {
+          return
+        }
+
+        const rightClick = event.button === 2
         const clickInside =
           innerRef.current?.contains(event.target as Node) || false
 
@@ -650,25 +669,71 @@ export const DataSheetGrid = React.memo(
         const clickOnStickyRightColumn =
           cursorIndex?.col === columns.length - 2 && hasStickyRightColumn
 
-        if (clickOnStickyRightColumn) {
-          return
+        const rightClickInSelection =
+          rightClick &&
+          selection &&
+          cursorIndex &&
+          cursorIndex.row >= selection.min.row &&
+          cursorIndex.row <= selection.max.row &&
+          cursorIndex.col >= selection.min.col &&
+          cursorIndex.col <= selection.max.col
+
+        const rightClickOnSelectedHeaders =
+          rightClick &&
+          selection &&
+          cursorIndex &&
+          cursorIndex.row === -1 &&
+          cursorIndex.col >= selection.min.col &&
+          cursorIndex.col <= selection.max.col
+
+        const rightClickOnSelectedGutter =
+          rightClick &&
+          selection &&
+          cursorIndex &&
+          cursorIndex.row >= selection.min.row &&
+          cursorIndex.row <= selection.max.row &&
+          cursorIndex.col === -1
+
+        const clickOnSelectedStickyRightColumn =
+          clickOnStickyRightColumn &&
+          selection &&
+          cursorIndex &&
+          cursorIndex.row >= selection.min.row &&
+          cursorIndex.row <= selection.max.row
+
+        if (rightClick && !disableContextMenu) {
+          setContextMenu({ x: event.clientX, y: event.clientY })
         }
 
-        if (!event.shiftKey) {
+        if (!(event.shiftKey && activeCell) || rightClick) {
           setActiveCell(
             cursorIndex && {
-              col: Math.max(0, cursorIndex.col),
-              row: Math.max(0, cursorIndex.row),
+              col:
+                (rightClickInSelection || rightClickOnSelectedHeaders) &&
+                activeCell
+                  ? activeCell.col
+                  : Math.max(0, clickOnStickyRightColumn ? 0 : cursorIndex.col),
+              row:
+                (rightClickInSelection ||
+                  rightClickOnSelectedGutter ||
+                  clickOnSelectedStickyRightColumn) &&
+                activeCell
+                  ? activeCell.row
+                  : Math.max(0, cursorIndex.row),
             }
           )
         }
 
-        setEditing(Boolean(clickOnActiveCell))
+        setEditing(Boolean(clickOnActiveCell && !rightClick))
         setSelectionMode(
-          cursorIndex
+          cursorIndex && !rightClick
             ? {
-                columns: cursorIndex.col !== -1 || event.shiftKey,
-                rows: cursorIndex.row !== -1 || event.shiftKey,
+                columns:
+                  (cursorIndex.col !== -1 && !clickOnStickyRightColumn) ||
+                  Boolean(event.shiftKey && activeCell),
+                rows:
+                  cursorIndex.row !== -1 ||
+                  Boolean(event.shiftKey && activeCell),
                 active: true,
               }
             : {
@@ -678,45 +743,72 @@ export const DataSheetGrid = React.memo(
               }
         )
 
-        if (event.shiftKey) {
+        if (event.shiftKey && activeCell && !rightClick) {
           setSelectionCell(
             cursorIndex && {
-              col: Math.max(0, cursorIndex.col),
+              col: Math.max(
+                0,
+                cursorIndex.col - (clickOnStickyRightColumn ? 1 : 0)
+              ),
               row: Math.max(0, cursorIndex.row),
             }
           )
-        } else if (cursorIndex?.col === -1 || cursorIndex?.row === -1) {
-          let col = cursorIndex.col
-          let row = cursorIndex.row
+        } else if (!rightClickInSelection) {
+          if (
+            cursorIndex &&
+            (cursorIndex?.col === -1 ||
+              cursorIndex?.row === -1 ||
+              clickOnStickyRightColumn)
+          ) {
+            let col = cursorIndex.col
+            let row = cursorIndex.row
 
-          if (cursorIndex.col === -1) {
-            col = columns.length - (hasStickyRightColumn ? 3 : 2)
+            if (cursorIndex.col === -1 || clickOnStickyRightColumn) {
+              col = columns.length - (hasStickyRightColumn ? 3 : 2)
+            }
+
+            if (cursorIndex.row === -1) {
+              row = data.length - 1
+            }
+
+            if (rightClickOnSelectedHeaders && selectionCell) {
+              col = selectionCell.col
+            }
+
+            if (
+              (rightClickOnSelectedGutter ||
+                clickOnSelectedStickyRightColumn) &&
+              selectionCell
+            ) {
+              row = selectionCell.row
+            }
+
+            setSelectionCell({ col, row })
+          } else {
+            setSelectionCell(null)
           }
 
-          if (cursorIndex.row === -1) {
-            row = data.length - 1
+          if (clickInside) {
+            event.preventDefault()
           }
-
-          setSelectionCell({ col, row })
-        } else {
-          setSelectionCell(null)
-        }
-
-        if (clickInside) {
-          event.preventDefault()
         }
       },
       [
+        contextMenu,
+        contextMenuItems.length,
+        getCursorIndex,
+        editing,
         activeCell,
         columns,
-        data.length,
-        editing,
-        getCursorIndex,
         isCellDisabled,
+        selection,
+        hasStickyRightColumn,
+        disableContextMenu,
+        setSelectionMode,
         setActiveCell,
         setSelectionCell,
-        setSelectionMode,
-        hasStickyRightColumn,
+        selectionCell,
+        data.length,
       ]
     )
     useDocumentEventListener('mousedown', onMouseDown)
@@ -912,6 +1004,110 @@ export const DataSheetGrid = React.memo(
     )
     useDocumentEventListener('keydown', onKeyDown)
 
+    const onContextMenu = useCallback(
+      (event: MouseEvent) => {
+        const clickInside =
+          innerRef.current?.contains(event.target as Node) || false
+
+        const cursorIndex = clickInside
+          ? getCursorIndex(event, true, true)
+          : null
+
+        const clickOnActiveCell =
+          cursorIndex &&
+          activeCell &&
+          activeCell.col === cursorIndex.col &&
+          activeCell.row === cursorIndex.row &&
+          editing
+
+        if (clickInside && !clickOnActiveCell) {
+          event.preventDefault()
+        }
+      },
+      [getCursorIndex, activeCell, editing]
+    )
+    useDocumentEventListener('contextmenu', onContextMenu)
+
+    useEffect(() => {
+      const items: ContextMenuItem[] = []
+
+      if (selection?.max.row !== undefined) {
+        items.push({
+          type: 'INSERT_ROW_BELLOW',
+          action: () => {
+            setContextMenu(null)
+            insertRowAfter(selection.max.row)
+          },
+        })
+      } else if (activeCell?.row !== undefined) {
+        items.push({
+          type: 'INSERT_ROW_BELLOW',
+          action: () => {
+            setContextMenu(null)
+            insertRowAfter(activeCell.row)
+          },
+        })
+      }
+
+      if (
+        selection?.min.row !== undefined &&
+        selection.min.row !== selection.max.row
+      ) {
+        items.push({
+          type: 'DUPLICATE_ROWS',
+          fromRow: selection.min.row + 1,
+          toRow: selection.max.row + 1,
+          action: () => {
+            setContextMenu(null)
+            duplicateRows(selection.min.row, selection.max.row)
+          },
+        })
+      } else if (activeCell?.row !== undefined) {
+        items.push({
+          type: 'DUPLICATE_ROW',
+          action: () => {
+            setContextMenu(null)
+            duplicateRows(activeCell.row)
+          },
+        })
+      }
+
+      if (
+        selection?.min.row !== undefined &&
+        selection.min.row !== selection.max.row
+      ) {
+        items.push({
+          type: 'DELETE_ROWS',
+          fromRow: selection.min.row + 1,
+          toRow: selection.max.row + 1,
+          action: () => {
+            setContextMenu(null)
+            deleteRows(selection.min.row, selection.max.row)
+          },
+        })
+      } else if (activeCell?.row !== undefined) {
+        items.push({
+          type: 'DELETE_ROW',
+          action: () => {
+            setContextMenu(null)
+            deleteRows(activeCell.row)
+          },
+        })
+      }
+
+      setContextMenuItems(items)
+      if (!items.length) {
+        setContextMenu(null)
+      }
+    }, [
+      activeCell?.row,
+      deleteRows,
+      duplicateRows,
+      insertRowAfter,
+      selection?.min.row,
+      selection?.max.row,
+    ])
+
     const headerContext = useMemoObject<HeaderContextType<T>>({
       hasStickyRightColumn,
       height: headerRowHeight,
@@ -1002,6 +1198,14 @@ export const DataSheetGrid = React.memo(
         {!lockRows && (
           <AddRowsComponent
             addRows={(count) => insertRowAfter(data.length - 1, count)}
+          />
+        )}
+        {contextMenu && contextMenuItems.length > 0 && (
+          <ContextMenuComponent
+            clientX={contextMenu.x}
+            clientY={contextMenu.y}
+            items={contextMenuItems}
+            close={() => setContextMenu(null)}
           />
         )}
       </div>

@@ -2,8 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react'
 import { CellComponent, CellProps, Column } from '../types'
 
 const DateComponent = React.memo<CellProps<Date | null, any>>(
-  ({ focus, active, rowData, columnIndex, rowIndex, setRowData }) => {
-    console.log('cell', { rowIndex, columnIndex })
+  ({ focus, active, rowData, setRowData }) => {
     const ref = useRef<HTMLInputElement>(null)
 
     useLayoutEffect(() => {

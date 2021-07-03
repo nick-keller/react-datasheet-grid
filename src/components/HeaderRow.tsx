@@ -4,7 +4,6 @@ import cx from 'classnames'
 import { Cell } from './Cell'
 
 export const HeaderRow = React.memo(() => {
-  console.log('header')
   const {
     columns,
     contentWidth,

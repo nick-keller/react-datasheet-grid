@@ -7,8 +7,7 @@ const numberToString = (value: any): string =>
     : ''
 
 const PercentComponent = React.memo<CellProps<number | null, any>>(
-  ({ focus, active, rowData, columnIndex, rowIndex, setRowData }) => {
-    console.log('cell', { rowIndex, columnIndex })
+  ({ focus, active, rowData, setRowData }) => {
     const [rawValue, setRawValue] = useState<string>(numberToString(rowData))
     const ref = useRef<HTMLInputElement>(null)
 

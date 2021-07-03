@@ -5,8 +5,7 @@ const numberToString = (value: any): string =>
   typeof value === 'number' && !isNaN(value) ? String(value) : ''
 
 const FloatComponent = React.memo<CellProps<number | null, any>>(
-  ({ focus, rowData, columnIndex, rowIndex, setRowData }) => {
-    console.log('cell', { rowIndex, columnIndex })
+  ({ focus, rowData, setRowData }) => {
     const [rawValue, setRawValue] = useState<string>(numberToString(rowData))
     const ref = useRef<HTMLInputElement>(null)
 
