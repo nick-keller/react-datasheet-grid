@@ -30,7 +30,7 @@ export const useEdges = (
 
     const current = ref.current
     current?.addEventListener('scroll', onScroll)
-    onScroll()
+    setTimeout(onScroll, 100)
 
     return () => {
       current?.removeEventListener('scroll', onScroll)

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import {
   DataSheetGrid,
+  DynamicDataSheetGrid,
   textColumn,
   keyColumn,
   checkboxColumn,
@@ -54,8 +55,8 @@ function App() {
           onChange={setData}
           columns={columns}
           stickyRightColumn={{
-            component: ({ insertRowBelow }) => (
-              <button onClick={insertRowBelow}>R</button>
+            component: ({ insertRowBelow, deleteRow }) => (
+              <button onClick={deleteRow}>R</button>
             ),
           }}
         />
