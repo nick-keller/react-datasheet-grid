@@ -17,6 +17,7 @@ const TextComponent = React.memo<CellProps<string | null, any>>(
     return (
       <input
         className="dsg-input"
+        tabIndex={-1}
         ref={ref}
         style={{ pointerEvents: focus ? 'auto' : 'none' }}
         value={rowData || ''}

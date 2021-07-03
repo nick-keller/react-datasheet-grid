@@ -41,6 +41,7 @@ const CheckboxComponent = React.memo<CellProps<boolean, any>>(
     return (
       <input
         className="dsg-checkbox"
+        tabIndex={-1}
         type="checkbox"
         ref={ref}
         checked={Boolean(rowData)}

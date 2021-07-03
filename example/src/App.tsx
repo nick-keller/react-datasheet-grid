@@ -4,6 +4,7 @@ import {
   textColumn,
   keyColumn,
   checkboxColumn,
+  floatColumn,
   Column,
 } from 'react-datasheet-grid'
 import './style.css'
@@ -26,6 +27,7 @@ function App() {
         disabled: true,
       },
       { ...keyColumn('lastName', textColumn), title: 'Last name' },
+      { ...keyColumn('test', floatColumn), title: 'Test' },
     ],
     []
   )

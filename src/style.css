@@ -280,6 +280,10 @@
   outline: none;
 }
 
+.dsg-input-align-right {
+  text-align: right;
+}
+
 .dsg-checkbox {
   margin: auto;
 }

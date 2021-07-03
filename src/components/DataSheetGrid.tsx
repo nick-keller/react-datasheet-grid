@@ -647,25 +647,27 @@ export const DataSheetGrid = React.memo(
         }
 
         const clickOnStickyRightColumn =
-          cursorIndex?.col === columns.length - 2 && stickyRightColumn
+          cursorIndex?.col === columns.length - 2 && hasStickyRightColumn
 
         if (clickOnStickyRightColumn) {
-          // TODO
           return
         }
 
-        setActiveCell(
-          cursorIndex && {
-            col: Math.max(0, cursorIndex.col),
-            row: Math.max(0, cursorIndex.row),
-          }
-        )
+        if (!event.shiftKey) {
+          setActiveCell(
+            cursorIndex && {
+              col: Math.max(0, cursorIndex.col),
+              row: Math.max(0, cursorIndex.row),
+            }
+          )
+        }
+
         setEditing(Boolean(clickOnActiveCell))
         setSelectionMode(
           cursorIndex
             ? {
-                columns: cursorIndex.col !== -1,
-                rows: cursorIndex.row !== -1,
+                columns: cursorIndex.col !== -1 || event.shiftKey,
+                rows: cursorIndex.row !== -1 || event.shiftKey,
                 active: true,
               }
             : {
@@ -675,7 +677,14 @@ export const DataSheetGrid = React.memo(
               }
         )
 
-        if (cursorIndex?.col === -1 || cursorIndex?.row === -1) {
+        if (event.shiftKey) {
+          setSelectionCell(
+            cursorIndex && {
+              col: Math.max(0, cursorIndex.col),
+              row: Math.max(0, cursorIndex.row),
+            }
+          )
+        } else if (cursorIndex?.col === -1 || cursorIndex?.row === -1) {
           let col = cursorIndex.col
           let row = cursorIndex.row
 
@@ -989,9 +998,11 @@ export const DataSheetGrid = React.memo(
             })
           }}
         />
-        <AddRowsComponent
-          addRows={(count) => insertRowAfter(data.length - 1, count)}
-        />
+        {!lockRows && (
+          <AddRowsComponent
+            addRows={(count) => insertRowAfter(data.length - 1, count)}
+          />
+        )}
       </div>
     )
   }

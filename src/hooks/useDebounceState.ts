@@ -12,7 +12,7 @@ export const useDebounceState = <T>(
       debounce(delay, (newValue: T) => {
         setDebouncedValue(newValue)
       }),
-    []
+    [delay]
   )
 
   return [debouncedValue, setValue]
