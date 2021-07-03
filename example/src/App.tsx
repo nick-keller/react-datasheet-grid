@@ -4,6 +4,7 @@ import {
   DataSheetGrid,
   keyColumn,
   textColumn,
+  Column,
 } from 'react-datasheet-grid'
 import './style.css'
 
@@ -19,6 +20,21 @@ function App() {
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
 
+  const columns: Column<Row>[] = [
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+    },
+  ]
+
   return (
     <div
       style={{
@@ -28,24 +44,7 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid
-        data={data}
-        onChange={setData}
-        columns={[
-          {
-            ...keyColumn<Row, 'active'>('active', checkboxColumn),
-            title: 'Active',
-          },
-          {
-            ...keyColumn<Row, 'firstName'>('firstName', textColumn),
-            title: 'First name',
-          },
-          {
-            ...keyColumn<Row, 'lastName'>('lastName', textColumn),
-            title: 'Last name',
-          },
-        ]}
-      />
+      <DataSheetGrid data={data} onChange={setData} columns={columns} />
     </div>
   )
 }

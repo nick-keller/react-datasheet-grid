@@ -1,7 +1,7 @@
 {
   "name": "react-datasheet-grid",
   "version": "1.0.0",
-  "description": "",
+  "description": "An Excel-like React component to create beautiful spreadsheets.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -10,9 +10,21 @@
     "format": "prettier --write src/. && prettier --write example/src/.",
     "lint": "eslint src/."
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "react",
+    "reactjs",
+    "spreadsheet",
+    "grid",
+    "datasheet",
+    "table",
+    "excel",
+    "airtable",
+    "notion"
+  ],
+  "author": "Nicolas Keller (https://github.com/nick-keller)",
+  "license": "MIT",
+  "repository": "Equify/react-datasheet-grid",
+  "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
     "@types/react": "^17.0.11",
     "@types/react-window": "^1.8.3",
@@ -33,6 +45,9 @@
   "files": [
     "dist/**/*"
   ],
+  "peerDependencies": {
+    "react": "^15.0.0 || ^16.0.0 || ^17.0.0"
+  },
   "dependencies": {
     "classnames": "^2.3.1",
     "fast-deep-equal": "^3.1.3",
