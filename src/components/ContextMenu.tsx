@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useCallback, useRef } from 'react'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
-import { ContextMenuItem, ContextMenuProps } from '../types'
+import { ContextMenuItem, ContextMenuComponentProps } from '../types'
 
 const renderItem = (item: ContextMenuItem) => {
   if (item.type === 'DELETE_ROW') {
@@ -40,7 +40,7 @@ export const ContextMenu = ({
   clientY,
   items,
   close,
-}: ContextMenuProps) => {
+}: ContextMenuComponentProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const onClickOutside = useCallback(

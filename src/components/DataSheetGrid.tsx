@@ -1134,6 +1134,14 @@ export const DataSheetGrid = React.memo(
       isCellDisabled,
     })
 
+    const contextMenuItemsRef = useRef(contextMenuItems)
+    contextMenuItemsRef.current = contextMenuItems
+
+    const getContextMenuItems = useCallback(
+      () => contextMenuItemsRef.current,
+      []
+    )
+
     const itemData = useMemoObject<ListItemData<T>>({
       data,
       contentWidth: fullWidth ? undefined : contentWidth,
@@ -1148,6 +1156,7 @@ export const DataSheetGrid = React.memo(
       duplicateRows,
       insertRowAfter,
       stopEditing,
+      getContextMenuItems,
     })
 
     const itemSize = useCallback(

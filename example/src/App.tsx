@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
 import {
   checkboxColumn,
-  Column,
   DataSheetGrid,
   keyColumn,
   textColumn,
 } from 'react-datasheet-grid'
 import './style.css'
 
+type Row = {
+  active: boolean
+  firstName: string | null
+  lastName: string | null
+}
+
 function App() {
-  const [data, setData] = useState([
+  const [data, setData] = useState<Row[]>([
     { active: true, firstName: 'Elon', lastName: 'Musk' },
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
@@ -26,20 +31,20 @@ function App() {
       <DataSheetGrid
         data={data}
         onChange={setData}
-        columns={
-          [
-            {
-              ...keyColumn('active', checkboxColumn),
-              title: 'Active',
-            },
-            {
-              ...keyColumn('firstName', textColumn),
-              title: 'First name',
-              disabled: true,
-            },
-            { ...keyColumn('lastName', textColumn), title: 'Last name' },
-          ] as Column[]
-        }
+        columns={[
+          {
+            ...keyColumn<Row, 'active'>('active', checkboxColumn),
+            title: 'Active',
+          },
+          {
+            ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+            title: 'First name',
+          },
+          {
+            ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+            title: 'Last name',
+          },
+        ]}
       />
     </div>
   )

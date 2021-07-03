@@ -18,10 +18,11 @@ export type CellProps<T, C> = {
   disabled: boolean
   columnData: C
   setRowData: (rowData: T) => void
-  stopEditing: ({ nextRow }?: { nextRow: boolean }) => void
+  stopEditing: (opts?: { nextRow: boolean }) => void
   insertRowBelow: () => void
   duplicateRow: () => void
   deleteRow: () => void
+  getContextMenuItems: () => ContextMenuItem[]
 }
 
 export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
@@ -56,6 +57,7 @@ export type ListItemData<T> = {
   duplicateRows: (rowMin: number, rowMax?: number) => void
   insertRowAfter: (row: number, count?: number) => void
   stopEditing: (opts?: { nextRow?: boolean }) => void
+  getContextMenuItems: () => ContextMenuItem[]
 }
 
 export type HeaderContextType<T> = {
@@ -99,6 +101,7 @@ export type RowProps<T> = {
   duplicateRows: (rowMin: number, rowMax?: number) => void
   insertRowAfter: (row: number, count?: number) => void
   stopEditing?: (opts?: { nextRow?: boolean }) => void
+  getContextMenuItems: () => ContextMenuItem[]
 }
 
 export type SimpleColumn<T, C> = Partial<
@@ -124,7 +127,7 @@ export type ContextMenuItem =
       toRow: number
     }
 
-export type ContextMenuProps = {
+export type ContextMenuComponentProps = {
   clientX: number
   clientY: number
   items: ContextMenuItem[]
@@ -147,5 +150,5 @@ export type DataSheetGridProps<T> = {
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean
-  contextMenuComponent?: (props: ContextMenuProps) => JSX.Element
+  contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
 }

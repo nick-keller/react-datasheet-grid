@@ -23,6 +23,7 @@ const RowComponent = React.memo(
     insertRowAfter,
     duplicateRows,
     stopEditing,
+    getContextMenuItems,
   }: RowProps<any>) => {
     const firstRender = useFirstRender()
 
@@ -73,6 +74,7 @@ const RowComponent = React.memo(
               {(column.renderWhenScrolling || !renderLight) && (
                 <Component
                   rowData={data}
+                  getContextMenuItems={getContextMenuItems}
                   disabled={disabled}
                   active={activeColIndex === i - 1}
                   columnIndex={i - 1}
@@ -147,6 +149,7 @@ export const Row = <T extends any>({
           ? data.stopEditing
           : undefined
       }
+      getContextMenuItems={data.getContextMenuItems}
     />
   )
 }
