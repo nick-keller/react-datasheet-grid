@@ -12,7 +12,7 @@ import {
 import faker from 'faker'
 
 export default () => {
-  const [data, setData] = useState<any[]>(
+  const [data, setData] = useState<any[]>(() =>
     new Array(100000).fill(0).map(() => ({
       active: faker.datatype.boolean(),
       firstName: faker.name.firstName(),
