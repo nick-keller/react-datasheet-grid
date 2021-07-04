@@ -1,0 +1,153 @@
+---
+sidebar_position: 1
+---
+import StickyRight from '../../src/demos/stickyRight'
+import Options from '../../src/demos/options'
+
+# Props
+
+## data / onChange
+
+Used to control the data of the grid:
+```tsx
+function App() => {
+  const [ data, setData ] = useState([/*...*/])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+    />
+  )
+}
+```
+
+## Columns
+### columns
+> Type: `Column[]`
+
+An array of columns. [More details](columns)
+```tsx
+function App() => {
+  return (
+    <DataSheetGrid
+      columns={[ { title: 'A' }, { title: 'B' }, /*...*/ ]}
+    />
+  )
+}
+```
+
+### gutterColumn
+> Type: `Column`
+
+Used to customize the gutter column to the left of the grid. Mostly used to customize the width or the component that renders the gutter.
+
+To change the width of the gutter column you can simply specify the `width` key ([More details](columns#width)):
+```tsx
+function App() => {
+  return (
+    <DataSheetGrid gutterColumn={{ width: '0 0 60px' }} />
+  )
+}
+```
+
+### stickyRightColumn
+> Type: `Column`<br />
+> Default: `null`
+
+Used to add a column to the right of the grid. The added column is sticky (always visible even when scrolling) and
+cannot be selected, it is only used to show options to the user: delete row, insert row...
+
+<StickyRight />
+
+```tsx
+<DataSheetGrid
+  stickyRightColumn={{
+    component: ({ deleteRow }) => (
+      <button onClick={deleteRow}>❌</button>
+    ),
+  }}
+/>
+```
+
+## Size
+```tsx
+<DataSheetGrid
+  height={500}
+  rowHeight={30}
+  headerRowHeight={50}
+/>
+```
+
+### height
+> Type: `number`<br />
+> Default: `400`
+
+Maximum height of the grid in pixels. If the content is longer, the grid becomes scrollable.
+
+### rowHeight
+> Type: `number`<br />
+> Default: `40`
+
+Height of a single row in pixels. All rows have the same height.
+
+### headerRowHeight
+> Type: `number`<br />
+> Default: `rowHeight`
+
+Height of the header row in pixels.
+
+
+
+## Options
+<Options />
+
+### lockRows
+> Type: `boolean`<br />
+> Default: `false`
+
+When true, prevents the user from adding or removing rows, even when using keyboard shortcuts or when pasting large data-set.
+
+### autoAddRow
+> Type: `boolean`<br />
+> Default: `false`
+
+When true, a new row is added at the end of the grid when the user presses enter while editing a cell from the last row.
+`autoAddRow` is useless when `lockRows` is `true`.
+
+### disableContextMenu
+> Type: `boolean`<br />
+> Default: `false`
+
+When true, no context menu is shown when right clicking. `disableContextMenu` is automatically set to `true` when
+`lockRows` is `true`.
+
+## Row behavior
+### createRow
+> Type: `() => any`<br />
+> Default: `() => ({})`
+
+A function that should return a new row object. This function is called once per row every time the user appends
+or inserts new rows. Most often used to add default values and / or random ids to new rows.
+
+### duplicateRow
+> Type: `({ rowData }) => any`<br />
+> Default: `({ rowData }) => ({ ...rowData })`
+
+A function that should return a new row object from an existing row. This function is called once per row every time the user duplicates rows. Most often used to override values and / or change uniq ids when duplicating rows.
+
+### isRowEmpty
+> Type: `({ rowData }) => boolean`<br />
+> Default: A function that returns true when one of the value of `rowData` is truthy
+
+When pressing `Del`, a user can only delete empty rows. This function allows to customize what is considered
+an empty row. Most often used to ignore keys that are in the object but are not part of any column (eg. a hidden id).
+
+## Customizable components
+### addRowsComponent
+Used to replace the content of the "Add row" button bellow the grid. Most often used for translations,
+custom inputs,
+icons... View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/AddRows.tsx).
+
+### contextMenuComponent
+Used to customize the context menu when right clicking. View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/ContextMenu.tsx).

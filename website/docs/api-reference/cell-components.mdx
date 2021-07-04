@@ -1,0 +1,98 @@
+---
+sidebar_position: 3
+---
+import ActiveFocus from '../../src/demos/activeFocus'
+
+# Cell component props
+
+Cell components are used to render each individual cells of a column:
+```tsx
+const MyCellComponent = ({ rowData, setRowData }) => {
+  // Render a cell reflecting the value of `rowData` and update it using `setRowData`
+}
+
+const columns = [{ title: 'A', component: MyCellComponent }]
+```
+
+## Data
+### rowData
+> Type: `any`
+
+The row object from which tha value of the cell should be extracted. Make sur to
+[use `keyColumn`](../performance/cell-components#use-keycolumn) if you do not need the entire row object.
+
+### setRowData
+> Type: `(rowData) => void`
+
+This function should be called to update the row with its new value.
+
+## Extra information
+### rowIndex
+> Type: `number`
+
+Index of the row.
+
+### columnIndex
+> Type: `number`
+
+Index of the column.
+
+### columnData
+> Type: `any`
+
+The column's data. [More details](columns#columndata)
+
+## Cell state
+Try editing a cell to see the difference between `active` and `focus`:
+<ActiveFocus />
+
+### active
+> Type: `boolean`
+
+True when the cell is active / highlighted.
+
+It is recommended to hide any placeholder while a cell is not active to avoid having an entire empty column with the
+same text repeating.
+
+### focus
+> Type: `boolean`
+
+True when the cell is focused / being edited.
+
+It is recommended to apply style `pointerEvents: none` to your components while they are not in focus
+to prevent any unwanted interactions or cursor.
+
+### disabled
+> Type: `boolean`
+
+True when the cell is disabled                                                                                                                                                                                                                                |
+
+## Control functions
+### stopEditing
+> Type: `({ nextRow = true }) => void`
+
+This function can be called to exit edit mode programmatically. This is mainly used when `disableKeys` is true
+but it can have other use-cases.
+
+Optionally you can pass the `nextRow` parameter to `false` so the active / highlighted cell stays on the current
+cell instead of going to the next row.
+
+### insertRowBelow
+> Type: `() => void`
+
+This function can be called to insert a row below the current one.
+
+### duplicateRow
+> Type: `() => void`
+
+This function can be called to duplicate the current row.
+
+### deleteRow
+> Type: `() => void`
+
+This function can be called to delete the current row.
+
+### getContextMenuItems
+> Type: `() => ContextMenuItem[]`
+
+This function can be called to get the list of available context menu items (insert row, duplicate selected rows...).

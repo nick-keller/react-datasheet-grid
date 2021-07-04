@@ -1,0 +1,170 @@
+---
+sidebar_position: 2
+---
+import DisableColumns from '../../src/demos/disableColumns'
+
+# Columns
+
+Columns are simple objects and can be declared as such:
+```tsx
+const columns = [
+  { title: 'A', /*...*/ },
+  { title: 'B', /*...*/ },
+]
+```
+
+## title
+> Type: `JSX.Element`<br />
+> Default: `null`
+
+Element to display in the header row.
+
+## Sizing
+### width
+> Type: `string | number`<br />
+> Default: `1`
+
+Width of the column, supports the same values as the CSS [flex property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex).
+
+#### Fixed sized columns
+```tsx
+const column = { width: '0 0 100px' }
+```
+
+`'0 0 <width>px'` for fixed width of `<width>` pixels. This syntaxe is the same than the shorthand property of flex and is equivalent to:
+
+```css
+flex-grow: 0;
+flex-shrink: 0;
+flex-basis: <width>px;
+```
+
+#### Relative sized columns
+```tsx
+const columns = [
+  { width: 1 },
+  { width: 1 },
+  { width: 2 }, // 👈 This column will grow and shrink like the others but will be twice as large
+]
+```
+
+`<number>` for responsive columns. This is equivalent to:
+
+```css
+flex-grow: <number>;
+flex-shrink: <number>;
+flex-basis: 0;
+```
+
+### minWidth
+> Type: `number`<br />
+> Default: `100`
+
+Minimum width of the column in pixels. Can be `0` for no minimum value.
+
+### maxWidth
+> Type: `number | null`<br />
+> Default: `null`
+
+Maximum width of the column in pixels. Can be `null` for no maximum value.
+
+## Copy pasting
+### copyValue
+> Type: `({ rowData }) => number | string | null`
+
+A function that returns the value of the copied cell. If the user copies multiple cells at once, this function
+will be called multiple times.  It can return a string, a number, or null, but it will always be turned into a string
+in the end.
+
+
+### pasteValue
+> Type: `({ rowData, value }) => any`
+
+A function that takes in a row and the `value`  to be pasted, and should return the updated row. If the value should
+be ignored, it should still return the unchanged row. The `value` is always a string and should therefore be casted
+to whatever type is needed.
+
+It is recommended to make sure that the `pasteValue` can handle all values returned from `copyValue` otherwise a
+user might ba able to copy something but not paste it.
+
+### deleteValue
+> Type: `({ rowData }) => any`
+
+A function that deletes the column value of a row. Used when the user cuts, clears a cell, or deletes a row.
+
+## Rendering
+### component
+> Type: `Component`
+
+A react component that renders a cell. [See props](cell-components)
+
+### columnData
+> Type: `any`
+
+A value to pass to every cell component of the column through the `columnData` prop. Usually used to hold some kind
+of options for the column.
+
+For example, to implement a select column you would use `columnData` to pass the choices:
+```tsx
+const SelectComponent = ({ columnData: choices }) => {
+  // Render cell using `choices`
+}
+
+const selectColumn = (choices) => ({
+  columnData: choices,
+  component: SelectComponent,
+})
+
+function App() {
+  return <DataSheetGrid columns={[
+    { ...selectColumn(['Light', 'Dark']), title: 'Theme' }
+  ]} />
+}
+```
+
+## Options
+### disabled
+> Type: `boolean | (({ rowData }) => boolean)`<br />
+> Default: `false`
+
+Disable the entire column by passing `true`, or disable it for specific rows by passing a function. Disabled cells
+cannot be edited but their values can still be copied.
+
+Try toggling the "active" column:
+
+<DisableColumns />
+
+```tsx
+<DataSheetGrid
+  columns={[
+    { title: 'Active', /*...*/ },
+    { title: 'First name', disabled: ({ rowData }) => !rowData.active, /*...*/ },
+    { title: 'Last name', disabled: true, /*...*/ },
+  ]}
+/>
+```
+
+### renderWhenScrolling
+> Type: `boolean`<br />
+> Default: `true`
+
+When set to `false`, the column waits for the scroll to stop to render new cells.
+[More details](../performance/cell-components#slow-components-and-scrolling) about performance.
+
+### disableKeys
+> Type: `boolean`<br />
+> Default: `false`
+
+Usually when the user is editing a cell, pressing the up, down, or return key will exit editing mode.
+Setting `disableKeys` to `true` will prevent this behavior. This is used when the widget needs to handle the up and
+down keys itself (eg. to increase the value, or select a choice). Usually the widget also needs to handle the return
+key by calling [stopEditing](#cell-component).
+
+### keepFocus
+> Type: `boolean`<br />
+> Default: `false`
+
+When you implement a widget using a portal (ie. a div that is not a direct children of the cell) you might
+want the cell to keep focus when the user interacts with that element (even tho it is actually
+outside of the grid itself). This means that you have to handle the click event and call [stopEditing](#cell-component)
+yourself to release focus.

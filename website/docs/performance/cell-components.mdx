@@ -1,0 +1,98 @@
+---
+sidebar_position: 2
+---
+import Demo from '../../src/demos/renderWhenScrolling'
+
+# Cell components
+
+## Use `React.memo()`
+It is recommended to wrap all cell components in `React.memo()` to avoid un-necessary renders (except for very light
+components where a re-render is faster than a props check):
+```tsx
+const MyComponent = React.memo(({ rowData, setRowData }) => {
+  return <input {/*...*/} />
+})
+
+const column = { component: MyComponent, /*...*/ }
+```
+
+## Use `keyColumn`
+Cell components are re-rendered only when their props change thanks to `React.memo()`. But because they take the entire
+row object in the prop `rowData` (and not just the value they are interested in), all cells of a row are re-rendered when
+the user edits a single cell.
+
+To make this obvious consider the following text-typed column:
+```tsx
+// Do not do this 👎
+const TextComponent = React.memo(
+  ({ rowData, setRowData, columnData }) => {
+    return (
+      <input
+        value={rowData[columnData]}
+        onChange={(e) => setRowData({ ...rowData, [key]: e.target.value })}
+      />
+    )
+  }
+)
+
+const textColumn = (key) => ({
+  component: TextComponent,
+  columnData: key,
+  deleteValue: ({ rowData }) => ({ ...rowData, [key]: '' }),
+  copyValue: ({ rowData }) => rowData[key],
+  pasteValue: ({ rowData, value }) => ({ ...rowData, [key]: value }),
+})
+
+const columns = [
+  { ...textColumn('firstName') },
+  { ...textColumn('lastName') },
+]
+```
+
+The `rowData` prop of the firstName column will change every time the user changes the lastName (and vice-versa),
+triggering an un-necessary re-render of the firstName column. And this happens on every keystroke!
+
+Fortunately this can easily be avoided by using the built-in `keyColumn`.
+```tsx
+import { keyColumn } from 'react-datasheet-grid'
+
+const TextComponent = React.memo(
+  ({ rowData, setRowData }) => {
+    return (
+      <input
+        value={rowData}
+        onChange={(e) => setRowData(e.target.value)}
+      />
+    )
+  }
+)
+
+const textColumn = {
+  component: TextComponent,
+  deleteValue: () => '',
+  copyValue: ({ rowData }) => rowData,
+  pasteValue: ({ value }) => value,
+}
+
+const columns = [
+  { ...keyColumn('firstName', textColumn) }
+  { ...keyColumn('lastName', textColumn) }
+]
+```
+`keyColumn` has the advantage of reducing the number of renders your component has to perform while also
+making it much easier to write.
+
+## Slow components and scrolling
+React Datasheet Grid uses virtualized rows, only rendering rows that are in view. When the user scrolls through a
+long datasheet, hundreds of rows might be rendered in a few seconds. If a component is slow to render,
+it might have a big impact on performance.
+
+For surch slow components it is recommended to set `renderWhenScrolling` to `false` to only start rendering the
+column when scroll stops:
+```tsx
+const columns = [
+  { title: 'A', component: SlowComponent, renderWhenScrolling: false },
+  { title: 'B', component: NormalComponent },
+]
+```
+<Demo />

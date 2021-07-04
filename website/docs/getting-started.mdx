@@ -1,0 +1,46 @@
+---
+sidebar_position: 1
+---
+import Demo from '../src/demos/simple'
+
+# Getting started
+
+Install react-datasheet-grid using npm or yarn:
+```shell
+npm i react-datasheet-grid
+```
+
+## Usage
+You can start by using built in columns:
+```tsx
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  textColumn,
+  keyColumn,
+} from 'react-datasheet-grid'
+
+const Example = () => {
+  const [ data, setData ] = useState([
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+  ])
+
+  const columns = [
+    { ...keyColumn('active', checkboxColumn), title: 'Active' },
+    { ...keyColumn('firstName', textColumn), title: 'First name' },
+    { ...keyColumn('lastName', textColumn), title: 'Last name' },
+  ]
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+```
+
+## Output
+<Demo />

@@ -1,0 +1,72 @@
+---
+sidebar_position: 2
+---
+import Random from '../src/demos/random'
+import XXL from '../src/demos/xxl'
+import UnderlyingData from '../src/demos/underlyingData'
+import Responsive from '../src/demos/reponsive'
+import LockRows from '../src/demos/lockRows'
+import DisableColumns from '../src/demos/disableColumns'
+
+# Features
+
+## 100,000 rows
+Rows are virtualized, display performance is not impacted by the number of rows.
+<XXL />
+
+## Simple underlying data
+You don't need to wrap you data in fancy objects.
+
+<UnderlyingData />
+
+## Responsive
+The spreadsheet takes 100% of the div it is in and grows and shrinks with it.
+You can specify how columns should react using known flexbox syntax. [More details](api-reference/columns#width) on how
+to setup column widths.
+
+<Responsive />
+
+## Keyboard shortcuts
+A lot of keyboard shortcuts are supported so power user can feel just right:
+- `Arrows` to move active cell around
+- `Tab` and `Shift+Tab` to go to next / previous cell
+- `Shift+Arrows` to select multiple cells
+- `Ctrl+Arrows` or `⌘+Arrows` to move to first / last / top / bottom cell
+- `Ctrl+Shift+Arrows` or `⌘+Shift+Arrows` to select to first / last / top / bottom cell
+- `Esc` to blur
+- `Enter` to start / stop editing cell
+- `Shift+Enter` to insert row bellow
+- `Ctrl+D` or `⌘+D` to duplicate current row / selected rows
+- `Backspace` or `Del` to clear cell / delete rows
+- `Ctrl+A` or `⌘+A` to select all
+
+
+## Context menu
+Smart context menu when right clicking is 100% supported and customizable with a single component.
+[More details](api-reference/props#contextmenucomponent) on how to setup a custom context menu.
+
+Try right clicking on the grid, selecting a few rows, clicking on headers...
+
+<Random />
+
+## Copy pasting
+Copy pasting to and from Excel, Google-sheet, and other spreadsheet software is supported and completely customizable:
+you decide what data is copied and how pasting is handled with simple functions.
+[More details](api-reference/columns#copy-pasting) on how to customize copy pasting behavior.
+
+## Lock rows
+It might be desirable to lock rows. Here the user cannot insert or delete rows, even when using keyboard shortcuts or
+when pasting large data-set. [More details](api-reference/props#options) on grid options.
+
+<LockRows />
+
+## Disable columns or cells
+Columns can be disabled entirely, or on a per-row basis.
+
+Disabling a column prevents the user from editing its cells, including any pasting or deleting operation.
+The user can still copy the value of a disabled column. [More details](api-reference/columns#disabled) on
+disabling columns and cells.
+
+Try toggling the "active" column:
+
+<DisableColumns />
