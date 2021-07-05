@@ -5,6 +5,7 @@
   cursor: cell;
   user-select: none;
   box-sizing: border-box;
+  color: black;
 }
 
 .dsg-corner-indicator {

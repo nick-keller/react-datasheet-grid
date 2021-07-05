@@ -158,7 +158,7 @@ When set to `false`, the column waits for the scroll to stop to render new cells
 Usually when the user is editing a cell, pressing the up, down, or return key will exit editing mode.
 Setting `disableKeys` to `true` will prevent this behavior. This is used when the widget needs to handle the up and
 down keys itself (eg. to increase the value, or select a choice). Usually the widget also needs to handle the return
-key by calling [stopEditing](#cell-component).
+key by calling [stopEditing](cell-components#stopediting).
 
 ### keepFocus
 > Type: `boolean`<br />
@@ -166,5 +166,5 @@ key by calling [stopEditing](#cell-component).
 
 When you implement a widget using a portal (ie. a div that is not a direct children of the cell) you might
 want the cell to keep focus when the user interacts with that element (even tho it is actually
-outside of the grid itself). This means that you have to handle the click event and call [stopEditing](#cell-component)
+outside of the grid itself). This means that you have to handle the click event and call [stopEditing](cell-components#stopediting)
 yourself to release focus.
