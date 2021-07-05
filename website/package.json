@@ -24,7 +24,7 @@
     "prism-react-renderer": "^1.2.1",
     "rc-switch": "^3.2.2",
     "react": "^17.0.1",
-    "react-datasheet-grid": "^2.0.3",
+    "react-datasheet-grid": "^2.0.4",
     "react-dom": "^17.0.1",
     "react-rnd": "^10.3.3",
     "url-loader": "^4.1.1"
