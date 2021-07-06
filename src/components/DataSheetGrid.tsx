@@ -513,7 +513,7 @@ export const DataSheetGrid = React.memo(
           const pasteData =
             event.clipboardData
               ?.getData('text')
-              .replace(/\r/g, '')
+              .replace(/\r|\n$/g, '')
               .split('\n')
               .map((row) => row.split('\t')) || []
 
