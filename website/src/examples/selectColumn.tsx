@@ -7,6 +7,7 @@ import {
   intColumn,
 } from 'react-datasheet-grid'
 import Select from 'react-select'
+import BrowserOnly from '@docusaurus/BrowserOnly'
 
 type Choice = {
   label: string
@@ -38,48 +39,52 @@ const SelectComponent = React.memo(
     }, [focus])
 
     return (
-      <Select
-        ref={ref}
-        styles={{
-          container: (provided) => ({
-            ...provided,
-            flex: 1,
-            alignSelf: 'stretch',
-            pointerEvents: focus ? undefined : 'none',
-          }),
-          control: (provided) => ({
-            ...provided,
-            height: '100%',
-            border: 'none',
-            boxShadow: 'none',
-            background: 'none',
-          }),
-          indicatorSeparator: (provided) => ({
-            ...provided,
-            opacity: 0,
-          }),
-          indicatorsContainer: (provided) => ({
-            ...provided,
-            opacity: active ? 1 : 0,
-          }),
-          placeholder: (provided) => ({
-            ...provided,
-            opacity: active ? 1 : 0,
-          }),
-        }}
-        isDisabled={columnData.disabled}
-        value={
-          columnData.choices.find(({ value }) => value === rowData) ?? null
-        }
-        menuPortalTarget={document.body}
-        menuIsOpen={focus}
-        onChange={({ value }) => {
-          setRowData(value)
-          setTimeout(stopEditing, 0)
-        }}
-        onMenuClose={() => stopEditing({ nextRow: false })}
-        options={columnData.choices}
-      />
+      <BrowserOnly>
+        {() => (
+          <Select
+            ref={ref}
+            styles={{
+              container: (provided) => ({
+                ...provided,
+                flex: 1,
+                alignSelf: 'stretch',
+                pointerEvents: focus ? undefined : 'none',
+              }),
+              control: (provided) => ({
+                ...provided,
+                height: '100%',
+                border: 'none',
+                boxShadow: 'none',
+                background: 'none',
+              }),
+              indicatorSeparator: (provided) => ({
+                ...provided,
+                opacity: 0,
+              }),
+              indicatorsContainer: (provided) => ({
+                ...provided,
+                opacity: active ? 1 : 0,
+              }),
+              placeholder: (provided) => ({
+                ...provided,
+                opacity: active ? 1 : 0,
+              }),
+            }}
+            isDisabled={columnData.disabled}
+            value={
+              columnData.choices.find(({ value }) => value === rowData) ?? null
+            }
+            menuPortalTarget={document.body}
+            menuIsOpen={focus}
+            onChange={({ value }) => {
+              setRowData(value)
+              setTimeout(stopEditing, 0)
+            }}
+            onMenuClose={() => stopEditing({ nextRow: false })}
+            options={columnData.choices}
+          />
+        )}
+      </BrowserOnly>
     )
   }
 )
@@ -301,38 +306,42 @@ export const Step3 = () => {
 
 const SelectComponent4 = ({ active, focus }: CellProps) => {
   return (
-    <Select
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          flex: 1,
-          alignSelf: 'stretch',
-          pointerEvents: focus ? undefined : 'none',
-        }),
-        control: (provided) => ({
-          ...provided,
-          height: '100%',
-          border: 'none',
-          boxShadow: 'none',
-          background: 'none',
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          opacity: 0,
-        }),
-        indicatorsContainer: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-        placeholder: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-      }}
-      menuPortalTarget={document.body}
-      menuIsOpen={focus}
-      options={defaultChoices}
-    />
+    <BrowserOnly>
+      {() => (
+        <Select
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              flex: 1,
+              alignSelf: 'stretch',
+              pointerEvents: focus ? undefined : 'none',
+            }),
+            control: (provided) => ({
+              ...provided,
+              height: '100%',
+              border: 'none',
+              boxShadow: 'none',
+              background: 'none',
+            }),
+            indicatorSeparator: (provided) => ({
+              ...provided,
+              opacity: 0,
+            }),
+            indicatorsContainer: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+          }}
+          menuPortalTarget={document.body}
+          menuIsOpen={focus}
+          options={defaultChoices}
+        />
+      )}
+    </BrowserOnly>
   )
 }
 
@@ -371,39 +380,43 @@ const SelectComponent5 = ({ active, focus }: CellProps) => {
   }, [focus])
 
   return (
-    <Select
-      ref={ref}
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          flex: 1,
-          alignSelf: 'stretch',
-          pointerEvents: focus ? undefined : 'none',
-        }),
-        control: (provided) => ({
-          ...provided,
-          height: '100%',
-          border: 'none',
-          boxShadow: 'none',
-          background: 'none',
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          opacity: 0,
-        }),
-        indicatorsContainer: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-        placeholder: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-      }}
-      menuPortalTarget={document.body}
-      menuIsOpen={focus}
-      options={defaultChoices}
-    />
+    <BrowserOnly>
+      {() => (
+        <Select
+          ref={ref}
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              flex: 1,
+              alignSelf: 'stretch',
+              pointerEvents: focus ? undefined : 'none',
+            }),
+            control: (provided) => ({
+              ...provided,
+              height: '100%',
+              border: 'none',
+              boxShadow: 'none',
+              background: 'none',
+            }),
+            indicatorSeparator: (provided) => ({
+              ...provided,
+              opacity: 0,
+            }),
+            indicatorsContainer: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+          }}
+          menuPortalTarget={document.body}
+          menuIsOpen={focus}
+          options={defaultChoices}
+        />
+      )}
+    </BrowserOnly>
   )
 }
 
@@ -442,40 +455,44 @@ const SelectComponent6 = ({ active, focus, stopEditing }: CellProps) => {
   }, [focus])
 
   return (
-    <Select
-      ref={ref}
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          flex: 1,
-          alignSelf: 'stretch',
-          pointerEvents: focus ? undefined : 'none',
-        }),
-        control: (provided) => ({
-          ...provided,
-          height: '100%',
-          border: 'none',
-          boxShadow: 'none',
-          background: 'none',
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          opacity: 0,
-        }),
-        indicatorsContainer: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-        placeholder: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-      }}
-      menuPortalTarget={document.body}
-      onMenuClose={() => stopEditing({ nextRow: false })}
-      menuIsOpen={focus}
-      options={defaultChoices}
-    />
+    <BrowserOnly>
+      {() => (
+        <Select
+          ref={ref}
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              flex: 1,
+              alignSelf: 'stretch',
+              pointerEvents: focus ? undefined : 'none',
+            }),
+            control: (provided) => ({
+              ...provided,
+              height: '100%',
+              border: 'none',
+              boxShadow: 'none',
+              background: 'none',
+            }),
+            indicatorSeparator: (provided) => ({
+              ...provided,
+              opacity: 0,
+            }),
+            indicatorsContainer: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+          }}
+          menuPortalTarget={document.body}
+          onMenuClose={() => stopEditing({ nextRow: false })}
+          menuIsOpen={focus}
+          options={defaultChoices}
+        />
+      )}
+    </BrowserOnly>
   )
 }
 
@@ -515,40 +532,44 @@ const SelectComponent7 = ({ active, focus, stopEditing }: CellProps) => {
   }, [focus])
 
   return (
-    <Select
-      ref={ref}
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          flex: 1,
-          alignSelf: 'stretch',
-          pointerEvents: focus ? undefined : 'none',
-        }),
-        control: (provided) => ({
-          ...provided,
-          height: '100%',
-          border: 'none',
-          boxShadow: 'none',
-          background: 'none',
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          opacity: 0,
-        }),
-        indicatorsContainer: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-        placeholder: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-      }}
-      menuPortalTarget={document.body}
-      menuIsOpen={focus}
-      onMenuClose={() => stopEditing({ nextRow: false })}
-      options={defaultChoices}
-    />
+    <BrowserOnly>
+      {() => (
+        <Select
+          ref={ref}
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              flex: 1,
+              alignSelf: 'stretch',
+              pointerEvents: focus ? undefined : 'none',
+            }),
+            control: (provided) => ({
+              ...provided,
+              height: '100%',
+              border: 'none',
+              boxShadow: 'none',
+              background: 'none',
+            }),
+            indicatorSeparator: (provided) => ({
+              ...provided,
+              opacity: 0,
+            }),
+            indicatorsContainer: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+          }}
+          menuPortalTarget={document.body}
+          menuIsOpen={focus}
+          onMenuClose={() => stopEditing({ nextRow: false })}
+          options={defaultChoices}
+        />
+      )}
+    </BrowserOnly>
   )
 }
 
@@ -595,45 +616,49 @@ const SelectComponent8 = ({
   }, [focus])
 
   return (
-    <Select
-      ref={ref}
-      styles={{
-        container: (provided) => ({
-          ...provided,
-          flex: 1,
-          alignSelf: 'stretch',
-          pointerEvents: focus ? undefined : 'none',
-        }),
-        control: (provided) => ({
-          ...provided,
-          height: '100%',
-          border: 'none',
-          boxShadow: 'none',
-          background: 'none',
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          opacity: 0,
-        }),
-        indicatorsContainer: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-        placeholder: (provided) => ({
-          ...provided,
-          opacity: active ? 1 : 0,
-        }),
-      }}
-      menuPortalTarget={document.body}
-      value={defaultChoices.find(({ value }) => value === rowData) ?? null}
-      menuIsOpen={focus}
-      onChange={({ value }) => {
-        setRowData(value)
-        setTimeout(stopEditing, 0)
-      }}
-      onMenuClose={() => stopEditing({ nextRow: false })}
-      options={defaultChoices}
-    />
+    <BrowserOnly>
+      {() => (
+        <Select
+          ref={ref}
+          styles={{
+            container: (provided) => ({
+              ...provided,
+              flex: 1,
+              alignSelf: 'stretch',
+              pointerEvents: focus ? undefined : 'none',
+            }),
+            control: (provided) => ({
+              ...provided,
+              height: '100%',
+              border: 'none',
+              boxShadow: 'none',
+              background: 'none',
+            }),
+            indicatorSeparator: (provided) => ({
+              ...provided,
+              opacity: 0,
+            }),
+            indicatorsContainer: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+            placeholder: (provided) => ({
+              ...provided,
+              opacity: active ? 1 : 0,
+            }),
+          }}
+          menuPortalTarget={document.body}
+          value={defaultChoices.find(({ value }) => value === rowData) ?? null}
+          menuIsOpen={focus}
+          onChange={({ value }) => {
+            setRowData(value)
+            setTimeout(stopEditing, 0)
+          }}
+          onMenuClose={() => stopEditing({ nextRow: false })}
+          options={defaultChoices}
+        />
+      )}
+    </BrowserOnly>
   )
 }
 
