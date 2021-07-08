@@ -1,0 +1,732 @@
+---
+sidebar_position: 3
+---
+import { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, MultipleColumns, FinalResult } from '../../src/examples/selectColumn'
+
+# Implementing a select column
+
+The goal here is to implement a simple select that can serve as a base for a prod ready
+component of your application. It will be easily extensible, and re-usable anywhere in your app:
+
+```tsx
+function App() {
+  // `data` is a simple array of `string | null`, in a real world example
+  // we would probably have multiple columns and use objects instead
+  // See section => Using with multiple columns
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          // We use our custom select column 🎉
+          ...selectColumn({
+            disabled: false,
+            choices: [
+              { value: 'chocolate', label: 'Chocolate' },
+              { value: 'strawberry', label: 'Strawberry' },
+              { value: 'vanilla', label: 'Vanilla' },
+            ],
+          }),
+          // ...and add a title
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+<FinalResult />
+
+## Setup
+
+We will be using the popular [react-select](https://www.npmjs.com/package/react-select) library. First we need to
+install it:
+```
+npm i react-select
+
+# Using Typescript?
+npm i --save-dev @types/react-select
+```
+
+The rest of this tutorial will be using **Typescript**, if your are using plain JS simply strip away any type
+annotation and you should be good to go.
+
+Now we can simply use the `Select` component in a column using the [component](../api-reference/columns#component) prop:
+
+```tsx
+import Select from 'react-select'
+
+function App() {
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          component: Select
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+<Step1 />
+
+The result is not great but at least it works, we simply need to do a little styling. To do so we need to customize the
+props and behavior of the `Select` component by wraping it in a component of our own:
+
+```tsx {3-5,16}
+import Select from 'react-select'
+
+const SelectComponent = () => {
+  return <Select />
+}
+
+function App() {
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          component: SelectComponent,
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+We now have a solid base to start styling!
+
+## Styling
+
+According to [react-select doc](https://react-select.com/styles) we can use the `styles` prop to style any part of the
+select component. So far we only need to style 3 elements:
+- **container**: make it take the full width and height of the cell
+- **control**: make it take the full height of the container and remove any border
+- **indicatorSeparator**: just hide it using opacity, it's easier on the eye
+
+```tsx
+const SelectComponent = () => {
+  return (
+    <Select
+      styles={{
+        container: (provided) => ({
+          ...provided,
+          flex: 1, // full width
+          alignSelf: 'stretch', // full height
+        }),
+        control: (provided) => ({
+          ...provided,
+          height: '100%',
+          border: 'none',
+          boxShadow: 'none',
+          background: 'none',
+        }),
+        indicatorSeparator: (provided) => ({
+          ...provided,
+          opacity: 0,
+        }),
+      }}
+    />
+  )
+}
+```
+<Step2 />
+
+Interacting with our select does not feel right, but it is already looking a lot better. To fix this issue
+we need to prevent the mouse cursor from interacting with the select unless the cell is focused. We can use the [focus](../api-reference/cell-components#focus) prop to set
+the CSS property [`pointerEvents`](https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events) to `none`
+when the cell is not focused:
+
+```tsx {11}
+import { CellProps } from 'react-datasheet-grid'
+
+const SelectComponent = ({ focus }: CellProps) => {
+  return (
+    <Select
+      styles={{
+        container: (provided) => ({
+          ...provided,
+          flex: 1,
+          alignSelf: 'stretch',
+          pointerEvents: focus ? undefined : 'none',
+        }),
+        /*...*/
+      }}
+    />
+  )
+}
+```
+
+If we add 10 rows to our datasheet grid we see that the "Select..." placeholder and the caret look very repetitive.
+It is recommended to only show placeholders on active cells to avoid this effect. We can use the [active](../api-reference/cell-components#active) prop to do so:
+
+```tsx {8-15}
+import { CellProps } from 'react-datasheet-grid'
+
+const SelectComponent = ({ active }: CellProps) => {
+  return (
+    <Select
+      styles={{
+        /*...*/
+        indicatorsContainer: (provided) => ({
+          ...provided,
+          opacity: active ? 1 : 0,
+        }),
+        placeholder: (provided) => ({
+          ...provided,
+          opacity: active ? 1 : 0,
+        }),
+      }}
+    />
+  )
+}
+```
+
+Finally we can add some options just for fun:
+
+```tsx
+const SelectComponent = () => {
+  return (
+    <Select
+      /*...*/
+      options={[
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' },
+      ]}
+    />
+  )
+}
+```
+
+<Step3 />
+
+The end result is a placeholder that is only visible when the cell is active, and a component you can
+only interact with while the cell is focused.
+
+## Fixing the menu
+It now takes 3 clicks to open the menu: click once to select the cell, click again to focus, and click
+again to open the menu. We can fix that by using the `focus` prop of our component to control the `menuIsOpen` prop
+of the select.
+
+```tsx {5}
+const SelectComponent = ({ focus }: CellProps) => {
+  return (
+    <Select
+      /*...*/
+      menuIsOpen={focus}
+    />
+  )
+}
+```
+
+We have another issue: if you try to open the select of the last row you have to scroll to
+see the menu because it is contained within the scrollable area of the grid.
+
+The solution is to use [portals](https://reactjs.org/docs/portals.html). Thankfully react-select has this feature
+built-in and we simply need to add a prop:
+
+```tsx {5}
+const SelectComponent = () => {
+  return (
+    <Select
+      /*...*/
+      menuPortalTarget={document.body}
+    />
+  )
+}
+```
+
+<Step4 />
+
+The menu is now displayed correctly and automatically opens when the cell is focused. You can use the return
+and escape keys to open and close the menu!
+
+## Fixing the search
+
+When you start typing the menu open because the cell gains focus, but nothing else happens, you have to manually click
+on the input to start searching.
+
+We have the same issue when we close the menu by pressing Esc, the input is till in focus with a blinking cursor.
+
+To fix this issue we simply need to manually focus and blur the input when we gain or loose focus.
+We can use a `ref` of the select element along with `useLayoutEffect` to achieve that:
+
+
+```tsx
+import React, { useLayoutEffect, useRef } from 'react'
+
+const SelectComponent = ({ focus }: CellProps) => {
+  const ref = useRef<Select>(null)
+
+  // This function will be called only when `focus` changes
+  useLayoutEffect(() => {
+    if (focus) {
+      ref.current?.focus()
+    } else {
+      ref.current?.blur()
+    }
+  }, [focus])
+
+  return (
+    <Select
+      ref={ref}
+      /*...*/
+    />
+  )
+}
+```
+
+<Step5 />
+
+
+
+## Keeping focus
+
+Now that the menu renders in a portal, any click in the menu will be considered to be outside of the grid and react-datasheet-grid
+will blur the cell, closing the menu. Luckily for us react-select prevent this from happening by blocking the click event
+on the menu, as you can see it stays open when you select a choice.
+
+But for the sake of example we are going to still "fix" this issue that might occur if you use another library or decide to
+implement your own.
+
+We use the [keepFocus](../api-reference/columns#keepfocus) property of the column to keep focus even when we click outside
+of the grid. We now have to call [stopEditing](../api-reference/cell-components#stopediting) ourself when the user clicks
+outside of the select. Notice the `nextRow` property that allows us to stay on the same cell instead of going to the next.
+
+```tsx {7,22}
+const SelectComponent = ({ stopEditing }: CellProps) => {
+  /*...*/
+
+  return (
+    <Select
+      /*...*/
+      onMenuClose={() => stopEditing({ nextRow: false })}
+    />
+  )
+}
+
+function App() {
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          component: SelectComponent,
+          keepFocus: true,
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+<Step6 />
+
+## Fixing the up and down keys
+
+The last UX issue we face is that using the up and down keys to select a choice moves the active
+cell up or down, and as a result closes the select. To fix this we simply need to disable keys when the cell is focused
+using the [disableKeys](../api-reference/columns#disablekeys) option of the column:
+
+```tsx {11}
+function App() {
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          component: SelectComponent,
+          disableKeys: true,
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+<Step7 />
+
+Now we can freely use the up and down arrows, but the `Enter` key is also ignored when we try to select a value.
+We will fix this in next section.
+
+## Binding data
+
+Until this point the underlying data (our state) was not modified. It looks like the select is working just fine because it
+keeps an inner state to show the value that has just been selected, but two points can give it away:
+- The default values we specified in `useState` are not shown: the two first rows should be Chocolate and Strawberry
+- If you add 20 rows, scroll down and scroll back up the selected value is gone. This is because the rows that are not in view
+  are deleted and created back when the user scrolls back to them, resetting the inner state of the select component
+
+Wee need to bind the right values to our select component:
+```tsx
+// For now we just took the choices outside of the component because we
+// need to refer to it multiple times (this is not the final design, but it will do for now)
+const choices = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' },
+]
+
+const SelectComponent = ({ rowData }: CellProps) => {
+  /*...*/
+
+  return (
+    <Select
+      /*...*/
+      value={
+        // We cannot just pass the rowData as value
+        // We have to pass the entire choice object { label, value }
+        choices.find(({ value }) => value === rowData) ?? null
+      }
+      options={choices}
+    />
+  )
+}
+```
+
+We also need to bind the `onChange` callback of the select to update the value and close the select. We use the
+[setRowData](../api-reference/cell-components#setrowdata) and [stopEditing](../api-reference/cell-components#stopediting)
+to achieve that:
+
+```tsx
+const SelectComponent = ({ setRowData, stopEditing }: CellProps) => {
+  /*...*/
+
+  return (
+    <Select
+      /*...*/
+      onChange={({ value }) => {
+        setRowData(value)
+        // We don't just do `stopEditing()` because it is triggered too early by react-select
+        setTimeout(stopEditing, 0)
+      }}
+    />
+  )
+}
+```
+
+<Step8 />
+
+## Handling copy pasting
+
+Handling copy pasting is very straight forward, we just need to implement three functions:
+- **deleteValue**: will be called when cutting or deleting a cell. We want return null as a deleted value.
+- **copyValue**: will be called when the cell is copied. Here we decided to return the label of the choice, not the underlying value.
+- **pasteValue**: will be called to handle pasting. Because we chose to copy the label, we have to transform it back to a value on pasting.
+
+```tsx {12-16}
+function App() {
+  const [ data, setData ] = useState(['chocolate', 'strawberry', null])
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          component: SelectComponent,
+          disableKeys: true,
+          deleteValue: () => null,
+          copyValue: ({ rowData }) =>
+            choices.find((choice) => choice.value === rowData)?.label,
+          pasteValue: ({ value }) =>
+            choices.find((choice) => choice.label === value)?.value ?? null,
+          title: 'Flavor',
+        },
+      ]}
+    />
+  )
+}
+```
+
+<Step9 />
+
+## Making the column generic
+
+Now we need to make our column re-usable. To make a column re-usable we often expose a function that takes params and returns a column object:
+
+```tsx
+type SelectOptions = {
+  choices: Choice[]
+  // Let's add more options!
+  disabled?: boolean
+}
+
+const selectColumn = (
+  // We receive the options as a parameter to create the column object
+  options: SelectOptions
+): Column<string | null, SelectOptions> => ({
+  component: SelectComponent,
+  // We pass the options to the cells using the `columnData`property
+  columnData: options,
+  // We set other column properties so we don't have to do it manually everytime we use the column
+  disableKeys: true,
+  keepFocus: true,
+  // We can also use the options to customise some properties
+  disabled: options.disabled,
+  deleteValue: () => null,
+  copyValue: ({ rowData }) =>
+    options.choices.find((choice) => choice.value === rowData)?.label,
+  pasteValue: ({ value }) =>
+    options.choices.find((choice) => choice.label === value)?.value ?? null,
+})
+```
+
+We also have to update the `SelectComponent` to get the options from `columnData`:
+```tsx
+
+const SelectComponent = React.memo(
+  ({ columnData, rowData }: CellProps<string | null, SelectOptions>) => {
+  /*...*/
+
+    return (
+      <Select
+        /*...*/
+        isDisabled={columnData.disabled}
+        value={
+          columnData.choices.find(({ value }) => value === rowData) ?? null
+        }
+        options={columnData.choices}
+      />
+    )
+  }
+)
+```
+
+Now our column is truly re-usable:
+
+```tsx
+function App() {
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        selectColumn({ choices: [/*..*/], disabled: true })
+      ]}
+    />
+  )
+}
+```
+
+We can also extend the column to add a title, a custom min-width, or override any property:
+
+```tsx
+function App() {
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={[
+        {
+          ...selectColumn({ choices: [/*..*/], disabled: true }),
+          title: 'Flavor',
+          minWidth: 150,
+        }
+      ]}
+    />
+  )
+}
+```
+
+## Final result
+
+```tsx
+import React, { useLayoutEffect, useRef, useState } from 'react'
+import { DataSheetGrid, CellProps, Column } from 'react-datasheet-grid'
+import Select from 'react-select'
+
+type Choice = {
+  label: string
+  value: string
+}
+
+type SelectOptions = {
+  choices: Choice[]
+  disabled?: boolean
+}
+
+const SelectComponent = React.memo(
+  ({
+    active,
+    rowData,
+    setRowData,
+    focus,
+    stopEditing,
+    columnData,
+  }: CellProps<string | null, SelectOptions>) => {
+    const ref = useRef<Select>(null)
+
+    useLayoutEffect(() => {
+      if (focus) {
+        ref.current?.focus()
+      } else {
+        ref.current?.blur()
+      }
+    }, [focus])
+
+    return (
+      <Select
+        ref={ref}
+        styles={{
+          container: (provided) => ({
+            ...provided,
+            flex: 1,
+            alignSelf: 'stretch',
+            pointerEvents: focus ? undefined : 'none',
+          }),
+          control: (provided) => ({
+            ...provided,
+            height: '100%',
+            border: 'none',
+            boxShadow: 'none',
+            background: 'none',
+          }),
+          indicatorSeparator: (provided) => ({
+            ...provided,
+            opacity: 0,
+          }),
+          indicatorsContainer: (provided) => ({
+            ...provided,
+            opacity: active ? 1 : 0,
+          }),
+          placeholder: (provided) => ({
+            ...provided,
+            opacity: active ? 1 : 0,
+          }),
+        }}
+        isDisabled={columnData.disabled}
+        value={
+          columnData.choices.find(({ value }) => value === rowData) ?? null
+        }
+        menuPortalTarget={document.body}
+        menuIsOpen={focus}
+        onChange={({ value }) => {
+          setRowData(value)
+          setTimeout(stopEditing, 0)
+        }}
+        onMenuClose={() => stopEditing({ nextRow: false })}
+        options={columnData.choices}
+      />
+    )
+  }
+)
+
+const selectColumn = (
+  options: SelectOptions
+): Column<string | null, SelectOptions> => ({
+  component: SelectComponent,
+  columnData: options,
+  disableKeys: true,
+  keepFocus: true,
+  disabled: options.disabled,
+  deleteValue: () => null,
+  copyValue: ({ rowData }) =>
+    options.choices.find((choice) => choice.value === rowData)?.label,
+  pasteValue: ({ value }) =>
+    options.choices.find((choice) => choice.label === value)?.value ?? null,
+})
+
+function App() {
+  const [data, setData] = useState<Array<string | null>>([
+    'chocolate',
+    'strawberry',
+    null,
+  ])
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <DataSheetGrid
+        data={data}
+        onChange={setData}
+        columns={[
+          {
+            ...selectColumn({
+              choices: [
+                { value: 'chocolate', label: 'Chocolate' },
+                { value: 'strawberry', label: 'Strawberry' },
+                { value: 'vanilla', label: 'Vanilla' },
+              ],
+            }),
+            title: 'Flavor',
+          },
+        ]}
+      />
+    </div>
+  )
+}
+```
+
+<FinalResult />
+
+## Using with multiple columns
+
+So far we have been using our select column on rows that are strings or null, that works well if we have only one column.
+Of course in a real world situation you probably want to have multiple columns and use objects instead. Fortunately
+their is no extra work needed to make it work, simply use `keyColumn`:
+
+```tsx
+import {
+  DataSheetGrid,
+  Column,
+  keyColumn,
+  intColumn,
+} from 'react-datasheet-grid'
+
+type Row = {
+  flavor: string | null
+  quantity: number | null
+}
+
+function App() {
+  const [data, setData] = useState<Row[]>([
+    { flavor: 'chocolate', quantity: 3 },
+    { flavor: 'strawberry', quantity: 5 },
+    { flavor: null, quantity: null },
+  ])
+
+  const columns: Column<Row>[] = [
+    {
+      ...keyColumn('flavor', selectColumn({ choices: [/*...*/] })),
+      title: 'Flavor',
+    },
+    {
+      ...keyColumn('quantity', intColumn),
+      title: 'Quantity',
+    },
+  ]
+
+  return (
+    <DataSheetGrid
+      data={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+```
+
+<MultipleColumns />

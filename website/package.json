@@ -27,6 +27,7 @@
     "react-datasheet-grid": "^2.0.4",
     "react-dom": "^17.0.1",
     "react-rnd": "^10.3.3",
+    "react-select": "^4.3.1",
     "url-loader": "^4.1.1"
   },
   "browserslist": {
@@ -47,6 +48,7 @@
     "@types/react": "^17.0.13",
     "@types/react-helmet": "^6.1.1",
     "@types/react-router-dom": "^5.1.7",
+    "@types/react-select": "^4.0.16",
     "typescript": "^4.3.5"
   }
 }
