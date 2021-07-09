@@ -1,5 +1,5 @@
 export const parseData = (data: string): string[][] => {
-  const cleanData = data.replace(/\r/g, '')
+  const cleanData = data.replace(/\r|\n$/g, '')
   const output: string[][] = [[]]
   let cursor = 0
   let startCell = 0

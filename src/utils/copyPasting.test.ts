@@ -12,7 +12,7 @@ describe('parseData', () => {
   })
 
   test('single column', () => {
-    expect(parseData('\n\n')).toEqual([[''], [''], ['']])
+    expect(parseData('\n\n')).toEqual([[''], ['']])
     expect(parseData('foo\nbar\nbaz')).toEqual([['foo'], ['bar'], ['baz']])
   })
 
@@ -23,6 +23,18 @@ describe('parseData', () => {
       ['', ''],
     ])
     expect(parseData('a\tb\tc\nd\te\tf')).toEqual([
+      ['a', 'b', 'c'],
+      ['d', 'e', 'f'],
+    ])
+  })
+
+  test('ignore last line return', () => {
+    expect(parseData('\t\n\t\n\t\n')).toEqual([
+      ['', ''],
+      ['', ''],
+      ['', ''],
+    ])
+    expect(parseData('a\tb\tc\nd\te\tf\n')).toEqual([
       ['a', 'b', 'c'],
       ['d', 'e', 'f'],
     ])
