@@ -27,6 +27,7 @@ import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
+import { parseData } from '../utils/copyPasting'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
@@ -510,12 +511,11 @@ export const DataSheetGrid = React.memo(
     const onPaste = useCallback(
       async (event: ClipboardEvent) => {
         if (!editing && activeCell) {
-          const pasteData =
-            event.clipboardData
-              ?.getData('text')
-              .replace(/\r/g, '')
-              .split('\n')
-              .map((row) => row.split('\t')) || []
+          const clipBoardData =
+            event.clipboardData?.getData('text') ??
+            event.clipboardData?.getData('text/plain')
+
+          const pasteData = clipBoardData ? parseData(clipBoardData) : []
 
           const min: Cell = selection?.min || activeCell
           const max: Cell = selection?.max || activeCell

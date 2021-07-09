@@ -48,5 +48,6 @@ export const textColumn: Partial<Column<string | null, any>> = {
   deleteValue: () => null,
   copyValue: ({ rowData }) => rowData,
   // Same thing here, replace empty strings by null
-  pasteValue: ({ value }) => value || null,
+  pasteValue: ({ value }) =>
+    value ? value.replace(/[\n\r]+/g, ' ').trim() : null,
 }

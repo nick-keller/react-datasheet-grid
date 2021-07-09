@@ -1,6 +1,6 @@
 {
   "name": "react-datasheet-grid",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "An Excel-like React component to create beautiful spreadsheets.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "build": "rm tsconfig.tsbuildinfo && rimraf ./dist && tsc && cpx \"src/**/*.css\" dist",
     "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/. && prettier --write example/src/.",
-    "lint": "eslint src/."
+    "lint": "eslint src/.",
+    "test": "jest"
   },
   "keywords": [
     "react",
@@ -26,6 +27,7 @@
   "repository": "Equify/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
+    "@types/jest": "^26.0.24",
     "@types/react": "^17.0.11",
     "@types/react-window": "^1.8.3",
     "@types/throttle-debounce": "^2.1.0",
@@ -37,9 +39,11 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.0.6",
     "prettier": "^2.3.1",
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.3",
     "typescript": "^4.3.3"
   },
   "files": [
