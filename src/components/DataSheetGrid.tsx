@@ -705,7 +705,7 @@ export const DataSheetGrid = React.memo(
           setContextMenu({ x: event.clientX, y: event.clientY })
         }
 
-        if (!(event.shiftKey && activeCell) || rightClick) {
+        if ((!(event.shiftKey && activeCell) || rightClick) && data.length > 0) {
           setActiveCell(
             cursorIndex && {
               col:
