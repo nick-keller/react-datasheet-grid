@@ -41,3 +41,15 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
   border: 1px solid var(--ifm-color-primary) !important;
   background-color: var(--ifm-color-primary) !important;
 }
+
+.action {
+  background: #f5f5f5;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+.action:hover {
+  background: #e5e5e5;
+}

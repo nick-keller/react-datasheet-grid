@@ -152,3 +152,10 @@ export type DataSheetGridProps<T> = {
   disableContextMenu?: boolean
   contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
 }
+
+export type DataSheetGridRef = {
+  activeCell: Cell | null
+  selection: Selection | null
+  setActiveCell: (activeCell: Cell | null) => void
+  setSelection: (selection: Selection | null) => void
+}

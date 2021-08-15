@@ -5,6 +5,7 @@ import {
   keyColumn,
   textColumn,
   Column,
+  DataSheetGridRef,
 } from 'react-datasheet-grid'
 import './style.css'
 
@@ -19,6 +20,8 @@ function App() {
     { active: true, firstName: 'Elon', lastName: 'Musk' },
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
+
+  const ref = useRef<DataSheetGridRef>(null)
 
   const columns: Column<Row>[] = [
     {
@@ -35,6 +38,17 @@ function App() {
     },
   ]
 
+  useEffect(() => {
+    setTimeout(
+      () =>
+        ref.current?.setSelection({
+          max: { col: 5, row: 1 },
+          min: { col: 1, row: 100 },
+        }),
+      3000
+    )
+  }, [])
+
   return (
     <div
       style={{
@@ -44,7 +58,12 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid data={data} onChange={setData} columns={columns} />
+      <DataSheetGrid
+        data={data}
+        onChange={setData}
+        columns={columns}
+        ref={ref}
+      />
     </div>
   )
 }

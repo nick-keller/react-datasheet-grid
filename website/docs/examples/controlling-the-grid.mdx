@@ -1,0 +1,50 @@
+---
+sidebar_position: 4
+---
+import Ref from '../../src/demos/ref'
+
+# Controlling the grid
+
+You can control the grid from your own component using a ref:
+
+```tsx
+import {
+  DataSheetGrid,
+  DataSheetGridRef,
+} from 'react-datasheet-grid'
+
+function App() {
+  const ref = useRef<DataSheetGridRef>(null)
+
+  return <DataSheetGrid ref={ref} />
+}
+```
+
+You can then use that ref to control the grid from any callback.
+
+```tsx
+function App() {
+  const ref = useRef<DataSheetGridRef>(null)
+
+  useEffect(() => {
+    ref.current?.setSelection({
+      min: { col: 1, row: 0 },
+      max: { col: 2, row: 3 },
+    })
+  }, [])
+
+  return (
+    <>
+      <DataSheetGrid ref={ref} />
+      <button onClick={() => ref.current?.setActiveCell({ col: 1, row: 0 })} />
+    </>
+  )
+}
+```
+
+## Reference
+See the [exhaustive list](../api-reference/ref) of properties available.
+
+## Example
+Hover an element to trigger it:
+<Ref />

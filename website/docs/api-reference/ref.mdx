@@ -1,0 +1,29 @@
+---
+sidebar_position: 4
+---
+
+# Ref
+
+You can control the grid using a ref, see [examples](../examples/controlling-the-grid).
+
+## Reading values
+### activeCell
+> Type: `{ col: number, row: number } | null`
+
+The active / highlighted cell or null if no cell is active.
+
+### selection
+> Type: `{ min: Cell, max: Cell } | null`
+
+The current selection rect or null if nothing is selected or active.
+
+## Writing values
+### setActiveCell
+> Type: `(activeCell: Cell | null) => void`
+
+Set the current active cell, pass null to  blur the grid.
+
+### setSelection
+> Type: `(selection: { min: Cell, max: Cell } | null) => void`
+
+Set the current selection, pass null to  blur the grid.
