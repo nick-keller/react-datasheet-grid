@@ -226,7 +226,7 @@
   margin-right: 10px;
 }
 
-.dsg-add-row button, .dsg-add-row input {
+.dsg-add-row-btn, .dsg-add-row-input {
   background: white;
   padding: 7px 10px;
   display: flex;
@@ -237,20 +237,20 @@
   transition: all .2s;
 }
 
-.dsg-add-row input {
+.dsg-add-row-input {
   width: 40px;
 }
 
-.dsg-add-row button:hover, .dsg-add-row input:hover {
+.dsg-add-row-btn:hover, .dsg-add-row-input:hover {
   border-color: #c7c7c7;
 }
 
-.dsg-add-row button:focus, .dsg-add-row input:focus {
+.dsg-add-row-btn:focus, .dsg-add-row-input:focus {
   border-color: rgb(69, 128, 230);
   outline: none;
 }
 
-.dsg-add-row button:before {
+.dsg-add-row-btn:before {
   content: "";
   display: inline-block;
   margin-right: 10px;
@@ -259,7 +259,7 @@
   height: 2px;
 }
 
-.dsg-add-row button:after {
+.dsg-add-row-btn:after {
   content: "";
   display: block;
   position: absolute;
