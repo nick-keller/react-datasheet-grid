@@ -531,7 +531,10 @@ export const DataSheetGrid = React.memo(
               event.clipboardData?.getData('text') ??
               event.clipboardData?.getData('text/plain')
 
-            const pasteData = clipBoardData ? parseData(clipBoardData) : []
+            const pasteData =
+              typeof clipBoardData === 'string'
+                ? parseData(clipBoardData)
+                : [['']]
 
             const min: Cell = selection?.min || activeCell
             const max: Cell = selection?.max || activeCell
