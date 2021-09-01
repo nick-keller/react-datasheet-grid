@@ -49,11 +49,14 @@ const DEFAULT_IS_ROW_EMPTY: DataSheetGridProps<any>['isRowEmpty'] = ({
   rowData,
 }) => Object.values(rowData).every((value) => !value)
 
+// eslint-disable-next-line react/display-name
 export const DataSheetGrid = React.memo(
   React.forwardRef<DataSheetGridRef, DataSheetGridProps<any>>(
     <T extends any>(
       {
         data = DEFAULT_DATA,
+        className,
+        style,
         height: maxHeight = 400,
         onChange = DEFAULT_ON_CHANGE,
         columns: rawColumns = DEFAULT_COLUMNS,
@@ -241,7 +244,10 @@ export const DataSheetGrid = React.memo(
 
           return Boolean(
             typeof disabled === 'function'
-              ? disabled({ rowData: dataRef.current[cell.row] })
+              ? disabled({
+                  rowData: dataRef.current[cell.row],
+                  rowIndex: cell.row,
+                })
               : disabled
           )
         },
@@ -277,7 +283,9 @@ export const DataSheetGrid = React.memo(
             ...dataRef.current.slice(0, rowMax + 1),
             ...dataRef.current
               .slice(rowMin, rowMax + 1)
-              .map((rowData) => duplicateRow({ rowData })),
+              .map((rowData, i) =>
+                duplicateRow({ rowData, rowIndex: i + rowMin })
+              ),
             ...dataRef.current.slice(rowMax + 1),
           ])
           setActiveCell({ col: 0, row: rowMax + 1 })
@@ -418,7 +426,9 @@ export const DataSheetGrid = React.memo(
           if (
             data
               .slice(min.row, max.row + 1)
-              .every((rowData) => isRowEmpty({ rowData }))
+              .every((rowData, i) =>
+                isRowEmpty({ rowData, rowIndex: i + min.row })
+              )
           ) {
             if (smartDelete) {
               deleteRows(min.row, max.row)
@@ -433,7 +443,10 @@ export const DataSheetGrid = React.memo(
               if (!isCellDisabled({ col, row })) {
                 const { deleteValue = ({ rowData }) => rowData } =
                   columns[col + 1]
-                newData[row] = deleteValue({ rowData: newData[row] })
+                newData[row] = deleteValue({
+                  rowData: newData[row],
+                  rowIndex: row,
+                })
               }
             }
           }
@@ -497,7 +510,9 @@ export const DataSheetGrid = React.memo(
 
               for (let col = min.col; col <= max.col; ++col) {
                 const { copyValue = () => null } = columns[col + 1]
-                copyData[row - min.row].push(copyValue({ rowData: data[row] }))
+                copyData[row - min.row].push(
+                  copyValue({ rowData: data[row], rowIndex: row })
+                )
               }
             }
 
@@ -566,6 +581,7 @@ export const DataSheetGrid = React.memo(
                       newData[rowIndex] = await pasteValue({
                         rowData: newData[rowIndex],
                         value: pasteData[0][columnIndex],
+                        rowIndex,
                       })
                     }
                   }
@@ -619,6 +635,7 @@ export const DataSheetGrid = React.memo(
                       newData[min.row + rowIndex] = await pasteValue({
                         rowData: newData[min.row + rowIndex],
                         value: pasteData[rowIndex][columnIndex],
+                        rowIndex: min.row + rowIndex,
                       })
                     }
                   }
@@ -1227,7 +1244,7 @@ export const DataSheetGrid = React.memo(
       }))
 
       return (
-        <div>
+        <div className={className} style={style}>
           <div
             tabIndex={rawColumns.length && data.length ? 0 : undefined}
             onFocus={(e) => {

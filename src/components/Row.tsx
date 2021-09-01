@@ -57,7 +57,7 @@ const RowComponent = React.memo(
           const disabled =
             column.disabled === true ||
             (typeof column.disabled === 'function' &&
-              column.disabled({ rowData: data }))
+              column.disabled({ rowData: data, rowIndex: index }))
 
           return (
             <Cell
@@ -68,7 +68,10 @@ const RowComponent = React.memo(
               column={column}
               active={active}
               className={cx(
-                !column.renderWhenScrolling && renderLight && 'dsg-cell-light'
+                !column.renderWhenScrolling && renderLight && 'dsg-cell-light',
+                typeof column.cellClassName === 'function'
+                  ? column.cellClassName({ rowData: data, rowIndex: index })
+                  : column.cellClassName
               )}
             >
               {(column.renderWhenScrolling || !renderLight) && (

@@ -28,6 +28,7 @@ export type CellProps<T, C> = {
 export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
 
 export type Column<T, C> = {
+  headerClassName?: string
   title?: React.ReactNode
   width: ColumnWidth
   minWidth: number
@@ -36,11 +37,14 @@ export type Column<T, C> = {
   component: CellComponent<T, C>
   columnData?: C
   disableKeys: boolean
-  disabled: boolean | (({ rowData }: { rowData: T }) => boolean)
+  disabled: boolean | ((opt: { rowData: T; rowIndex: number }) => boolean)
+  cellClassName?:
+    | string
+    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
   keepFocus: boolean
-  deleteValue: ({ rowData }: { rowData: T }) => T
-  copyValue: ({ rowData }: { rowData: T }) => number | string | null
-  pasteValue: ({ rowData, value }: { rowData: T; value: string }) => T
+  deleteValue: (opt: { rowData: T; rowIndex: number }) => T
+  copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
+  pasteValue: (opt: { rowData: T; value: string; rowIndex: number }) => T
 }
 
 export type ListItemData<T> = {
@@ -136,6 +140,8 @@ export type ContextMenuComponentProps = {
 
 export type DataSheetGridProps<T> = {
   data?: T[]
+  style?: React.CSSProperties
+  className?: string
   onChange?: (value: T[]) => void
   columns?: Partial<Column<T, any>>[]
   gutterColumn?: SimpleColumn<T, any>
@@ -145,8 +151,8 @@ export type DataSheetGridProps<T> = {
   headerRowHeight?: number
   addRowsComponent?: (props: AddRowsComponentProps) => JSX.Element
   createRow?: () => T
-  duplicateRow?: ({ rowData }: { rowData: T }) => T
-  isRowEmpty?: ({ rowData }: { rowData: T }) => boolean
+  duplicateRow?: ({ rowData }: { rowData: T; rowIndex: number }) => T
+  isRowEmpty?: ({ rowData }: { rowData: T; rowIndex: number }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean

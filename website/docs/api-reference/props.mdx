@@ -122,6 +122,17 @@ When true, a new row is added at the end of the grid when the user presses enter
 When true, no context menu is shown when right clicking. `disableContextMenu` is automatically set to `true` when
 `lockRows` is `true`.
 
+## Style
+### className
+> Type: `string`
+
+CSS class of the outer `<div />`.
+
+### style
+> Type: `CSSProperties`
+
+Style of the outer `<div />`.
+
 ## Row behavior
 ### createRow
 > Type: `() => any`<br />
@@ -131,13 +142,13 @@ A function that should return a new row object. This function is called once per
 or inserts new rows. Most often used to add default values and / or random ids to new rows.
 
 ### duplicateRow
-> Type: `({ rowData }) => any`<br />
+> Type: `({ rowData, rowIndex }) => any`<br />
 > Default: `({ rowData }) => ({ ...rowData })`
 
 A function that should return a new row object from an existing row. This function is called once per row every time the user duplicates rows. Most often used to override values and / or change uniq ids when duplicating rows.
 
 ### isRowEmpty
-> Type: `({ rowData }) => boolean`<br />
+> Type: `({ rowData, rowIndex }) => boolean`<br />
 > Default: A function that returns true when one of the value of `rowData` is truthy
 
 When pressing `Del`, a user can only delete empty rows. This function allows to customize what is considered

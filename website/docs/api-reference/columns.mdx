@@ -70,7 +70,7 @@ Maximum width of the column in pixels. Can be `null` for no maximum value.
 
 ## Copy pasting
 ### copyValue
-> Type: `({ rowData }) => number | string | null`
+> Type: `({ rowData, rowIndex }) => number | string | null`
 
 A function that returns the value of the copied cell. If the user copies multiple cells at once, this function
 will be called multiple times.  It can return a string, a number, or null, but it will always be turned into a string
@@ -78,7 +78,7 @@ in the end.
 
 
 ### pasteValue
-> Type: `({ rowData, value }) => any`
+> Type: `({ rowData, value, rowIndex }) => any`
 
 A function that takes in a row and the `value`  to be pasted, and should return the updated row. If the value should
 be ignored, it should still return the unchanged row. The `value` is always a string and should therefore be casted
@@ -88,7 +88,7 @@ It is recommended to make sure that the `pasteValue` can handle all values retur
 user might ba able to copy something but not paste it.
 
 ### deleteValue
-> Type: `({ rowData }) => any`
+> Type: `({ rowData, rowIndex }) => any`
 
 A function that deletes the column value of a row. Used when the user cuts, clears a cell, or deletes a row.
 
@@ -122,9 +122,22 @@ function App() {
 }
 ```
 
+### headerClassName
+> Type: `string`<br />
+> Default: `undefined`
+
+CSS class of the header cell.
+
+### cellClassName
+> Type: `string | (({ rowData, rowIndex }) => string | undefined)`<br />
+> Default: `undefined`
+
+CSS class of each cell of the column. Can be a `string` if the class is the same for all cells, or a function
+if you need a different class per row.
+
 ## Options
 ### disabled
-> Type: `boolean | (({ rowData }) => boolean)`<br />
+> Type: `boolean | (({ rowData, rowIndex }) => boolean)`<br />
 > Default: `false`
 
 Disable the entire column by passing `true`, or disable it for specific rows by passing a function. Disabled cells

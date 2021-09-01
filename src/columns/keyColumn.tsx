@@ -51,22 +51,31 @@ export const keyColumn = <
   columnData: { key: key as string, original: column },
   component: KeyComponent,
   // Here we simply wrap all functions to only pass the value of the desired key to the column, and not the entire row
-  copyValue: ({ rowData }) =>
-    column.copyValue?.({ rowData: rowData[key] }) ?? null,
-  deleteValue: ({ rowData }) => ({
+  copyValue: ({ rowData, rowIndex }) =>
+    column.copyValue?.({ rowData: rowData[key], rowIndex }) ?? null,
+  deleteValue: ({ rowData, rowIndex }) => ({
     ...rowData,
-    [key]: column.deleteValue?.({ rowData: rowData[key] }) ?? null,
+    [key]: column.deleteValue?.({ rowData: rowData[key], rowIndex }) ?? null,
   }),
-  pasteValue: ({ rowData, value }) => ({
+  pasteValue: ({ rowData, value, rowIndex }) => ({
     ...rowData,
-    [key]: column.pasteValue?.({ rowData: rowData[key], value }) ?? null,
+    [key]:
+      column.pasteValue?.({ rowData: rowData[key], value, rowIndex }) ?? null,
   }),
   disabled:
     typeof column.disabled === 'function'
-      ? ({ rowData }) => {
+      ? ({ rowData, rowIndex }) => {
           return typeof column.disabled === 'function'
-            ? column.disabled({ rowData: rowData[key] })
+            ? column.disabled({ rowData: rowData[key], rowIndex })
             : column.disabled ?? false
         }
       : column.disabled,
+  cellClassName:
+    typeof column.cellClassName === 'function'
+      ? ({ rowData, rowIndex }) => {
+          return typeof column.cellClassName === 'function'
+            ? column.cellClassName({ rowData: rowData[key], rowIndex })
+            : column.cellClassName ?? undefined
+        }
+      : column.cellClassName,
 })
