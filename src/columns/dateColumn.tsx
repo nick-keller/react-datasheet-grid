@@ -53,4 +53,5 @@ export const dateColumn: Partial<Column<Date | null, any>> = {
     return isNaN(date.getTime()) ? null : date
   },
   minWidth: 170,
+  isCellEmpty: ({ rowData }) => !rowData,
 }

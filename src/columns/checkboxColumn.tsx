@@ -60,4 +60,5 @@ export const checkboxColumn: Partial<Column<boolean, any>> = {
   // Since we copy custom values, we have to make sure pasting gives us the expected result
   // Here NO is included in the FALSY array, so it will be converted to false, YES is not, so it will be converted to true
   pasteValue: ({ value }) => !FALSY.includes(value.toLowerCase()),
+  isCellEmpty: ({ rowData }) => !rowData,
 }

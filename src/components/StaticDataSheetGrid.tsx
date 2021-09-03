@@ -15,7 +15,6 @@ export const StaticDataSheetGrid = React.forwardRef<
       addRowsComponent,
       createRow,
       duplicateRow,
-      isRowEmpty,
       ...rest
     }: DataSheetGridProps<T>,
     ref: React.ForwardedRef<DataSheetGridRef>
@@ -27,7 +26,6 @@ export const StaticDataSheetGrid = React.forwardRef<
       addRowsComponent,
       createRow,
       duplicateRow,
-      isRowEmpty,
     })
 
     return <DataSheetGrid {...staticProps} {...rest} ref={ref} />

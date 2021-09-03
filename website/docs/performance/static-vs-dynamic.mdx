@@ -41,7 +41,7 @@ All other props that are primitives (number, string, or boolean) are dynamic by 
 A good rule of thumb is to keep using the static version of `<DataSheetGrid />` until it does not work as intended.
 This happens when:
 - You have dynamic columns. Meaning that columns can be added / removed, or their props can change after the first render
-- Some functions like `duplicateRow` or `isRowEmpty` must change after the first render
+- Some functions like `duplicateRow` or `createRow` must change after the first render
 
 ## Dynamic version
 To opt out of the static version, simply use `<DynamicDataSheetGrid />` instead:

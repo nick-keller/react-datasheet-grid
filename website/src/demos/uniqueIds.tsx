@@ -1,12 +1,8 @@
 import React, { useRef, useState } from 'react'
-import {
-  checkboxColumn,
-  DataSheetGrid,
-  keyColumn,
-  textColumn,
-} from 'react-datasheet-grid'
+import { DataSheetGrid, keyColumn, textColumn } from 'react-datasheet-grid'
 import faker from 'faker'
 
+// eslint-disable-next-line react/display-name
 export default () => {
   const counter = useRef(1)
   const genId = () => counter.current++
@@ -26,7 +22,6 @@ export default () => {
         onChange={setData}
         createRow={() => ({ id: genId() })}
         duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
-        isRowEmpty={({ rowData }) => !rowData.firstName && !rowData.lastName}
         columns={[
           { ...keyColumn('id', textColumn), title: 'ID', disabled: true },
           { ...keyColumn('firstName', textColumn), title: 'First name' },

@@ -67,4 +67,5 @@ export const floatColumn: Partial<Column<number | null, any>> = {
     const number = parseFloat(value)
     return !isNaN(number) ? number : null
   },
+  isCellEmpty: ({ rowData }) => rowData === null || rowData === undefined,
 }

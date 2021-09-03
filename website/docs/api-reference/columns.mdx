@@ -181,3 +181,16 @@ When you implement a widget using a portal (ie. a div that is not a direct child
 want the cell to keep focus when the user interacts with that element (even tho it is actually
 outside of the grid itself). This means that you have to handle the click event and call [stopEditing](cell-components#stopediting)
 yourself to release focus.
+
+## Behavior
+
+### isCellEmpty
+> Type: `({ rowData, rowIndex }) => boolean`<br />
+> Default: `() => false`
+
+When pressing `Del`, a user can only delete empty rows (a user can still delete non-empty rows using a right-click).
+A row is considered empty when all its cells are empty. This function allows to customize what is considered
+an empty cell.
+
+Because the default value is a function that **always** returns `false` (meaning the cell is never considered empty),
+you must implement your own logic to let the user delete rows using the `Del` key.

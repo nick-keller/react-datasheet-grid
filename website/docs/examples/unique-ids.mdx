@@ -5,13 +5,9 @@ import UniqueIds from '../../src/demos/uniqueIds'
 
 # Having unique ids
 
-Having a unique id on each row can be achieved with `createRow`, `duplicateRow`, and `isRowEmpty` props.
+Having a unique id on each row can be achieved with `createRow` and `duplicateRow` props.
 
-A user can only delete a row pressing the `Del` key if it is empty. By default a row is considered empty if all keys of
-the object are falsy, and since the id is always present, rows can never be deleted simply by pressing `Del`.
-This is why we override this behavior by specifying our own `isRowEmpty` function.
-
-Try deleting rows using the `Del` key, creating new rows, or duplicating rows:
+Try deleting rows, creating new rows, or duplicating rows:
 
 <UniqueIds />
 
@@ -19,6 +15,5 @@ Try deleting rows using the `Del` key, creating new rows, or duplicating rows:
 <DataSheetGrid
   createRow={() => ({ id: genId() })}
   duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
-  isRowEmpty={({ rowData }) => !rowData.firstName && !rowData.lastName}
 />
 ```

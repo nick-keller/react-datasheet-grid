@@ -59,4 +59,5 @@ export const intColumn: Partial<Column<number | null, any>> = {
     const number = parseFloat(value)
     return !isNaN(number) ? Math.round(number) : null
   },
+  isCellEmpty: ({ rowData }) => rowData === null || rowData === undefined,
 }

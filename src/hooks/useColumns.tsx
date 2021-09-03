@@ -2,11 +2,13 @@ import React, { useMemo } from 'react'
 import { CellProps, Column, SimpleColumn } from '../types'
 
 const defaultComponent = () => <></>
+const defaultIsCellEmpty = () => false
 const identityRow = <T extends any>({ rowData }: { rowData: T }) => rowData
 const defaultCopyValue = () => null
 const defaultGutterComponent = ({ rowIndex }: CellProps<any, any>) => (
   <>{rowIndex + 1}</>
 )
+const cellAlwaysEmpty = () => true
 
 export const useColumns = <T extends any>(
   columns: Partial<Column<T, any>>[],
@@ -20,6 +22,7 @@ export const useColumns = <T extends any>(
         minWidth: 0,
         title: <div className="dsg-corner-indicator" />,
         component: defaultGutterComponent,
+        isCellEmpty: cellAlwaysEmpty,
         ...gutterColumn,
       },
       ...columns,
@@ -30,6 +33,7 @@ export const useColumns = <T extends any>(
         width: '0 0 40px',
         minWidth: 0,
         ...stickyRightColumn,
+        isCellEmpty: cellAlwaysEmpty,
       })
     }
 
@@ -44,6 +48,7 @@ export const useColumns = <T extends any>(
       deleteValue: identityRow,
       copyValue: defaultCopyValue,
       pasteValue: identityRow,
+      isCellEmpty: defaultIsCellEmpty,
       ...column,
     }))
   }, [gutterColumn, stickyRightColumn, columns])

@@ -45,9 +45,6 @@ const DEFAULT_ON_CHANGE: DataSheetGridProps<any>['onChange'] = () => null
 const DEFAULT_DUPLICATE_ROW: DataSheetGridProps<any>['duplicateRow'] = ({
   rowData,
 }) => ({ ...rowData })
-const DEFAULT_IS_ROW_EMPTY: DataSheetGridProps<any>['isRowEmpty'] = ({
-  rowData,
-}) => Object.values(rowData).every((value) => !value)
 
 // eslint-disable-next-line react/display-name
 export const DataSheetGrid = React.memo(
@@ -69,7 +66,6 @@ export const DataSheetGrid = React.memo(
         autoAddRow = false,
         lockRows = false,
         duplicateRow = DEFAULT_DUPLICATE_ROW,
-        isRowEmpty = DEFAULT_IS_ROW_EMPTY,
         contextMenuComponent: ContextMenuComponent = ContextMenu,
         disableContextMenu: disableContextMenuRaw = false,
       }: DataSheetGridProps<T>,
@@ -427,7 +423,9 @@ export const DataSheetGrid = React.memo(
             data
               .slice(min.row, max.row + 1)
               .every((rowData, i) =>
-                isRowEmpty({ rowData, rowIndex: i + min.row })
+                columns.every((column) =>
+                  column.isCellEmpty({ rowData, rowIndex: i + min.row })
+                )
               )
           ) {
             if (smartDelete) {
@@ -468,7 +466,6 @@ export const DataSheetGrid = React.memo(
           data,
           deleteRows,
           isCellDisabled,
-          isRowEmpty,
           onChange,
           selection?.max,
           selection?.min,

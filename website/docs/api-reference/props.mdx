@@ -147,13 +147,6 @@ or inserts new rows. Most often used to add default values and / or random ids t
 
 A function that should return a new row object from an existing row. This function is called once per row every time the user duplicates rows. Most often used to override values and / or change uniq ids when duplicating rows.
 
-### isRowEmpty
-> Type: `({ rowData, rowIndex }) => boolean`<br />
-> Default: A function that returns true when one of the value of `rowData` is truthy
-
-When pressing `Del`, a user can only delete empty rows. This function allows to customize what is considered
-an empty row. Most often used to ignore keys that are in the object but are not part of any column (eg. a hidden id).
-
 ## Customizable components
 ### addRowsComponent
 Used to replace the content of the "Add row" button bellow the grid. Most often used for translations,

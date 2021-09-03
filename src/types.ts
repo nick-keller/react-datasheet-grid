@@ -45,6 +45,7 @@ export type Column<T, C> = {
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
   pasteValue: (opt: { rowData: T; value: string; rowIndex: number }) => T
+  isCellEmpty: (opt: { rowData: T; rowIndex: number }) => boolean
 }
 
 export type ListItemData<T> = {
@@ -152,7 +153,6 @@ export type DataSheetGridProps<T> = {
   addRowsComponent?: (props: AddRowsComponentProps) => JSX.Element
   createRow?: () => T
   duplicateRow?: ({ rowData }: { rowData: T; rowIndex: number }) => T
-  isRowEmpty?: ({ rowData }: { rowData: T; rowIndex: number }) => boolean
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean

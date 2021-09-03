@@ -78,4 +78,6 @@ export const keyColumn = <
             : column.cellClassName ?? undefined
         }
       : column.cellClassName,
+  isCellEmpty: ({ rowData, rowIndex }) =>
+    column.isCellEmpty?.({ rowData: rowData[key], rowIndex }) ?? false,
 })
