@@ -1218,7 +1218,8 @@ export const DataSheetGrid = React.memo(
           const selection = getSelection(
             value,
             columns.length - (hasStickyRightColumn ? 2 : 1),
-            data.length
+            data.length,
+            columns
           )
 
           setActiveCell(selection?.min || null)
@@ -1230,7 +1231,8 @@ export const DataSheetGrid = React.memo(
           const cell = getCell(
             value,
             columns.length - (hasStickyRightColumn ? 2 : 1),
-            data.length
+            data.length,
+            columns
           )
 
           setActiveCell(cell)

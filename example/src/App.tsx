@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   checkboxColumn,
   DataSheetGrid,
+  DataSheetGridRef,
   keyColumn,
   textColumn,
   Column,
@@ -15,6 +16,7 @@ type Row = {
 }
 
 function App() {
+  const ref = useRef<DataSheetGridRef>(null)
   const [data, setData] = useState<Row[]>([
     { active: true, firstName: 'Elon', lastName: 'Musk' },
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
@@ -44,7 +46,17 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid data={data} onChange={setData} columns={columns} />
+      <button
+        onClick={() => ref.current?.setActiveCell({ col: 'firstName', row: 1 })}
+      >
+        hello
+      </button>
+      <DataSheetGrid
+        ref={ref}
+        data={data}
+        onChange={setData}
+        columns={columns}
+      />
     </div>
   )
 }

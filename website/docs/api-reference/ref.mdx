@@ -21,7 +21,7 @@ The current selection rect or null if nothing is selected or active.
 ### setActiveCell
 > Type: `(activeCell: Cell | null) => void`
 
-Set the current active cell, pass null to  blur the grid.
+Set the current active cell, pass null to  blur the grid. The column can be specified using its index (a number) or its [`id`](columns#id) (a string).
 
 ### setSelection
 > Type: `(selection: { min: Cell, max: Cell } | null) => void`

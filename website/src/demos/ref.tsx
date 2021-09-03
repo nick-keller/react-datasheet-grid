@@ -9,6 +9,7 @@ import {
 } from 'react-datasheet-grid'
 import faker from 'faker'
 
+// eslint-disable-next-line react/display-name
 export default () => {
   const [data, setData] = useState<any[]>(
     new Array(10).fill(0).map(() => ({
@@ -36,14 +37,22 @@ export default () => {
         <span
           className="action"
           onMouseEnter={() => {
+            ref.current?.setActiveCell({ col: 'lastName', row: 1 })
+          }}
+        >
+          {"ref.current?.setActiveCell({ col: 'lastName', row: 1 })"}
+        </span>
+        <span
+          className="action"
+          onMouseEnter={() => {
             ref.current?.setSelection({
-              min: { col: 0, row: 1 },
+              min: { col: 'active', row: 1 },
               max: { col: 1, row: 4 },
             })
           }}
         >
           {
-            'ref.current?.setSelection({ min: { col: 0, row: 1 }, max: { col: 1, row: 4 }})'
+            "ref.current?.setSelection({ min: { col: 'active', row: 1 }, max: { col: 1, row: 4 }})"
           }
         </span>
       </div>

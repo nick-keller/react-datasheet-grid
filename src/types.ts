@@ -28,6 +28,7 @@ export type CellProps<T, C> = {
 export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
 
 export type Column<T, C> = {
+  id?: string
   headerClassName?: string
   title?: React.ReactNode
   width: ColumnWidth
@@ -159,9 +160,16 @@ export type DataSheetGridProps<T> = {
   contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
 }
 
+type IdCell = {
+  col: number | string
+  row: number
+}
+
+type IdSelection = { min: IdCell; max: IdCell }
+
 export type DataSheetGridRef = {
   activeCell: Cell | null
   selection: Selection | null
-  setActiveCell: (activeCell: Cell | null) => void
-  setSelection: (selection: Selection | null) => void
+  setActiveCell: (activeCell: IdCell | null) => void
+  setSelection: (selection: IdSelection | null) => void
 }

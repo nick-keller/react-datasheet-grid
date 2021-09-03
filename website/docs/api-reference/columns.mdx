@@ -19,6 +19,12 @@ const columns = [
 
 Element to display in the header row.
 
+## id
+> Type: `string`<br />
+> Default: `undefined`
+
+You can specify a unique ID for each column. This allows you to specify the column ID instead of its index when [controlling the grid](../examples/controlling-the-grid).
+
 ## Sizing
 ### width
 > Type: `string | number`<br />
@@ -156,6 +162,12 @@ Try toggling the "active" column:
   ]}
 />
 ```
+
+:::note
+Notice that in this example you cannot delete a row using the `Del` key, this is because you can only delete empty rows.
+This might be problematic depending on your use-case, to solve this issue you can use [`isCellEmpty`](#iscellempty)
+and always return true to ignore this column.
+:::
 
 ### renderWhenScrolling
 > Type: `boolean`<br />

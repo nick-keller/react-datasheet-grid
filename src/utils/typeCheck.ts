@@ -1,9 +1,10 @@
-import { Cell, Selection } from '../types'
+import { Cell, Column, Selection } from '../types'
 
 export const getCell = (
   value: any,
   colMax: number,
-  rowMax: number
+  rowMax: number,
+  columns: Column<any, any>[]
 ): Cell | null => {
   if (value === null || !colMax || !rowMax) {
     return null
@@ -13,8 +14,13 @@ export const getCell = (
     throw new Error('Value must be an object or null')
   }
 
+  const colIndex = columns.findIndex((column) => column.id === value.col)
+
   const cell: Cell = {
-    col: Math.max(0, Math.min(colMax - 1, Number(value.col))),
+    col: Math.max(
+      0,
+      Math.min(colMax - 1, colIndex === -1 ? Number(value.col) : colIndex - 1)
+    ),
     row: Math.max(0, Math.min(rowMax - 1, Number(value.row))),
   }
 
@@ -28,7 +34,8 @@ export const getCell = (
 export const getSelection = (
   value: any,
   colMax: number,
-  rowMax: number
+  rowMax: number,
+  columns: Column<any, any>[]
 ): Selection | null => {
   if (value === null || !colMax || !rowMax) {
     return null
@@ -39,8 +46,8 @@ export const getSelection = (
   }
 
   const selection = {
-    min: getCell(value.min, colMax, rowMax),
-    max: getCell(value.max, colMax, rowMax),
+    min: getCell(value.min, colMax, rowMax, columns),
+    max: getCell(value.max, colMax, rowMax, columns),
   }
 
   if (!selection.min || !selection.max) {
