@@ -23,7 +23,7 @@ export default () => {
         createRow={() => ({ id: genId() })}
         duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
         columns={[
-          { ...keyColumn('id', textColumn), title: 'ID', disabled: true },
+          { ...keyColumn('id', textColumn), title: 'ID', disabled: true, isCellEmpty: () => true },
           { ...keyColumn('firstName', textColumn), title: 'First name' },
           { ...keyColumn('lastName', textColumn), title: 'Last name' },
         ]}
