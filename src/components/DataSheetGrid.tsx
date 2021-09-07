@@ -38,6 +38,7 @@ import { ContextMenu } from './ContextMenu'
 import { parseTextPlainData, parseTextHtmlData } from '../utils/copyPasting'
 import { getCell, getSelection } from '../utils/typeCheck'
 import { encode as encodeHtml } from 'html-entities'
+import { getAllTabbableElements } from '../utils/tab'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
@@ -78,6 +79,8 @@ export const DataSheetGrid = React.memo(
       const listRef = useRef<VariableSizeList>(null)
       const innerRef = useRef<HTMLElement>(null)
       const outerRef = useRef<HTMLElement>(null)
+      const beforeTabIndexRef = useRef<HTMLDivElement>(null)
+      const afterTabIndexRef = useRef<HTMLDivElement>(null)
 
       useEffect(() => {
         listRef.current?.resetAfterIndex(0)
@@ -932,6 +935,55 @@ export const DataSheetGrid = React.memo(
             return
           }
 
+          // Tab from last cell
+          if (
+            event.key === 'Tab' &&
+            !event.shiftKey &&
+            activeCell.col ===
+              columns.length - (hasStickyRightColumn ? 3 : 2) &&
+            activeCell.row === data.length - 1 &&
+            afterTabIndexRef.current &&
+            !columns[activeCell.col + 1].disableKeys
+          ) {
+            event.preventDefault()
+
+            setActiveCell(null)
+            setSelectionCell(null)
+            setEditing(false)
+
+            const allElements = getAllTabbableElements()
+            const index = allElements.indexOf(afterTabIndexRef.current)
+
+            allElements[(index + 1) % allElements.length].focus()
+
+            return
+          }
+
+          // Shift+Tab from first cell
+          if (
+            event.key === 'Tab' &&
+            event.shiftKey &&
+            activeCell.col === 0 &&
+            activeCell.row === 0 &&
+            beforeTabIndexRef.current &&
+            !columns[activeCell.col + 1].disableKeys
+          ) {
+            event.preventDefault()
+
+            setActiveCell(null)
+            setSelectionCell(null)
+            setEditing(false)
+
+            const allElements = getAllTabbableElements()
+            const index = allElements.indexOf(beforeTabIndexRef.current)
+
+            allElements[
+              (index - 1 + allElements.length) % allElements.length
+            ].focus()
+
+            return
+          }
+
           if (event.key.startsWith('Arrow') || event.key === 'Tab') {
             if (editing && columns[activeCell.col + 1].disableKeys) {
               return
@@ -1270,6 +1322,7 @@ export const DataSheetGrid = React.memo(
       return (
         <div className={className} style={style}>
           <div
+            ref={beforeTabIndexRef}
             tabIndex={rawColumns.length && data.length ? 0 : undefined}
             onFocus={(e) => {
               e.target.blur()
@@ -1298,6 +1351,7 @@ export const DataSheetGrid = React.memo(
             </SelectionContext.Provider>
           </HeaderContext.Provider>
           <div
+            ref={afterTabIndexRef}
             tabIndex={rawColumns.length && data.length ? 0 : undefined}
             onFocus={(e) => {
               e.target.blur()

@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.1.2
+> Date: 2021-09-07
+### Improved
+- Improved accessibility by allowing to focus next tabbable element in the dom when tabbing from the last cell, 
+  and previous element when Shift+Tab from the first cell.
+
 ## 3.1.1
 > Date: 2021-09-07
 ### Improved
