@@ -35,8 +35,9 @@ import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
-import { parseData } from '../utils/copyPasting'
+import { parseTextPlainData, parseTextHtmlData } from '../utils/copyPasting'
 import { getCell, getSelection } from '../utils/typeCheck'
+import { encode as encodeHtml } from 'html-entities'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
@@ -517,6 +518,23 @@ export const DataSheetGrid = React.memo(
               'text/plain',
               copyData.map((row) => row.join('\t')).join('\n')
             )
+            event.clipboardData?.setData(
+              'text/html',
+              `<table>${copyData
+                .map(
+                  (row) =>
+                    `<tr>${row
+                      .map(
+                        (cell) =>
+                          `<td>${encodeHtml(String(cell ?? '')).replace(
+                            /\n/g,
+                            '<br/>'
+                          )}</td>`
+                      )
+                      .join('')}</tr>`
+                )
+                .join('')}</table>`
+            )
             event.preventDefault()
           }
         },
@@ -539,14 +557,21 @@ export const DataSheetGrid = React.memo(
       const onPaste = useCallback(
         async (event: ClipboardEvent) => {
           if (!editing && activeCell) {
-            const clipBoardData =
-              event.clipboardData?.getData('text') ??
-              event.clipboardData?.getData('text/plain')
+            let pasteData = [['']]
 
-            const pasteData =
-              typeof clipBoardData === 'string'
-                ? parseData(clipBoardData)
-                : [['']]
+            if (event.clipboardData?.types.includes('text/html')) {
+              pasteData = parseTextHtmlData(
+                event.clipboardData?.getData('text/html')
+              )
+            } else if (event.clipboardData?.types.includes('text/plain')) {
+              pasteData = parseTextPlainData(
+                event.clipboardData?.getData('text/plain')
+              )
+            } else if (event.clipboardData?.types.includes('text')) {
+              pasteData = parseTextPlainData(
+                event.clipboardData?.getData('text')
+              )
+            }
 
             const min: Cell = selection?.min || activeCell
             const max: Cell = selection?.max || activeCell

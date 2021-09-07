@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.1.1
+> Date: 2021-09-07
+### Improved
+- Improved copy / pasting by supporting text/html data type. Dealing with edge cases with special characters
+  now works perfectly.
+
 ## 3.1.0
 > Date: 2021-09-03
 ### Added

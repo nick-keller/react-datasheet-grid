@@ -1,4 +1,34 @@
-export const parseData = (data: string): string[][] => {
+import { parseDom } from './domParser'
+
+export const parseTextHtmlData = (data: string): string[][] => {
+  const doc = parseDom(data.replace(/<br\/?>/g, '\n'))
+  const table = doc.getElementsByTagName('table')[0]
+
+  if (table) {
+    const rows: string[][] = []
+
+    for (let i = 0; i < table.rows.length; i++) {
+      const row: string[] = []
+      rows.push(row)
+
+      for (let j = 0; j < table.rows[i].cells.length; j++) {
+        row.push(table.rows[i].cells[j].textContent ?? '')
+      }
+    }
+
+    return rows
+  }
+
+  const span = doc.getElementsByTagName('span')[0]
+
+  if (span) {
+    return [[span.textContent ?? '']]
+  }
+
+  return [['']]
+}
+
+export const parseTextPlainData = (data: string): string[][] => {
   const cleanData = data.replace(/\r|\n$/g, '')
   const output: string[][] = [[]]
   let cursor = 0
