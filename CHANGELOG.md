@@ -1,7 +1,12 @@
 # Change Log
 
+## 3.2.2
+> Date: 2021-09-14
+### Fixed
+- Issues with SSR and DOMParser
+
 ## 3.2.0
-> Date: 2021-09-13
+> Date: 2021-09-14
 ### Added
 - `activeCell` and `selection` of the ref now include `colId` if the column has an id.
 - New props `onFocus`, `onBlur`, `onActiveCellChange`, and `onSelectionChange`
