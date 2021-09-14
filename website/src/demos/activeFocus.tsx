@@ -14,7 +14,7 @@ export default () => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         { title: 'A', component: Component },

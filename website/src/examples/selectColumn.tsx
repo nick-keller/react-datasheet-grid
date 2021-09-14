@@ -122,7 +122,7 @@ export const FinalResult = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -167,7 +167,7 @@ export const MultipleColumns = () => {
 
   return (
     <div style={{ marginBottom: 20 }}>
-      <DataSheetGrid data={data} onChange={setData} columns={columns} />
+      <DataSheetGrid value={data} onChange={setData} columns={columns} />
     </div>
   )
 }
@@ -182,7 +182,7 @@ export const Step1 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -230,7 +230,7 @@ export const Step2 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -291,7 +291,7 @@ export const Step3 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -355,7 +355,7 @@ export const Step4 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -430,7 +430,7 @@ export const Step5 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -506,7 +506,7 @@ export const Step6 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -583,7 +583,7 @@ export const Step7 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -672,7 +672,7 @@ export const Step8 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -697,7 +697,7 @@ export const Step9 = () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {

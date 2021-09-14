@@ -61,7 +61,7 @@ const Example = () => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={columns}
     />

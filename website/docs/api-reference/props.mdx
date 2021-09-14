@@ -6,7 +6,7 @@ import Options from '../../src/demos/options'
 
 # Props
 
-## data / onChange
+## value / onChange
 
 Used to control the data of the grid:
 ```tsx
@@ -15,7 +15,7 @@ function App() => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
     />
   )
@@ -155,3 +155,35 @@ icons... View [default implementation](https://github.com/Equify/react-datasheet
 
 ### contextMenuComponent
 Used to customize the context menu when right clicking. View [default implementation](https://github.com/Equify/react-datasheet-grid/blob/master/src/components/ContextMenu.tsx).
+
+## Callbacks
+Callbacks receive parameters of type `Cell`. `row` is the index of the row, `col` the index of the column, and `colId`
+is the [`id`](columns#id) of the column if specified.
+
+### onFocus
+> Type: `({ cell: { colId?: string, col: number, row: number } }) => void`<br />
+> Default: `void`
+
+Called when a cell gains focus (ie. the user starts editing its content). This is not the same as active / highlighted.
+
+:::note
+To know if the grid itself is focused, you can rely on `onActiveCellChange`.
+:::
+
+### onBlur
+> Type: `({ cell: { colId?: string, col: number, row: number } }) => void`<br />
+> Default: `void`
+
+Called when a cell is blurred (ie. the user stops editing its content).
+
+### onActiveCellChange
+> Type: `({ cell: { colId?: string, col: number, row: number } | null }) => void`<br />
+> Default: `void`
+
+Called when the active / highlighted cell changes. Called with null when the grid is blurred.
+
+### onSelectionChange
+> Type: `({ selection: { min: Cell, max: Cell } | null }) => void`<br />
+> Default: `void`
+
+Called when the selection changes. Called with null when the grid is blurred.

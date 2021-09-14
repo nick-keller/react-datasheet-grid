@@ -141,7 +141,7 @@ export type ContextMenuComponentProps = {
 }
 
 export type DataSheetGridProps<T> = {
-  data?: T[]
+  value?: T[]
   style?: React.CSSProperties
   className?: string
   onChange?: (value: T[]) => void
@@ -153,23 +153,35 @@ export type DataSheetGridProps<T> = {
   headerRowHeight?: number
   addRowsComponent?: (props: AddRowsComponentProps) => JSX.Element
   createRow?: () => T
-  duplicateRow?: ({ rowData }: { rowData: T; rowIndex: number }) => T
+  duplicateRow?: (opts: { rowData: T; rowIndex: number }) => T
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean
   contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
+  onFocus?: (opts: { cell: CellWithId }) => void
+  onBlur?: (opts: { cell: CellWithId }) => void
+  onActiveCellChange?: (opts: { cell: CellWithId | null }) => void
+  onSelectionChange?: (opts: { selection: SelectionWithId | null }) => void
 }
 
-type IdCell = {
+type CellWithIdInput = {
   col: number | string
   row: number
 }
 
-type IdSelection = { min: IdCell; max: IdCell }
+type SelectionWithIdInput = { min: CellWithIdInput; max: CellWithIdInput }
+
+export type CellWithId = {
+  colId?: string
+  col: number
+  row: number
+}
+
+export type SelectionWithId = { min: CellWithId; max: CellWithId }
 
 export type DataSheetGridRef = {
-  activeCell: Cell | null
-  selection: Selection | null
-  setActiveCell: (activeCell: IdCell | null) => void
-  setSelection: (selection: IdSelection | null) => void
+  activeCell: CellWithId | null
+  selection: SelectionWithId | null
+  setActiveCell: (activeCell: CellWithIdInput | null) => void
+  setSelection: (selection: SelectionWithIdInput | null) => void
 }

@@ -58,7 +58,7 @@ export default () => {
       </div>
       <DataSheetGrid
         ref={ref}
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           { ...keyColumn('active', checkboxColumn), title: 'Active' },

@@ -1,4 +1,4 @@
-import { Cell, Column, Selection } from '../types'
+import { Cell, CellWithId, Column, Selection, SelectionWithId } from '../types'
 
 export const getCell = (
   value: any,
@@ -31,6 +31,17 @@ export const getCell = (
   return cell
 }
 
+export const getCellWithId = (
+  cell: Cell | null,
+  columns: Column<any, any>[]
+): typeof cell extends null ? CellWithId | null : CellWithId =>
+  cell
+    ? {
+        ...cell,
+        colId: columns[cell.col + 1].id,
+      }
+    : (null as never)
+
 export const getSelection = (
   value: any,
   colMax: number,
@@ -56,3 +67,14 @@ export const getSelection = (
 
   return selection as Selection
 }
+
+export const getSelectionWithId = (
+  selection: Selection | null,
+  columns: Column<any, any>[]
+): SelectionWithId | null =>
+  selection
+    ? {
+        min: getCellWithId(selection.min, columns),
+        max: getCellWithId(selection.max, columns),
+      }
+    : null

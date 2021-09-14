@@ -36,14 +36,19 @@ import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
 import { parseTextPlainData, parseTextHtmlData } from '../utils/copyPasting'
-import { getCell, getSelection } from '../utils/typeCheck'
+import {
+  getCell,
+  getCellWithId,
+  getSelection,
+  getSelectionWithId,
+} from '../utils/typeCheck'
 import { encode as encodeHtml } from 'html-entities'
 import { getAllTabbableElements } from '../utils/tab'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any>[] = []
 const DEFAULT_CREATE_ROW: DataSheetGridProps<any>['createRow'] = () => ({})
-const DEFAULT_ON_CHANGE: DataSheetGridProps<any>['onChange'] = () => null
+const DEFAULT_EMPTY_CALLBACK: () => void = () => null
 const DEFAULT_DUPLICATE_ROW: DataSheetGridProps<any>['duplicateRow'] = ({
   rowData,
 }) => ({ ...rowData })
@@ -53,11 +58,15 @@ export const DataSheetGrid = React.memo(
   React.forwardRef<DataSheetGridRef, DataSheetGridProps<any>>(
     <T extends any>(
       {
-        data = DEFAULT_DATA,
+        // Data is deprecated but still supported, value should be used instead
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        data: deprecatedValue,
+        value: data = deprecatedValue ?? DEFAULT_DATA,
         className,
         style,
         height: maxHeight = 400,
-        onChange = DEFAULT_ON_CHANGE,
+        onChange = DEFAULT_EMPTY_CALLBACK,
         columns: rawColumns = DEFAULT_COLUMNS,
         rowHeight = 40,
         headerRowHeight = rowHeight,
@@ -70,9 +79,23 @@ export const DataSheetGrid = React.memo(
         duplicateRow = DEFAULT_DUPLICATE_ROW,
         contextMenuComponent: ContextMenuComponent = ContextMenu,
         disableContextMenu: disableContextMenuRaw = false,
+        onFocus = DEFAULT_EMPTY_CALLBACK,
+        onBlur = DEFAULT_EMPTY_CALLBACK,
+        onActiveCellChange = DEFAULT_EMPTY_CALLBACK,
+        onSelectionChange = DEFAULT_EMPTY_CALLBACK,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
+      // Display a warning message message when `data` is used instead of `value`
+      useMemo(() => {
+        if (deprecatedValue !== undefined) {
+          console.warn(
+            'Property `data` of <DataSheetGrid /> is deprecated, please use `value` instead.'
+          )
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
+
       const disableContextMenu = disableContextMenuRaw || lockRows
       const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
       const hasStickyRightColumn = Boolean(stickyRightColumn)
@@ -1287,10 +1310,12 @@ export const DataSheetGrid = React.memo(
       )
 
       useImperativeHandle(ref, () => ({
-        activeCell,
-        selection:
+        activeCell: getCellWithId(activeCell, columns),
+        selection: getSelectionWithId(
           selection ??
-          (activeCell ? { min: activeCell, max: activeCell } : null),
+            (activeCell ? { min: activeCell, max: activeCell } : null),
+          columns
+        ),
         setSelection: (value) => {
           const selection = getSelection(
             value,
@@ -1318,6 +1343,65 @@ export const DataSheetGrid = React.memo(
           setSelectionCell(null)
         },
       }))
+
+      // Used to remember the last non-null value of active cell
+      const lastActiveCellRef = useRef(activeCell)
+      lastActiveCellRef.current = activeCell ?? lastActiveCellRef.current
+
+      const callbacksRef = useRef({
+        onFocus,
+        onBlur,
+        onActiveCellChange,
+        onSelectionChange,
+      })
+      callbacksRef.current.onFocus = onFocus
+      callbacksRef.current.onBlur = onBlur
+      callbacksRef.current.onActiveCellChange = onActiveCellChange
+      callbacksRef.current.onSelectionChange = onSelectionChange
+
+      useEffect(() => {
+        if (lastActiveCellRef.current) {
+          if (editing) {
+            callbacksRef.current.onFocus({
+              cell: getCellWithId(lastActiveCellRef.current, columns),
+            })
+          } else {
+            callbacksRef.current.onBlur({
+              cell: getCellWithId(lastActiveCellRef.current, columns),
+            })
+          }
+        }
+      }, [editing, columns])
+
+      useEffect(() => {
+        callbacksRef.current.onActiveCellChange({
+          cell: getCellWithId(activeCell, columns),
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [activeCell?.col, activeCell?.row, columns])
+
+      useEffect(() => {
+        callbacksRef.current.onSelectionChange({
+          selection: getSelectionWithId(
+            selection ??
+              (activeCell ? { min: activeCell, max: activeCell } : null),
+            columns
+          ),
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        selection?.min.col ?? activeCell?.col,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        selection?.min.row ?? activeCell?.row,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        selection?.max.col ?? activeCell?.col,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        selection?.max.row ?? activeCell?.row,
+        activeCell?.col,
+        activeCell?.row,
+        columns,
+      ])
 
       return (
         <div className={className} style={style}>

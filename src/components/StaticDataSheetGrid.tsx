@@ -15,6 +15,11 @@ export const StaticDataSheetGrid = React.forwardRef<
       addRowsComponent,
       createRow,
       duplicateRow,
+      style,
+      onFocus,
+      onBlur,
+      onActiveCellChange,
+      onSelectionChange,
       ...rest
     }: DataSheetGridProps<T>,
     ref: React.ForwardedRef<DataSheetGridRef>
@@ -26,6 +31,11 @@ export const StaticDataSheetGrid = React.forwardRef<
       addRowsComponent,
       createRow,
       duplicateRow,
+      style,
+      onFocus,
+      onBlur,
+      onActiveCellChange,
+      onSelectionChange,
     })
 
     return <DataSheetGrid {...staticProps} {...rest} ref={ref} />

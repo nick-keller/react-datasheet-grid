@@ -17,7 +17,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -65,7 +65,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -95,7 +95,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -325,7 +325,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -353,7 +353,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -443,7 +443,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -522,7 +522,7 @@ Now our column is truly re-usable:
 function App() {
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         selectColumn({ choices: [/*..*/], disabled: true })
@@ -538,7 +538,7 @@ We can also extend the column to add a title, a custom min-width, or override an
 function App() {
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         {
@@ -660,7 +660,7 @@ function App() {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           {
@@ -721,7 +721,7 @@ function App() {
 
   return (
     <DataSheetGrid
-      data={data}
+      valu={data}
       onChange={setData}
       columns={columns}
     />

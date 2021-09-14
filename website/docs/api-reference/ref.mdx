@@ -8,22 +8,23 @@ You can control the grid using a ref, see [examples](../examples/controlling-the
 
 ## Reading values
 ### activeCell
-> Type: `{ col: number, row: number } | null`
+> Type: `{ colId?: string, col: number, row: number } | null`
 
-The active / highlighted cell or null if no cell is active.
+The active / highlighted cell or null if no cell is active. `col` is the index of the column and `colId` is its [`id`](columns#id)
+if it is specified.
 
 ### selection
 > Type: `{ min: Cell, max: Cell } | null`
 
-The current selection rect or null if nothing is selected or active.
+The current selection rect or null if nothing is selected or active. `min` and `max` are of the same type as `activeCell`.
 
 ## Writing values
 ### setActiveCell
-> Type: `(activeCell: Cell | null) => void`
+> Type: `(activeCell: { col: number | string, row: number } | null) => void`
 
 Set the current active cell, pass null to  blur the grid. The column can be specified using its index (a number) or its [`id`](columns#id) (a string).
 
 ### setSelection
 > Type: `(selection: { min: Cell, max: Cell } | null) => void`
 
-Set the current selection, pass null to  blur the grid.
+Set the current selection, pass null to  blur the grid. `min` and `max` are of the same type as `setActiveCell`.

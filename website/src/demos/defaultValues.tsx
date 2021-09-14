@@ -20,7 +20,7 @@ export default () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         createRow={() => ({ int: 0, date: new Date() })}
         duplicateRow={({ rowData }) => ({

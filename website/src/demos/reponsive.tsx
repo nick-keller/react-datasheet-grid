@@ -43,7 +43,7 @@ export default () => {
           }}
         />
         <DataSheetGrid
-          data={data}
+          value={data}
           onChange={setData}
           columns={[
             {

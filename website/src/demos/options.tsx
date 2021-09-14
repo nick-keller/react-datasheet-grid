@@ -50,7 +50,7 @@ export default () => {
         <code>disableContextMenu</code>
       </label>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         lockRows={lockRows}
         autoAddRow={autoAddRow}

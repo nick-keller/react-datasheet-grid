@@ -18,7 +18,7 @@ export default ({ rows = 5 }: { rows: number }) => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[
         { ...keyColumn('active', checkboxColumn), title: 'Active' },

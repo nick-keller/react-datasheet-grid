@@ -19,7 +19,7 @@ export default () => {
   return (
     <div style={{ marginBottom: 20 }}>
       <DataSheetGrid
-        data={data}
+        value={data}
         onChange={setData}
         columns={[
           { ...keyColumn('active', checkboxColumn), title: 'Active' },

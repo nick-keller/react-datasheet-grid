@@ -15,7 +15,7 @@ const MyComponent = () => {
 
   return (
     <DataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={[ // <- ⚠️ A new array is passed on every render
         {/*...*/},
@@ -59,7 +59,7 @@ const MyComponent = () => {
 
   return (
     <DynamicDataSheetGrid
-      data={data}
+      value={data}
       onChange={setData}
       columns={columns}
       createRow={createRow}

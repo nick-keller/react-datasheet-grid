@@ -1,5 +1,14 @@
 # Change Log
 
+## 3.2.0
+> Date: 2021-09-13
+### Added
+- `activeCell` and `selection` of the ref now include `colId` if the column has an id.
+- New props `onFocus`, `onBlur`, `onActiveCellChange`, and `onSelectionChange`
+### Changed
+- Prop `data` on `<DataSheetGrid/>` has been renamed `value` to match standards. `data` is still supported 
+  but is now deprecated and support will be dropped on next major version.
+
 ## 3.1.2
 > Date: 2021-09-07
 ### Improved
