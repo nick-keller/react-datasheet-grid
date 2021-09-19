@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.2.3
+> Date: 2021-09-19
+### Fixed
+- Initial height computation made the grid jump 1 pixel
+
 ## 3.2.2
 > Date: 2021-09-14
 ### Fixed

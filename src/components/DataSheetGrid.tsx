@@ -109,7 +109,8 @@ export const DataSheetGrid = React.memo(
         listRef.current?.resetAfterIndex(0)
       }, [headerRowHeight, rowHeight])
 
-      const [heightDiff, setHeightDiff] = useDebounceState(0, 100)
+      // Default value is 1 for the border
+      const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
 
       // Height of the list (including scrollbars and borders) to display
       const displayHeight = Math.min(
