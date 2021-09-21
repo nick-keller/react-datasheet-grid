@@ -51,9 +51,12 @@
 
 .dsg-cell-header, .dsg-cell-gutter {
   color: rgb(157, 166, 171);
-  padding: 0 10px;
   transition: color .1s;
   box-shadow: none;
+}
+
+.dsg-cell-header-container {
+  padding: 0 10px;
 }
 
 .dsg-cell-header.dsg-cell-gutter {

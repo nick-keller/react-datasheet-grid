@@ -37,7 +37,7 @@ export const HeaderRow = React.memo(() => {
             column.headerClassName
           )}
         >
-          {column.title}
+          <div className="dsg-cell-header-container">{column.title}</div>
         </Cell>
       ))}
     </div>

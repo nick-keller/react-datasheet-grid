@@ -24,6 +24,7 @@ function App() {
     {
       ...keyColumn<Row, 'active'>('active', checkboxColumn),
       title: 'Active',
+      width: 0.5,
     },
     {
       ...keyColumn<Row, 'firstName'>('firstName', textColumn),
@@ -32,6 +33,7 @@ function App() {
     {
       ...keyColumn<Row, 'lastName'>('lastName', textColumn),
       title: 'Last name',
+      width: 2,
     },
   ]
 
