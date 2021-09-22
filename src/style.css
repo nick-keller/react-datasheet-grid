@@ -317,3 +317,23 @@
 .dsg-context-menu-item:hover {
   background: #fafafa;
 }
+
+.dsg-expand-rows-indicator {
+  background: white;
+  border: solid 1px rgb(69, 128, 230);
+  box-shadow: 0 0 0 1px white;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  position: absolute;
+  transition: all .1s;
+  cursor: crosshair;
+}
+
+.dsg-expand-rows-rect {
+  position: absolute;
+  box-sizing: border-box;
+  transition: all .1s;
+  pointer-events: none;
+  background: rgba(0,0,0,.03);
+}

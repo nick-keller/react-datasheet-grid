@@ -55,6 +55,7 @@ export const SelectionRect = React.memo(() => {
     edges,
     isCellDisabled,
     editing,
+    expandSelection,
   } = useContext(SelectionContext)
 
   const activeCellIsDisabled = activeCell ? isCellDisabled(activeCell) : false
@@ -105,6 +106,35 @@ export const SelectionRect = React.memo(() => {
     left: columnRights[selection.min.col],
     top: rowHeight * selection.min.row + headerRowHeight,
   }
+
+  const minSelection = selection?.min || activeCell
+  const maxSelection = selection?.max || activeCell
+
+  const expandRowsIndicator = maxSelection &&
+    expandSelection !== null && {
+      left: columnRights[maxSelection.col] + columnWidths[maxSelection.col + 1],
+      top: rowHeight * (maxSelection.row + 1) + headerRowHeight,
+      transform: `translate(-${
+        maxSelection.col < columnWidths.length - (hasStickyRightColumn ? 3 : 2)
+          ? 50
+          : 100
+      }%, -${maxSelection.row < dataLength - 1 ? 50 : 100}%)`,
+    }
+
+  const expandRowsRect = minSelection &&
+    maxSelection &&
+    expandSelection !== null && {
+      width:
+        columnWidths
+          .slice(minSelection.col + 1, maxSelection.col + 2)
+          .reduce((a, b) => a + b) + extraPixelH(maxSelection.col),
+      height:
+        rowHeight * expandSelection +
+        extraPixelV(maxSelection.row + expandSelection) -
+        1,
+      left: columnRights[minSelection.col],
+      top: rowHeight * (maxSelection.row + 1) + headerRowHeight + 1,
+    }
 
   return (
     <>
@@ -203,6 +233,15 @@ export const SelectionRect = React.memo(() => {
               activeCellRect.left + activeCellRect.width - selectionRect.left
             ),
           }}
+        />
+      )}
+      {expandRowsRect && (
+        <div className={cx('dsg-expand-rows-rect')} style={expandRowsRect} />
+      )}
+      {expandRowsIndicator && (
+        <div
+          className={cx('dsg-expand-rows-indicator')}
+          style={expandRowsIndicator}
         />
       )}
     </>

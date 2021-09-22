@@ -76,6 +76,7 @@ export const DataSheetGrid = React.memo(
         createRow = DEFAULT_CREATE_ROW as () => T,
         autoAddRow = false,
         lockRows = false,
+        disableExpandSelection = false,
         duplicateRow = DEFAULT_DUPLICATE_ROW,
         contextMenuComponent: ContextMenuComponent = ContextMenu,
         disableContextMenu: disableContextMenuRaw = false,
@@ -150,6 +151,16 @@ export const DataSheetGrid = React.memo(
       // True when the active cell is being edited
       const [editing, setEditing] = useState(false)
 
+      // Number of rows the user is expanding the selection by, always a number, even when not expanding selection
+      const [expandSelectionRowsCount, setExpandSelectionRowsCount] =
+        useState<number>(0)
+
+      // When not null, represents the index of the row from which we are expanding
+      const [
+        expandingSelectionFromRowIndex,
+        setExpandingSelectionFromRowIndex,
+      ] = useState<number | null>(null)
+
       // Highlighted cell, null when not focused
       const [activeCell, setActiveCell] = useDeepEqualState<Cell | null>(null)
 
@@ -184,6 +195,16 @@ export const DataSheetGrid = React.memo(
         // True when the user is dragging the mouse around to select
         active: false,
       })
+
+      // Same as expandSelectionRowsCount but is null when we should not be able to expand the selection
+      const expandSelection =
+        disableExpandSelection ||
+        editing ||
+        selectionMode.active ||
+        activeCell?.row === data?.length - 1 ||
+        selection?.max.row === data?.length - 1
+          ? null
+          : expandSelectionRowsCount
 
       const getInnerBoundingClientRect = useGetBoundingClientRect(innerRef)
       const getOuterBoundingClientRect = useGetBoundingClientRect(outerRef)
@@ -746,6 +767,16 @@ export const DataSheetGrid = React.memo(
             return
           }
 
+          if (
+            event.target instanceof HTMLElement &&
+            event.target.className === 'dsg-expand-rows-indicator'
+          ) {
+            setExpandingSelectionFromRowIndex(
+              Math.max(activeCell?.row ?? 0, selection?.max.row ?? 0)
+            )
+            return
+          }
+
           const clickOnActiveCell =
             cursorIndex &&
             activeCell &&
@@ -911,16 +942,118 @@ export const DataSheetGrid = React.memo(
       useDocumentEventListener('mousedown', onMouseDown)
 
       const onMouseUp = useCallback(() => {
+        if (expandingSelectionFromRowIndex !== null) {
+          if (expandSelectionRowsCount > 0 && activeCell) {
+            const copyData: Array<Array<string>> = []
+
+            const min: Cell = selection?.min || activeCell
+            const max: Cell = selection?.max || activeCell
+
+            for (let row = min.row; row <= max.row; ++row) {
+              copyData.push([])
+
+              for (let col = min.col; col <= max.col; ++col) {
+                const { copyValue = () => null } = columns[col + 1]
+                copyData[row - min.row].push(
+                  String(copyValue({ rowData: data[row], rowIndex: row }) ?? '')
+                )
+              }
+            }
+
+            const newData = [...data]
+
+            for (
+              let columnIndex = 0;
+              columnIndex < copyData[0].length;
+              columnIndex++
+            ) {
+              const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
+
+              if (pasteValue) {
+                for (
+                  let rowIndex = max.row + 1;
+                  rowIndex <= max.row + expandSelectionRowsCount;
+                  rowIndex++
+                ) {
+                  if (
+                    !isCellDisabled({
+                      col: columnIndex + min.col,
+                      row: rowIndex,
+                    })
+                  ) {
+                    newData[rowIndex] = pasteValue({
+                      rowData: newData[rowIndex],
+                      value:
+                        copyData[(rowIndex - max.row - 1) % copyData.length][
+                          columnIndex
+                        ],
+                      rowIndex,
+                    })
+                  }
+                }
+              }
+            }
+
+            onChange(newData)
+            setExpandSelectionRowsCount(0)
+            setActiveCell({
+              col: Math.min(
+                activeCell?.col ?? Infinity,
+                selection?.min.col ?? Infinity
+              ),
+              row: Math.min(
+                activeCell?.row ?? Infinity,
+                selection?.min.row ?? Infinity
+              ),
+            })
+            setSelectionCell({
+              col: Math.max(activeCell?.col ?? 0, selection?.max.col ?? 0),
+              row:
+                Math.max(activeCell?.row ?? 0, selection?.max.row ?? 0) +
+                expandSelectionRowsCount,
+            })
+          }
+          setExpandingSelectionFromRowIndex(null)
+        }
+
         setSelectionMode({
           columns: false,
           rows: false,
           active: false,
         })
-      }, [setSelectionMode])
+      }, [
+        expandingSelectionFromRowIndex,
+        setSelectionMode,
+        expandSelectionRowsCount,
+        activeCell,
+        selection?.min,
+        selection?.max,
+        data,
+        onChange,
+        setActiveCell,
+        setSelectionCell,
+        columns,
+        isCellDisabled,
+      ])
       useDocumentEventListener('mouseup', onMouseUp)
 
       const onMouseMove = useCallback(
         (event: MouseEvent) => {
+          if (expandingSelectionFromRowIndex !== null) {
+            const cursorIndex = getCursorIndex(event)
+
+            if (cursorIndex) {
+              setExpandSelectionRowsCount(
+                Math.max(0, cursorIndex.row - expandingSelectionFromRowIndex)
+              )
+
+              scrollTo({
+                col: cursorIndex.col,
+                row: Math.max(cursorIndex.row, expandingSelectionFromRowIndex),
+              })
+            }
+          }
+
           if (selectionMode.active) {
             const cursorIndex = getCursorIndex(event)
 
@@ -941,6 +1074,7 @@ export const DataSheetGrid = React.memo(
           }
         },
         [
+          scrollTo,
           selectionMode.active,
           selectionMode.columns,
           selectionMode.rows,
@@ -949,6 +1083,7 @@ export const DataSheetGrid = React.memo(
           hasStickyRightColumn,
           setSelectionCell,
           data.length,
+          expandingSelectionFromRowIndex,
         ]
       )
       useDocumentEventListener('mousemove', onMouseMove)
@@ -1278,6 +1413,7 @@ export const DataSheetGrid = React.memo(
         edges,
         editing,
         isCellDisabled,
+        expandSelection,
       })
 
       const contextMenuItemsRef = useRef(contextMenuItems)

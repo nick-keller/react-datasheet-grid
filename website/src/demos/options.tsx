@@ -15,6 +15,7 @@ export default () => {
   const [lockRows, setLockRows] = useState(false)
   const [autoAddRow, setAutoAddRow] = useState(false)
   const [disableContextMenu, setDisableContextMenu] = useState(false)
+  const [disableExpandSelection, setDisableExpandSelection] = useState(false)
 
   return (
     <div style={{ marginBottom: 20 }}>
@@ -26,6 +27,7 @@ export default () => {
             setLockRows(value)
             if (value) {
               setDisableContextMenu(true)
+              setAutoAddRow(false)
             }
           }}
         />
@@ -49,12 +51,21 @@ export default () => {
         />
         <code>disableContextMenu</code>
       </label>
+      <label style={{ display: 'block', marginBottom: 10 }}>
+        <Switch
+          style={{ marginRight: 10 }}
+          checked={disableExpandSelection}
+          onChange={(value) => setDisableExpandSelection(value)}
+        />
+        <code>disableExpandSelection</code>
+      </label>
       <DataSheetGrid
         value={data}
         onChange={setData}
         lockRows={lockRows}
         autoAddRow={autoAddRow}
         disableContextMenu={disableContextMenu}
+        disableExpandSelection={disableExpandSelection}
         columns={[
           { ...keyColumn('firstName', textColumn), title: 'First name' },
           { ...keyColumn('lastName', textColumn), title: 'Last name' },
@@ -63,10 +74,12 @@ export default () => {
       <div style={{ marginTop: 20 }}>
         <CodeBlock className="language-tsx">{`<DataSheetGrid ${
           lockRows ? '\n  lockRows' : ''
-        }${autoAddRow ? '\n  autoAddRow' : ''}${
-          disableContextMenu && !lockRows ? '\n  disableContextMenu' : ''
-        }${
-          lockRows || autoAddRow || disableContextMenu ? '\n' : ''
+        }${disableExpandSelection ? '\n  disableExpandSelection' : ''}${
+          autoAddRow && !lockRows ? '\n  autoAddRow' : ''
+        }${disableContextMenu && !lockRows ? '\n  disableContextMenu' : ''}${
+          lockRows || autoAddRow || disableContextMenu || disableExpandSelection
+            ? '\n'
+            : ''
         }/>`}</CodeBlock>
       </div>
     </div>

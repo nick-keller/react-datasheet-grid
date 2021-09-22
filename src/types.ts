@@ -90,6 +90,7 @@ export type SelectionContextType = {
   viewHeight?: number
   contentWidth?: number
   edges: { top: boolean; right: boolean; bottom: boolean; left: boolean }
+  expandSelection: number | null
 }
 
 export type RowProps<T> = {
@@ -157,6 +158,7 @@ export type DataSheetGridProps<T> = {
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean
+  disableExpandSelection?: boolean
   contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
   onFocus?: (opts: { cell: CellWithId }) => void
   onBlur?: (opts: { cell: CellWithId }) => void

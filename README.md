@@ -16,9 +16,10 @@ Feature rich:
 - Dead simple to set up and to use
 - Supports copy / pasting to and from Excel, Google-sheet...
 - Keyboard navigation and shortcuts fully-supported
-- Supports right clicking and custom context menu
-- Supports custom widgets
-- Blazing fast, optimized for speed
+- Supports right-clicking and custom context menu
+- Supports dragging corner to expand selection
+- Easy to extend and implement custom widgets
+- Blazing fast, optimized for speed, minimal renders count
 - Smooth animations
 - Virtualized, supports hundreds of thousands of rows
 - Extensively customizable, controllable behaviors

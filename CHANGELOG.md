@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.3.0
+> Date: 2021-09-21
+### Added
+- User can now drag the corner of the selection to expand it.
+### Fixed
+- Headers width computation could be off in certain conditions because of the way flexbox computes 
+  width when items have padding.
+
 ## 3.2.3
 > Date: 2021-09-19
 ### Fixed
