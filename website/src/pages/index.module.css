@@ -10,6 +10,8 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: #303846;
+  color: white;
 }
 
 @media screen and (max-width: 966px) {
@@ -22,4 +24,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.feature {
+  padding: 60px 20px;
+  font-size: 17px;
+}
+
+.feature figure {
+  display: flex;
+  justify-content: center;
+}
+
+.feature h2 {
+  font-size: 25px;
+}
+
+.feature:nth-child(odd) {
+  background: #F7F7F7;
+}
+
+html[data-theme='dark'] .feature:nth-child(odd) {
+  background: #202223;
+}
+
+.feature:nth-child(odd) figure {
+  order: 1;
+}
+
+.feature > div {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.feature > div > * {
+  flex: 1;
+  padding: 0 20px;
+  margin: 0;
 }

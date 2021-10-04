@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   DataSheetGrid,
   checkboxColumn,
@@ -8,6 +8,7 @@ import {
   floatColumn,
   percentColumn,
   keyColumn,
+  DataSheetGridRef,
 } from 'react-datasheet-grid'
 import faker from 'faker'
 
@@ -25,9 +26,20 @@ export default () => {
       date: new Date(faker.date.past()),
     }))
   )
+  const ref = useRef<DataSheetGridRef>()
+
+  useEffect(() => {
+    setTimeout(() => {
+      ref.current.setActiveCell({ col: 1, row: 99999 })
+      setTimeout(() => {
+        ref.current.setActiveCell({ col: 1, row: 99998 })
+      }, 0)
+    }, 0)
+  }, [])
 
   return (
     <DataSheetGrid
+      ref={ref}
       value={data}
       onChange={setData}
       columns={[
@@ -62,6 +74,8 @@ export default () => {
         },
       ]}
       gutterColumn={{ width: '0 0 60px' }}
+      lockRows
+      height={250}
     />
   )
 }
