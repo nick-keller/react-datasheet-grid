@@ -330,6 +330,10 @@
   cursor: crosshair;
 }
 
+.dsg-expand-rows-indicator-disabled {
+  border: solid 1px #9DA6AB;
+}
+
 .dsg-expand-rows-rect {
   position: absolute;
   box-sizing: border-box;

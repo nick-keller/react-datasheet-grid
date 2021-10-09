@@ -240,7 +240,10 @@ export const SelectionRect = React.memo(() => {
       )}
       {expandRowsIndicator && (
         <div
-          className={cx('dsg-expand-rows-indicator')}
+          className={cx(
+            'dsg-expand-rows-indicator',
+            selectionIsDisabled && 'dsg-expand-rows-indicator-disabled'
+          )}
           style={expandRowsIndicator}
         />
       )}

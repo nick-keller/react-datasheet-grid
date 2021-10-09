@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.1
+> Date: 2021-10-08
+### Fixed
+- Draggable corner is now gray when the selection is disabled
+- Draggable corner is hidden when all columns of the selection are disabled
+
 ## 3.3.0
 > Date: 2021-09-21
 ### Added

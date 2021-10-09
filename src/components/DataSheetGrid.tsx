@@ -202,7 +202,14 @@ export const DataSheetGrid = React.memo(
         editing ||
         selectionMode.active ||
         activeCell?.row === data?.length - 1 ||
-        selection?.max.row === data?.length - 1
+        selection?.max.row === data?.length - 1 ||
+        (activeCell &&
+          columns
+            .slice(
+              (selection?.min.col ?? activeCell.col) + 1,
+              (selection?.max.col ?? activeCell.col) + 2
+            )
+            .every((column) => column.disabled === true))
           ? null
           : expandSelectionRowsCount
 
@@ -769,7 +776,7 @@ export const DataSheetGrid = React.memo(
 
           if (
             event.target instanceof HTMLElement &&
-            event.target.className === 'dsg-expand-rows-indicator'
+            event.target.className.includes('dsg-expand-rows-indicator')
           ) {
             setExpandingSelectionFromRowIndex(
               Math.max(activeCell?.row ?? 0, selection?.max.row ?? 0)
