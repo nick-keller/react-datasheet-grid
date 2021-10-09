@@ -2,6 +2,11 @@
 
 ## 3.3.1
 > Date: 2021-10-08
+### Added
+- Pressing Tab from the last cell of a row now moves the active
+  cell to the first cell of the following row
+- Pressing Shift+Tab from the first cell of a row now moves the active
+  cell to the last cell of the previous row
 ### Fixed
 - Draggable corner is now gray when the selection is disabled
 - Draggable corner is hidden when all columns of the selection are disabled

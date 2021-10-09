@@ -1101,53 +1101,76 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          // Tab from last cell
+          // Tab from last cell of a row
           if (
             event.key === 'Tab' &&
             !event.shiftKey &&
             activeCell.col ===
               columns.length - (hasStickyRightColumn ? 3 : 2) &&
-            activeCell.row === data.length - 1 &&
-            afterTabIndexRef.current &&
             !columns[activeCell.col + 1].disableKeys
           ) {
-            event.preventDefault()
+            // Last row
+            if (activeCell.row === data.length - 1) {
+              if (afterTabIndexRef.current) {
+                event.preventDefault()
 
-            setActiveCell(null)
-            setSelectionCell(null)
-            setEditing(false)
+                setActiveCell(null)
+                setSelectionCell(null)
+                setEditing(false)
 
-            const allElements = getAllTabbableElements()
-            const index = allElements.indexOf(afterTabIndexRef.current)
+                const allElements = getAllTabbableElements()
+                const index = allElements.indexOf(afterTabIndexRef.current)
 
-            allElements[(index + 1) % allElements.length].focus()
+                allElements[(index + 1) % allElements.length].focus()
 
-            return
+                return
+              }
+            } else {
+              setActiveCell((cell) => ({ col: 0, row: (cell?.row ?? 0) + 1 }))
+              setSelectionCell(null)
+              setEditing(false)
+              event.preventDefault()
+
+              return
+            }
           }
 
-          // Shift+Tab from first cell
+          // Shift+Tab from first cell of a row
           if (
             event.key === 'Tab' &&
             event.shiftKey &&
             activeCell.col === 0 &&
-            activeCell.row === 0 &&
-            beforeTabIndexRef.current &&
             !columns[activeCell.col + 1].disableKeys
           ) {
-            event.preventDefault()
+            // First row
+            if (activeCell.row === 0) {
+              if (beforeTabIndexRef.current) {
+                event.preventDefault()
 
-            setActiveCell(null)
-            setSelectionCell(null)
-            setEditing(false)
+                setActiveCell(null)
+                setSelectionCell(null)
+                setEditing(false)
 
-            const allElements = getAllTabbableElements()
-            const index = allElements.indexOf(beforeTabIndexRef.current)
+                const allElements = getAllTabbableElements()
+                const index = allElements.indexOf(beforeTabIndexRef.current)
 
-            allElements[
-              (index - 1 + allElements.length) % allElements.length
-            ].focus()
+                allElements[
+                  (index - 1 + allElements.length) % allElements.length
+                ].focus()
 
-            return
+                return
+              }
+            } else {
+              setActiveCell((cell) => ({
+                col: columns.length - (hasStickyRightColumn ? 3 : 2),
+                row: (cell?.row ?? 1) - 1,
+              }))
+              setSelectionCell(null)
+              setEditing(false)
+              event.preventDefault()
+
+              return
+            }
           }
 
           if (event.key.startsWith('Arrow') || event.key === 'Tab') {
