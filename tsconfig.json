@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
      "incremental": true,
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ES2015",
+    "module": "ES2020",
      "allowJs": false,
      "jsx": "react",
      "declaration": true,
