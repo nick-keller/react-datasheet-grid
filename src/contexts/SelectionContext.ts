@@ -16,4 +16,5 @@ export const SelectionContext = React.createContext<SelectionContextType>({
   },
   editing: false,
   isCellDisabled: () => false,
+  expandSelection: null,
 })
