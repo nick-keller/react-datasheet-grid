@@ -1,7 +1,7 @@
 # Change Log
 
 ## 3.3.1
-> Date: 2021-10-08
+> Date: 2021-10-12
 ### Added
 - Pressing Tab from the last cell of a row now moves the active
   cell to the first cell of the following row
@@ -10,6 +10,8 @@
 ### Fixed
 - Draggable corner is now gray when the selection is disabled
 - Draggable corner is hidden when all columns of the selection are disabled
+- Fix typescript error in SelectionContext.ts
+- Update tsconfig for better module compatibility
 
 ## 3.3.0
 > Date: 2021-09-21
