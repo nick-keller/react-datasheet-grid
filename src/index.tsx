@@ -23,7 +23,7 @@ export type ContextMenuItem = ContextMenuItemBase
 export type DataSheetGridRef = DataSheetGridRefBase
 export const DynamicDataSheetGrid = DataSheetGridBase
 export const DataSheetGrid = StaticDataSheetGridBase
-export { textColumn } from './columns/textColumn'
+export { textColumn, createTextColumn } from './columns/textColumn'
 export { checkboxColumn } from './columns/checkboxColumn'
 export { floatColumn } from './columns/floatColumn'
 export { intColumn } from './columns/intColumn'

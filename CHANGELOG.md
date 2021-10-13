@@ -1,9 +1,16 @@
 # Change Log
 
+## 3.3.3
+> Date: 2021-10-13
+### Added
+- The package now exports `createTextColumn` that allows to create text-based columns from simple parsing and formatting functions.
+  `floatColumn`, `intColumn`, `percentColumn`, and `textColumn` are now built using it.
+- `floatColumn`, `intColumn`, and `percentColumn` now format the value when blurred using Intl
+
 ## 3.3.2
 > Date: 2021-10-13
 ### Fixed
-- onBlur was not passing the right cell to the callback
+- `onBlur` was not passing the right cell to the callback
 
 ## 3.3.1
 > Date: 2021-10-12
@@ -12,9 +19,9 @@
   cell to the first cell of the following row
 - Pressing Shift+Tab from the first cell of a row now moves the active
   cell to the last cell of the previous row
-### Fixed
 - Draggable corner is now gray when the selection is disabled
 - Draggable corner is hidden when all columns of the selection are disabled
+### Fixed
 - Fix typescript error in SelectionContext.ts
 - Update tsconfig for better module compatibility
 

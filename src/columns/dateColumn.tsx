@@ -22,7 +22,7 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
         tabIndex={-1}
         ref={ref}
         // The `pointerEvents` trick is the same than in `textColumn`
-        // The `opacity` trick is the same than in `percentColumn`
+        // Only show the calendar symbol on non-empty cells, or when cell is active, otherwise set opacity to 0
         style={{
           pointerEvents: focus ? 'auto' : 'none',
           opacity: rowData || active ? undefined : 0,
