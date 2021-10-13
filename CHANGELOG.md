@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.2
+> Date: 2021-10-13
+### Fixed
+- onBlur was not passing the right cell to the callback
+
 ## 3.3.1
 > Date: 2021-10-12
 ### Added

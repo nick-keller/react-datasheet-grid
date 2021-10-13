@@ -97,6 +97,7 @@ export const DataSheetGrid = React.memo(
         // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [])
 
+      const lastEditingCellRef = useRef<Cell | null>(null)
       const disableContextMenu = disableContextMenuRaw || lockRows
       const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
       const hasStickyRightColumn = Boolean(stickyRightColumn)
@@ -859,6 +860,10 @@ export const DataSheetGrid = React.memo(
             )
           }
 
+          if (clickOnActiveCell && !rightClick) {
+            lastEditingCellRef.current = activeCell
+          }
+
           setEditing(Boolean(clickOnActiveCell && !rightClick))
           setSelectionMode(
             cursorIndex && !rightClick
@@ -1245,6 +1250,7 @@ export const DataSheetGrid = React.memo(
                 stopEditing()
               }
             } else if (!isCellDisabled(activeCell)) {
+              lastEditingCellRef.current = activeCell
               setEditing(true)
               scrollTo(activeCell)
             }
@@ -1274,6 +1280,7 @@ export const DataSheetGrid = React.memo(
             !event.altKey
           ) {
             if (!editing && !isCellDisabled(activeCell)) {
+              lastEditingCellRef.current = activeCell
               setSelectionCell(null)
               setEditing(true)
               scrollTo(activeCell)
@@ -1511,10 +1518,6 @@ export const DataSheetGrid = React.memo(
         },
       }))
 
-      // Used to remember the last non-null value of active cell
-      const lastActiveCellRef = useRef(activeCell)
-      lastActiveCellRef.current = activeCell ?? lastActiveCellRef.current
-
       const callbacksRef = useRef({
         onFocus,
         onBlur,
@@ -1527,14 +1530,14 @@ export const DataSheetGrid = React.memo(
       callbacksRef.current.onSelectionChange = onSelectionChange
 
       useEffect(() => {
-        if (lastActiveCellRef.current) {
+        if (lastEditingCellRef.current) {
           if (editing) {
             callbacksRef.current.onFocus({
-              cell: getCellWithId(lastActiveCellRef.current, columns),
+              cell: getCellWithId(lastEditingCellRef.current, columns),
             })
           } else {
             callbacksRef.current.onBlur({
-              cell: getCellWithId(lastActiveCellRef.current, columns),
+              cell: getCellWithId(lastEditingCellRef.current, columns),
             })
           }
         }
