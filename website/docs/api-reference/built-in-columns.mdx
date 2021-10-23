@@ -1,0 +1,149 @@
+---
+sidebar_position: 2
+---
+import BuiltInColumns from '../../src/demos/builtInColumns'
+
+# Built-in columns
+
+## Simple columns
+
+6 simple columns are built-in:
+- textColumn
+- checkboxColumn
+- intColumn
+- floatColumn
+- dateColumn
+- percentColumn
+
+<BuiltInColumns />
+
+Each built-in column handles rows of a very specific data type:
+
+```tsx
+import {
+  DataSheetGrid,
+  textColumn,
+  checkboxColumn,
+} from 'react-datasheet-grid'
+
+const ExampleStrings = () => {
+  const [ data, setData ] = useState(['foo', 'bar', 'baz'])
+
+  const columns = [textColumn]
+
+  return (
+    <DataSheetGrid
+      value={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+
+const ExampleBooleans = () => {
+  const [ data, setData ] = useState([true, false, true])
+
+  const columns = [checkboxColumn]
+
+  return (
+    <DataSheetGrid
+      value={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+```
+## keyColumn
+In a real world project we often use objects and would like each column to handle
+a specific key of that object. This is where `keyColumn` comes in:
+
+```tsx
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  textColumn,
+  keyColumn,
+} from 'react-datasheet-grid'
+
+const Example = () => {
+  const [ data, setData ] = useState([
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+  ])
+
+  const columns = [
+    keyColumn('active', checkboxColumn),
+    keyColumn('firstName', textColumn),
+    keyColumn('lastName', textColumn),
+  ]
+
+  return (
+    <DataSheetGrid
+      value={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+```
+
+`keyColumn` wraps all properties of a column and allows you to write simpler columns that only need to handle a
+specific data type. It also has a very positive [performance impact](../performance/cell-components#use-keycolumn).
+
+## createTextColumn
+To create a text-based column that simply has some custom parsing and formatting functions you do not have
+to implement a custom component from scratch and can instead rely on `createTextColumn`:
+
+```tsx
+import { createTextColumn } from 'react-datasheet-grid'
+
+const columns = [ createTextColumn({ /* options */ }) ]
+```
+
+### placeholder
+> Type: `string`<br />
+> Default: `null`
+
+### alignRight
+> Type: `boolean`<br />
+> Default: `false`
+
+### continuousUpdates
+> Type: `boolean`<br />
+> Default: `true`
+
+When true, data is updated as the user types, otherwise it is only updated on blur.
+Setting it to `false` will improve performance.
+
+### deletedValue
+> Type: `T`<br />
+> Default: `null`
+
+Value to use when deleting the cell
+
+### parseUserInput
+> Type: `(value: string) => T`
+
+Parse what the user types
+
+### formatBlurredInput
+> Type: `(value: T) => string`
+
+Format the value of the input when it is blurred
+
+### formatInputOnFocus
+> Type: `(value: T) => string`
+
+Format the value of the input when it gets focused
+
+### formatForCopy
+> Type: `(value: T) => string`
+
+Format the value when copy
+
+### parsePastedValue
+> Type: `(value: string) => T`
+
+Parse the pasted value
+
