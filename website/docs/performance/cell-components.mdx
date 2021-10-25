@@ -29,7 +29,7 @@ const TextComponent = React.memo(
     return (
       <input
         value={rowData[columnData]}
-        onChange={(e) => setRowData({ ...rowData, [key]: e.target.value })}
+        onChange={(e) => setRowData({ ...rowData, [columnData]: e.target.value })}
       />
     )
   }
