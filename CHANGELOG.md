@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.4
+> Date: 2021-11-02
+### Fixed
+- Pasting more columns than available caused a crash
+
 ## 3.3.3
 > Date: 2021-10-13
 ### Added

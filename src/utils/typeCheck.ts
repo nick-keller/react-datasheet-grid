@@ -38,7 +38,7 @@ export const getCellWithId = (
   cell
     ? {
         ...cell,
-        colId: columns[cell.col + 1].id,
+        colId: columns[cell.col + 1]?.id,
       }
     : (null as never)
 
