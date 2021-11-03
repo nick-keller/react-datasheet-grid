@@ -23,7 +23,7 @@ const CheckboxComponent = React.memo<CellProps<boolean, any>>(
     const ref = useRef<HTMLInputElement>(null)
 
     // When cell becomes focus we immediately toggle the checkbox and blur the cell by calling `stopEditing`
-    // Notice the `nextRow: false` to make sure the active cell does not go to the cell bellow and stays on this cell
+    // Notice the `nextRow: false` to make sure the active cell does not go to the cell below and stays on this cell
     // This way the user can keep pressing Enter to toggle the checkbox on and off multiple times
     useLayoutEffect(() => {
       if (focus) {

@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.5
+> Date: 2021-11-03
+### Fixed
+- Typo: ~~bellow~~ → below. For backward compatibility this does not affect the `type` of `ContextMenuItem`, it is still `INSERT_ROW_BELLOW`
+
 ## 3.3.4
 > Date: 2021-11-02
 ### Fixed

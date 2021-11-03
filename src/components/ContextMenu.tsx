@@ -17,7 +17,7 @@ const renderItem = (item: ContextMenuItem) => {
   }
 
   if (item.type === 'INSERT_ROW_BELLOW') {
-    return 'Insert row bellow'
+    return 'Insert row below'
   }
 
   if (item.type === 'DUPLICATE_ROW') {
