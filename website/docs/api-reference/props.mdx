@@ -38,7 +38,7 @@ function App() => {
 ```
 
 ### gutterColumn
-> Type: `Column`
+> Type: `Column | false`
 
 Used to customize the gutter column to the left of the grid. Mostly used to customize the width or the component that renders the gutter.
 
@@ -50,6 +50,8 @@ function App() => {
   )
 }
 ```
+
+You can also disable the gutter completely by passing `false`.
 
 ### stickyRightColumn
 > Type: `Column`<br />

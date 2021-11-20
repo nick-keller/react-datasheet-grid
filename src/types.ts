@@ -147,7 +147,7 @@ export type DataSheetGridProps<T> = {
   className?: string
   onChange?: (value: T[]) => void
   columns?: Partial<Column<T, any>>[]
-  gutterColumn?: SimpleColumn<T, any>
+  gutterColumn?: SimpleColumn<T, any> | false
   stickyRightColumn?: SimpleColumn<T, any>
   height?: number
   rowHeight?: number
