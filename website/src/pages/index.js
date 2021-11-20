@@ -85,7 +85,7 @@ export default function Home() {
           <aside>
             <h2>Fast</h2>
             <p>
-              RDG is optimized for speed and can easily handle{' '}
+              DSG is optimized for speed and can easily handle{' '}
               <b>hundreds of thousands of rows</b> thanks to its virtualized
               architecture.
             </p>
@@ -108,7 +108,7 @@ export default function Home() {
             <h2>Customizable</h2>
             <p>
               Control every <b>behavior</b> of the spreadsheet, implement you
-              own <b>widgets</b>, and customize the <b>style</b> of RDG to match
+              own <b>widgets</b>, and customize the <b>style</b> of DSG to match
               your app.
             </p>
           </aside>

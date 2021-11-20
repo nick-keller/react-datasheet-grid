@@ -16,7 +16,7 @@ const FeatureList = [
     title: 'Fast',
     description: (
       <>
-        RDG is optimized for speed and can easily handle{' '}
+        DSG is optimized for speed and can easily handle{' '}
         <b>hundreds of thousands of rows</b> thanks to its virtualized
         architecture.
       </>

@@ -55,6 +55,14 @@ export default () => {
             "ref.current?.setSelection({ min: { col: 'active', row: 1 }, max: { col: 1, row: 4 }})"
           }
         </span>
+        <span
+          className="action"
+          onMouseEnter={() => {
+            ref.current?.setSelection(null)
+          }}
+        >
+          {'ref.current?.setSelection(null)'}
+        </span>
       </div>
       <DataSheetGrid
         ref={ref}

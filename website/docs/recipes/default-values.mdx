@@ -3,19 +3,20 @@ sidebar_position: 1
 ---
 import DefaultValues from '../../src/demos/defaultValues'
 
-# Adding default values
+# Adding default values to columns
 
-You can easily add default values to your rows by using both `createRow` and `duplicateRow` props.
+You can easily add default values to new rows using the `createRow` prop. You can also make sure duplicated rows
+have default values using the `duplicateRow` prop.
 
 Try adding rows, inserting rows (using `Shift+Enter`), or duplicating empty rows (using `Ctrl+D`):
 <DefaultValues />
 
 ```tsx
 <DataSheetGrid
-  createRow={() => ({ int: 0, date: new Date() })}
+  createRow={() => ({ age: 25, date: new Date() })}
   duplicateRow={({ rowData }) => ({
     ...rowData,
-    int: rowData.int ?? 0,
+    age: rowData.int ?? 25,
     date: rowData.date ?? new Date(),
   })}
 />

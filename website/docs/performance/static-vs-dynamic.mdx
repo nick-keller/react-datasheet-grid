@@ -28,14 +28,20 @@ const MyComponent = () => {
 }
 ```
 Inline props are the easiest way to write your component, and this example is perfectly fine because even tho
-`<DataSheetGrid />` receives different props every time, this does not trigger a re-render of the grid.
+`<DataSheetGrid />` receives different props every time, this does not trigger a re-render of the grid because it "saved"
+the value it received on original render.
 
 ## Which props are static?
-Only props that are not primitive (ie. objects or functions) are concerned by this static behavior.
-Therefore, `columns`, `createRow`, `duplicateRow` and other are static, the only exception to this rule
-is the `onChange` prop that is always dynamic.
+All props that are not primitive (ie. objects, array, or functions) are static.
+Therefore, `columns`, `createRow`, `duplicateRow` and other non primitive typed props are static and cannot be changed
+after first render.
 
-All other props that are primitives (number, string, or boolean) are dynamic by default (eg. `data`, `height`, `lockRows`, ...)
+:::info
+The only exception to this rule is the `onChange` prop that is always dynamic.
+:::
+
+All other primitive props (number, string, or boolean) are dynamic. Therefore, `data`, `height`, `lockRows` and other
+primitive typed props can be changed after first render.
 
 ## When to opt out of the static behavior?
 A good rule of thumb is to keep using the static version of `<DataSheetGrid />` until it does not work as intended.

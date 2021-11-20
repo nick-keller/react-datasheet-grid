@@ -8,8 +8,8 @@ import DisableColumns from '../../src/demos/disableColumns'
 Columns are simple objects and can be declared as such:
 ```tsx
 const columns = [
-  { title: 'A', /*...*/ },
-  { title: 'B', /*...*/ },
+  { title: 'A', id: 'a', /*...*/ },
+  { title: 'B', id: 'b', /*...*/ },
 ]
 ```
 
@@ -23,7 +23,7 @@ Element to display in the header row.
 > Type: `string`<br />
 > Default: `undefined`
 
-You can specify a unique ID for each column. This allows you to specify the column ID instead of its index when [controlling the grid](../examples/controlling-the-grid).
+You can specify a unique ID for each column. This allows you to specify the column ID instead of its index when [controlling the grid](../controlling-the-grid).
 
 ## Sizing
 ### width
@@ -174,7 +174,7 @@ and always return true to ignore this column.
 > Default: `true`
 
 When set to `false`, the column waits for the scroll to stop to render new cells.
-[More details](../performance/cell-components#slow-components-and-scrolling) about performance.
+[More details](../performance/optimization-guidelines#slow-components-and-scrolling) about performance.
 
 ### disableKeys
 > Type: `boolean`<br />

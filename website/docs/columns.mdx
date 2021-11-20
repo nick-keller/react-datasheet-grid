@@ -1,19 +1,22 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 ---
-import BuiltInColumns from '../../src/demos/builtInColumns'
+import BuiltInColumns from '../src/demos/builtInColumns'
 
-# Built-in columns
+# Columns
 
-## Simple columns
+DSG is column based, meaning that all cells of a given column are of the same type and have the same widget.
+This is why it is more like Notion or Airtable, and less like Excel.
 
-6 simple columns are built-in:
-- textColumn
-- checkboxColumn
-- intColumn
-- floatColumn
-- dateColumn
-- percentColumn
+## Built-in columns
+
+To get you started, 6 simple columns are built-in:
+- `textColumn`
+- `checkboxColumn`
+- `intColumn`
+- `floatColumn`
+- `dateColumn`
+- `percentColumn`
 
 <BuiltInColumns />
 
@@ -54,7 +57,22 @@ const ExampleBooleans = () => {
   )
 }
 ```
-## keyColumn
+
+## Overriding column props
+Because columns are simple objects, you can easily override any property by spreading it.
+See the [exhaustive list](./api-reference/columns.mdx) of properties a column has.
+
+```tsx
+const columns = [
+  {
+    ...textColumn,
+    title: 'Name',
+    minWidth: 200
+  }
+]
+```
+
+## Using objects as rows
 In a real world project we often use objects and would like each column to handle
 a specific key of that object. This is where `keyColumn` comes in:
 
@@ -89,11 +107,35 @@ const Example = () => {
 ```
 
 `keyColumn` wraps all properties of a column and allows you to write simpler columns that only need to handle a
-specific data type. It also has a very positive [performance impact](../performance/cell-components#use-keycolumn).
+specific data type. It also has a very positive [performance impact](performance/optimization-guidelines#use-keycolumn).
 
-## createTextColumn
+Because columns are still regular objects, you can override any props by spreading it:
+
+```tsx
+const columns = [
+  {
+    ...keyColumn('active', checkboxColumn),
+    title: 'Active'
+  },
+  {
+    ...keyColumn('firstName', textColumn),
+    title: 'First name'
+  },
+  {
+    ...keyColumn('lastName', textColumn),
+    title: 'Last name'
+  },
+]
+```
+
+## Building custom columns
+Built-in columns are there to get your project started, but often you end up building you own custom columns
+to fit your needs. Note that built-in columns and helpers have nothing special, they are built on top
+of this library and do not ofer any additional feature that would not be available otherwise.
+
+### Text-based columns
 To create a text-based column that simply has some custom parsing and formatting functions you do not have
-to implement a custom component from scratch and can instead rely on `createTextColumn`:
+to implement a custom component from scratch and can instead use `createTextColumn`:
 
 ```tsx
 import { createTextColumn } from 'react-datasheet-grid'
@@ -101,49 +143,65 @@ import { createTextColumn } from 'react-datasheet-grid'
 const columns = [ createTextColumn({ /* options */ }) ]
 ```
 
-### placeholder
+#### placeholder
 > Type: `string`<br />
 > Default: `null`
 
-### alignRight
+#### alignRight
 > Type: `boolean`<br />
 > Default: `false`
 
-### continuousUpdates
+#### continuousUpdates
 > Type: `boolean`<br />
 > Default: `true`
 
 When true, data is updated as the user types, otherwise it is only updated on blur.
 Setting it to `false` will improve performance.
 
-### deletedValue
+#### deletedValue
 > Type: `T`<br />
 > Default: `null`
 
 Value to use when deleting the cell
 
-### parseUserInput
+#### parseUserInput
 > Type: `(value: string) => T`
 
 Parse what the user types
 
-### formatBlurredInput
+#### formatBlurredInput
 > Type: `(value: T) => string`
 
 Format the value of the input when it is blurred
 
-### formatInputOnFocus
+#### formatInputOnFocus
 > Type: `(value: T) => string`
 
 Format the value of the input when it gets focused
 
-### formatForCopy
+#### formatForCopy
 > Type: `(value: T) => string`
 
 Format the value when copy
 
-### parsePastedValue
+#### parsePastedValue
 > Type: `(value: string) => T`
 
 Parse the pasted value
 
+### Using a custom component
+
+If you need a more exotic column, you can write your own from scratch. A column consists of a custom component
+that renders the widget and a few props to control its behavior.
+
+See an [example](./recipes/implementing-select) of how to implement a select column, or read the
+[exhaustive list](./api-reference/columns.mdx) of properties a column has.
+
+```tsx
+const columns = [
+  {
+    component: MyWidget,
+    title: 'My column'
+  }
+]
+```
