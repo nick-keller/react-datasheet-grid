@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.7
+> Date: 2021-11-23
+### Added
+- Now uses CSS custom properties to style DSG for easier customization.
+
 ## 3.3.6
 > Date: 2021-11-20
 ### Added

@@ -1,0 +1,21 @@
+.generator-form label {
+  padding-right: 10px;
+  color: #7f7f7f;
+}
+
+.generator-form label.active {
+  color: #000000;
+}
+
+.generator-form input {
+  border: none;
+  background: #f8f8f8;
+  padding: 5px 8px;
+  min-width: 200px;
+  font-size: 14px;
+}
+
+.generator-form input:focus {
+  background: #f1f1f1;
+  outline: none;
+}

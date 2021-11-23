@@ -1,0 +1,54 @@
+---
+sidebar_position: 5
+---
+import StyleGenerator from '../src/demos/styleGenerator'
+
+# Styling
+
+You can very easily customize the way DSG looks using CSS.
+
+## Custom properties
+
+The easiest way is to use [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties).
+Because of the way custom properties work, you can define them anywhere in your style. Note that all custom properties
+are prefixed with `--dsg-`.
+
+### At the :root level
+If you want all the DSG of your app to have the same styling you can define the custom properties at the
+[:root](https://developer.mozilla.org/en-US/docs/Web/CSS/:root) level.
+
+```css
+:root {
+  --dsg-selection-border-color: tomato;
+}
+```
+
+### Using a class
+If you need some DSG in your app to have a slightly different styling you can use CSS classes.
+
+
+```css
+.my-class {
+  --dsg-selection-border-color: tomato;
+}
+```
+
+```tsx
+<DataSheetGrid className="my-class" />
+```
+
+### Using style
+If you want to override a single DSG in your app you can directly use the style property.
+
+```tsx
+<DataSheetGrid style={{ '--dsg-selection-border-color': 'tomato' }} />
+```
+
+### Generator
+
+<StyleGenerator />
+
+## Override more specific CSS
+
+If custom properties do not allow you to customize what you need, you can manually override any CSS classes.
+All classes are prefixed with `.dsg-`. See style [reference](https://github.com/Equify/react-datasheet-grid/blob/master/src/style.css).

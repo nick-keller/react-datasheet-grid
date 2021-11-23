@@ -3,3 +3,4 @@
 /example/node_modules
 /.idea
 tsconfig.tsbuildinfo
+/coverage
