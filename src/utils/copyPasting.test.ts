@@ -138,6 +138,10 @@ describe('parsePlainTextData', () => {
     expect(parseTextPlainData('"foo\nbar')).toEqual([['"foo'], ['bar']])
   })
 
+  test('non-quoted cell', () => {
+    expect(parseTextPlainData('"foo"bar')).toEqual([['"foo"bar']])
+  })
+
   test('two quoted cells', () => {
     expect(parseTextPlainData('"foo\tbar"')).toEqual([['"foo', 'bar"']])
     expect(parseTextPlainData('"foo"\t"bar"')).toEqual([['"foo"', '"bar"']])

@@ -27,6 +27,9 @@
   "repository": "Equify/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.15.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^26.0.24",
     "@types/jsdom": "^16.2.13",
     "@types/react": "^17.0.11",
@@ -46,6 +49,7 @@
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.3"
   },
   "files": [

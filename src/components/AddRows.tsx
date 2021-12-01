@@ -14,6 +14,8 @@ export const AddRows = ({ addRows }: AddRowsComponentProps) => {
         className="dsg-add-row-input"
         value={rawValue}
         onBlur={() => setRawValue(String(value))}
+        type="number"
+        min={1}
         onChange={(e) => {
           setRawValue(e.target.value)
           setValue(Math.max(1, Math.round(parseInt(e.target.value) || 0)))
