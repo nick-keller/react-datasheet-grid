@@ -1,6 +1,7 @@
 # react-datasheet-grid
 
-[![NPM](https://img.shields.io/npm/v/react-datasheet-grid.svg)](https://www.npmjs.com/package/react-datasheet-grid)
+![Travis (.com)](https://img.shields.io/travis/com/Equify/react-datasheet-grid)
+![Coveralls](https://img.shields.io/coveralls/github/Equify/react-datasheet-grid)
 ![npm](https://img.shields.io/npm/dm/react-datasheet-grid)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Equify/react-datasheet-grid)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/react-datasheet-grid)
