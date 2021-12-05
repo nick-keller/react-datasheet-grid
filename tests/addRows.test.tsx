@@ -8,7 +8,7 @@ import {
   textColumn,
   keyColumn,
   DataSheetGridRef,
-} from '../index'
+} from '../src'
 
 jest.mock('react-resize-detector', () => ({
   useResizeDetector: () => ({ width: 100, height: 100 }),
@@ -53,6 +53,12 @@ test('Add single row', () => {
       id: 3,
     },
   ])
+})
+
+test('No add button when rows are locked', () => {
+  render(<DataSheetGrid lockRows />)
+
+  expect(screen.queryByText('Add')).not.toBeInTheDocument()
 })
 
 test('Add multiple rows', () => {

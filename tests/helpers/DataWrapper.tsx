@@ -1,8 +1,4 @@
-import {
-  DataSheetGrid,
-  DataSheetGridProps,
-  DataSheetGridRef,
-} from '../../index'
+import { DataSheetGrid, DataSheetGridProps, DataSheetGridRef } from '../../src'
 import React, { useState } from 'react'
 
 export const DataWrapper = ({

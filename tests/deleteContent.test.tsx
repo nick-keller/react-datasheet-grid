@@ -8,7 +8,7 @@ import {
   textColumn,
   keyColumn,
   DataSheetGridRef,
-} from '../index'
+} from '../src'
 
 jest.mock('react-resize-detector', () => ({
   useResizeDetector: () => ({ width: 100, height: 100 }),
@@ -130,6 +130,40 @@ test('Delete entire grid', () => {
   expect(onChange).toHaveBeenCalledWith([
     { firstName: null, lastName: null },
     { firstName: null, lastName: null },
+  ])
+})
+
+test('Delete disabled cells', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  const onChange = jest.fn()
+
+  render(
+    <DataSheetGrid
+      value={[
+        { firstName: 'Elon', lastName: 'Musk' },
+        { firstName: 'Jeff', lastName: 'Bezos' },
+      ]}
+      onChange={onChange}
+      columns={[
+        keyColumn('firstName', textColumn),
+        { ...keyColumn('lastName', textColumn), disabled: true },
+      ]}
+      ref={ref}
+    />
+  )
+
+  act(() =>
+    ref.current.setSelection({
+      min: { col: 0, row: 0 },
+      max: { col: 1, row: 1 },
+    })
+  )
+
+  userEvent.keyboard('[Delete]')
+
+  expect(onChange).toHaveBeenCalledWith([
+    { firstName: null, lastName: 'Musk' },
+    { firstName: null, lastName: 'Bezos' },
   ])
 })
 
@@ -305,4 +339,35 @@ test('Delete empty rows', () => {
 
   expect(onChange).toHaveBeenCalledWith([])
   expect(ref.current.activeCell).toEqual(null)
+})
+
+test('Delete empty locked rows', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  const onChange = jest.fn()
+
+  render(
+    <DataSheetGrid
+      value={[{ lastName: null }, { firstName: null, lastName: null }]}
+      onChange={onChange}
+      columns={columns}
+      lockRows
+      ref={ref}
+    />
+  )
+
+  act(() =>
+    ref.current.setSelection({
+      min: {
+        col: 0,
+        row: 0,
+      },
+      max: {
+        col: 0,
+        row: 1,
+      },
+    })
+  )
+  userEvent.keyboard('[Delete]')
+
+  expect(onChange).not.toHaveBeenCalled()
 })

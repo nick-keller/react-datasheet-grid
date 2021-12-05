@@ -7,7 +7,7 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ['./dist'],
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
   moduleNameMapper: {
-    '\\.css$': '<rootDir>/src/tests/helpers/styleMock.ts',
+    '\\.css$': '<rootDir>/tests/helpers/styleMock.ts',
   },
 }
 export default config
