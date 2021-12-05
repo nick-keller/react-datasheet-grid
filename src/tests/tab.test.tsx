@@ -23,7 +23,7 @@ const columns: Column[] = [
   keyColumn('lastName', textColumn),
 ]
 
-test('Tab', () => {
+test('Tab from outside', () => {
   const ref = { current: null as unknown as DataSheetGridRef }
   render(
     <>
@@ -41,13 +41,27 @@ test('Tab', () => {
     colId: 'firstName',
     row: 0,
   })
+})
+
+test('Tab from cell', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(<DataSheetGrid value={data} columns={columns} ref={ref} lockRows />)
+
+  act(() => ref.current.setActiveCell({ col: 0, row: 1 }))
 
   userEvent.tab()
   expect(ref.current.activeCell).toEqual({
     col: 1,
     colId: 'lastName',
-    row: 0,
+    row: 1,
   })
+})
+
+test('Tab from last cell of row', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(<DataSheetGrid value={data} columns={columns} ref={ref} lockRows />)
+
+  act(() => ref.current.setActiveCell({ col: 1, row: 0 }))
 
   userEvent.tab()
   expect(ref.current.activeCell).toEqual({
@@ -55,20 +69,26 @@ test('Tab', () => {
     colId: 'firstName',
     row: 1,
   })
+})
 
-  userEvent.tab()
-  expect(ref.current.activeCell).toEqual({
-    col: 1,
-    colId: 'lastName',
-    row: 1,
-  })
+test('Tab from last cell of last row', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(
+    <>
+      <input data-testid="input-before" />
+      <DataSheetGrid value={data} columns={columns} ref={ref} lockRows />
+      <input data-testid="input-after" />
+    </>
+  )
+
+  act(() => ref.current.setActiveCell({ col: 1, row: 1 }))
 
   userEvent.tab()
   expect(ref.current.activeCell).toEqual(null)
   expect(screen.getByTestId('input-after')).toHaveFocus()
 })
 
-test('Shift tab', () => {
+test('Shift tab from outside', () => {
   const ref = { current: null as unknown as DataSheetGridRef }
   render(
     <>
@@ -86,6 +106,19 @@ test('Shift tab', () => {
     colId: 'lastName',
     row: 1,
   })
+})
+
+test('Shift tab from cell', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(
+    <>
+      <input data-testid="input-before" />
+      <DataSheetGrid value={data} columns={columns} ref={ref} lockRows />
+      <input data-testid="input-after" />
+    </>
+  )
+
+  act(() => ref.current.setActiveCell({ col: 1, row: 1 }))
 
   userEvent.tab({ shift: true })
   expect(ref.current.activeCell).toEqual({
@@ -93,6 +126,19 @@ test('Shift tab', () => {
     colId: 'firstName',
     row: 1,
   })
+})
+
+test('Shift tab from first cell of row', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(
+    <>
+      <input data-testid="input-before" />
+      <DataSheetGrid value={data} columns={columns} ref={ref} lockRows />
+      <input data-testid="input-after" />
+    </>
+  )
+
+  act(() => ref.current.setActiveCell({ col: 0, row: 1 }))
 
   userEvent.tab({ shift: true })
   expect(ref.current.activeCell).toEqual({
@@ -100,13 +146,19 @@ test('Shift tab', () => {
     colId: 'lastName',
     row: 0,
   })
+})
 
-  userEvent.tab({ shift: true })
-  expect(ref.current.activeCell).toEqual({
-    col: 0,
-    colId: 'firstName',
-    row: 0,
-  })
+test('Shift tab from first cell of first row', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  render(
+    <>
+      <input data-testid="input-before" />
+      <DataSheetGrid value={data} columns={columns} ref={ref} lockRows />
+      <input data-testid="input-after" />
+    </>
+  )
+
+  act(() => ref.current.setActiveCell({ col: 0, row: 0 }))
 
   userEvent.tab({ shift: true })
   expect(ref.current.activeCell).toEqual(null)

@@ -81,6 +81,7 @@ const TextComponent = React.memo<
           ref.current.value = asyncRef.current.formatInputOnFocus(
             asyncRef.current.rowData
           )
+          ref.current.focus()
           ref.current.select()
         }
 
