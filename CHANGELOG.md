@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.3.8
+> Date: 2021-12-05
+### Added
+- CI and tests
+
 ## 3.3.7
 > Date: 2021-11-23
 ### Added
