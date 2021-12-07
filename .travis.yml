@@ -4,8 +4,6 @@ node_js:
 branches:
   only:
     - master
-before_install:
-  - npm ci
 script:
   - npm test -- --coverage
   - npm run report-coverage
