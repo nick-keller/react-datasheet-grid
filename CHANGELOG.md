@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.3.9
+> Date: 2021-12-07
+### Fixed
+- Selection was overflowing when pasting a single row that overflows to the right
+- A state could be updated (triggering a warning) after the component was unmounted
+
 ## 3.3.8
 > Date: 2021-12-05
 ### Added

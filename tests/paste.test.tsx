@@ -1,13 +1,12 @@
 import React from 'react'
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { render, screen, act, fireEvent, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import {
-  DataSheetGrid,
   Column,
-  textColumn,
-  keyColumn,
+  DataSheetGrid,
   DataSheetGridRef,
+  keyColumn,
+  textColumn,
 } from '../src'
 
 jest.mock('react-resize-detector', () => ({

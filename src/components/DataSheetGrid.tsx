@@ -669,7 +669,10 @@ export const DataSheetGrid = React.memo(
               onChange(newData)
               setActiveCell({ col: min.col, row: min.row })
               setSelectionCell({
-                col: min.col + pasteData[0].length - 1,
+                col: Math.min(
+                  min.col + pasteData[0].length - 1,
+                  columns.length - (hasStickyRightColumn ? 3 : 2)
+                ),
                 row: max.row,
               })
             } else {
