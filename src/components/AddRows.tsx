@@ -7,7 +7,7 @@ export const AddRows = ({ addRows }: AddRowsComponentProps) => {
 
   return (
     <div className="dsg-add-row">
-      <button className="dsg-add-row-btn" onClick={() => addRows(value)}>
+      <button type="button" className="dsg-add-row-btn" onClick={() => addRows(value)}>
         Add
       </button>{' '}
       <input
