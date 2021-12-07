@@ -571,10 +571,6 @@ export const DataSheetGrid = React.memo(
             }
 
             event.clipboardData?.setData(
-              'text/plain',
-              copyData.map((row) => row.join('\t')).join('\n')
-            )
-            event.clipboardData?.setData(
               'text/html',
               `<table>${copyData
                 .map(
