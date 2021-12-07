@@ -5,6 +5,7 @@
 ### Fixed
 - Selection was overflowing when pasting a single row that overflows to the right
 - A state could be updated (triggering a warning) after the component was unmounted
+- Do not submit the form when adding a row
 
 ## 3.3.8
 > Date: 2021-12-05
