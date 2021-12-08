@@ -1,0 +1,4 @@
+{
+  "componentFolder": "cypress/component",
+  "testFiles": "**/*.tsx"
+}

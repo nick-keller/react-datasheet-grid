@@ -9,7 +9,8 @@
     "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/. && prettier --write example/src/.",
     "lint": "eslint src/.",
-    "test": "jest"
+    "test": "jest",
+    "cypress:open": "cypress open-ct"
   },
   "keywords": [
     "react",
@@ -27,6 +28,9 @@
   "repository": "Equify/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
+    "@cypress/react": "^5.10.3",
+    "@cypress/webpack-dev-server": "^1.7.0",
+    "@testing-library/cypress": "^8.0.2",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -39,6 +43,7 @@
     "@typescript-eslint/parser": "^4.28.0",
     "concurrently": "^6.2.0",
     "cpx": "^1.5.0",
+    "cypress": "^9.1.1",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.24.0",
@@ -48,10 +53,12 @@
     "prettier": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.4.0",
-    "typescript": "^4.3.3"
+    "typescript": "^4.3.3",
+    "webpack": "^4.46.0"
   },
   "files": [
     "dist/**/*"
