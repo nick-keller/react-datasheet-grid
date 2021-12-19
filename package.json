@@ -10,7 +10,8 @@
     "format": "prettier --write src/. && prettier --write example/src/.",
     "lint": "eslint src/.",
     "test": "jest",
-    "cypress:open": "cypress open-ct"
+    "cypress:open": "cypress open-ct",
+    "cypress:run": "cypress run-ct"
   },
   "keywords": [
     "react",
@@ -28,6 +29,7 @@
   "repository": "Equify/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
+    "@cypress/code-coverage": "^3.9.12",
     "@cypress/react": "^5.10.3",
     "@cypress/webpack-dev-server": "^1.7.0",
     "@testing-library/cypress": "^8.0.2",

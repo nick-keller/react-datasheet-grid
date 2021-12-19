@@ -67,6 +67,23 @@ it('should select cell on click', () => {
         },
       })
     })
+
+  cy.get('.dsg-container')
+    .click(20, 20)
+    .then(() => {
+      expect(ref.current.selection).to.deep.equal({
+        min: {
+          col: 0,
+          row: 0,
+          colId: 'a',
+        },
+        max: {
+          col: 1,
+          row: 1,
+          colId: 'b',
+        },
+      })
+    })
 })
 
 export {}
