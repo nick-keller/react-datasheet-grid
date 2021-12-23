@@ -39,10 +39,13 @@ test('Backspace to delete cell', () => {
 
   userEvent.keyboard('[Backspace]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 1 }]
+  )
 })
 
 test('Delete to delete cell', () => {
@@ -65,10 +68,13 @@ test('Delete to delete cell', () => {
 
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 1, toRowIndex: 2 }]
+  )
 })
 
 test('Delete selection', () => {
@@ -96,10 +102,13 @@ test('Delete selection', () => {
 
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: 'Bezos' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 })
 
 test('Delete entire grid', () => {
@@ -127,10 +136,13 @@ test('Delete entire grid', () => {
 
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: null },
-    { firstName: null, lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: null },
+      { firstName: null, lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 })
 
 test('Delete disabled cells', () => {
@@ -161,10 +173,13 @@ test('Delete disabled cells', () => {
 
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: 'Bezos' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 })
 
 test('Delete partially empty selection', () => {
@@ -192,10 +207,13 @@ test('Delete partially empty selection', () => {
 
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: 'Bezos' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
   expect(ref.current.selection).toEqual({
     min: {
       col: 0,
@@ -300,9 +318,10 @@ test('Delete empty row', () => {
   act(() => ref.current.setActiveCell({ col: 1, row: 1 }))
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [{ firstName: 'Elon', lastName: 'Musk' }],
+    [{ type: 'DELETE', fromRowIndex: 1, toRowIndex: 2 }]
+  )
   expect(ref.current.activeCell).toEqual({
     col: 1,
     colId: 'lastName',
@@ -337,7 +356,10 @@ test('Delete empty rows', () => {
   )
   userEvent.keyboard('[Delete]')
 
-  expect(onChange).toHaveBeenCalledWith([])
+  expect(onChange).toHaveBeenCalledWith(
+    [],
+    [{ type: 'DELETE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
   expect(ref.current.activeCell).toEqual(null)
 })
 

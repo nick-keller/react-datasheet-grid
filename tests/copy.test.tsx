@@ -109,8 +109,11 @@ test('Cut multiple cells', async () => {
     'text/html': '<table><tr><td>Elon</td></tr><tr><td>Jeff</td></tr></table>',
     'text/plain': 'Elon\nJeff',
   })
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: 'Bezos' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 })

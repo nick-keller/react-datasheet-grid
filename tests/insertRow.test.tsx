@@ -40,11 +40,14 @@ test('Insert row with Shift+Enter', () => {
 
   userEvent.keyboard('[ShiftLeft>][Enter][/ShiftLeft]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Richard', lastName: 'Branson' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Richard', lastName: 'Branson' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 1, toRowIndex: 2 }]
+  )
   expect(ref.current.selection).toEqual({
     min: {
       col: 1,
@@ -84,11 +87,14 @@ test('Insert row from selection', () => {
 
   userEvent.keyboard('[ShiftLeft>][Enter][/ShiftLeft]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-    {},
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+      {},
+    ],
+    [{ type: 'CREATE', fromRowIndex: 2, toRowIndex: 3 }]
+  )
   expect(ref.current.activeCell).toEqual({
     col: 1,
     colId: 'lastName',

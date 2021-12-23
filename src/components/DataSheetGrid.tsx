@@ -14,6 +14,7 @@ import {
   DataSheetGridRef,
   HeaderContextType,
   ListItemData,
+  Operation,
   Selection,
   SelectionContextType,
 } from '../types'
@@ -316,11 +317,20 @@ export const DataSheetGrid = React.memo(
           setSelectionCell(null)
           setEditing(false)
 
-          onChange([
-            ...dataRef.current.slice(0, row + 1),
-            ...new Array(count).fill(0).map(createRow),
-            ...dataRef.current.slice(row + 1),
-          ])
+          onChange(
+            [
+              ...dataRef.current.slice(0, row + 1),
+              ...new Array(count).fill(0).map(createRow),
+              ...dataRef.current.slice(row + 1),
+            ],
+            [
+              {
+                type: 'CREATE',
+                fromRowIndex: row + 1,
+                toRowIndex: row + 1 + count,
+              },
+            ]
+          )
           setActiveCell((a) => ({ col: a?.col || 0, row: row + count }))
         },
         [createRow, lockRows, onChange, setActiveCell, setSelectionCell]
@@ -332,15 +342,24 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          onChange([
-            ...dataRef.current.slice(0, rowMax + 1),
-            ...dataRef.current
-              .slice(rowMin, rowMax + 1)
-              .map((rowData, i) =>
-                duplicateRow({ rowData, rowIndex: i + rowMin })
-              ),
-            ...dataRef.current.slice(rowMax + 1),
-          ])
+          onChange(
+            [
+              ...dataRef.current.slice(0, rowMax + 1),
+              ...dataRef.current
+                .slice(rowMin, rowMax + 1)
+                .map((rowData, i) =>
+                  duplicateRow({ rowData, rowIndex: i + rowMin })
+                ),
+              ...dataRef.current.slice(rowMax + 1),
+            ],
+            [
+              {
+                type: 'CREATE',
+                fromRowIndex: rowMax + 1,
+                toRowIndex: rowMax + 2 + rowMax - rowMin,
+              },
+            ]
+          )
           setActiveCell({ col: 0, row: rowMax + 1 })
           setSelectionCell({
             col: columns.length - (hasStickyRightColumn ? 3 : 2),
@@ -430,11 +449,20 @@ export const DataSheetGrid = React.memo(
 
       const setRowData = useCallback(
         (rowIndex: number, item: T) => {
-          onChange([
-            ...dataRef.current?.slice(0, rowIndex),
-            item,
-            ...dataRef.current?.slice(rowIndex + 1),
-          ])
+          onChange(
+            [
+              ...dataRef.current?.slice(0, rowIndex),
+              item,
+              ...dataRef.current?.slice(rowIndex + 1),
+            ],
+            [
+              {
+                type: 'UPDATE',
+                fromRowIndex: rowIndex,
+                toRowIndex: rowIndex + 1,
+              },
+            ]
+          )
         },
         [onChange]
       )
@@ -459,10 +487,19 @@ export const DataSheetGrid = React.memo(
             return a && { ...a, row }
           })
           setSelectionCell(null)
-          onChange([
-            ...dataRef.current.slice(0, rowMin),
-            ...dataRef.current.slice(rowMax + 1),
-          ])
+          onChange(
+            [
+              ...dataRef.current.slice(0, rowMin),
+              ...dataRef.current.slice(rowMax + 1),
+            ],
+            [
+              {
+                type: 'DELETE',
+                fromRowIndex: rowMin,
+                toRowIndex: rowMax + 1,
+              },
+            ]
+          )
         },
         [lockRows, onChange, setActiveCell, setSelectionCell]
       )
@@ -515,7 +552,13 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          onChange(newData)
+          onChange(newData, [
+            {
+              type: 'UPDATE',
+              fromRowIndex: min.row,
+              toRowIndex: max.row + 1,
+            },
+          ])
         },
         [
           activeCell,
@@ -666,7 +709,13 @@ export const DataSheetGrid = React.memo(
                 }
               }
 
-              onChange(newData)
+              onChange(newData, [
+                {
+                  type: 'UPDATE',
+                  fromRowIndex: min.row,
+                  toRowIndex: max.row + 1,
+                },
+              ])
               setActiveCell({ col: min.col, row: min.row })
               setSelectionCell({
                 col: Math.min(
@@ -723,7 +772,26 @@ export const DataSheetGrid = React.memo(
                 }
               }
 
-              onChange(newData)
+              const operations: Operation[] = [
+                {
+                  type: 'UPDATE',
+                  fromRowIndex: min.row,
+                  toRowIndex:
+                    min.row +
+                    pasteData.length -
+                    (!lockRows && missingRows > 0 ? missingRows : 0),
+                },
+              ]
+
+              if (missingRows > 0 && !lockRows) {
+                operations.push({
+                  type: 'CREATE',
+                  fromRowIndex: min.row + pasteData.length - missingRows,
+                  toRowIndex: min.row + pasteData.length,
+                })
+              }
+
+              onChange(newData, operations)
               setActiveCell({ col: min.col, row: min.row })
               setSelectionCell({
                 col: Math.min(
@@ -1009,7 +1077,13 @@ export const DataSheetGrid = React.memo(
               }
             }
 
-            onChange(newData)
+            onChange(newData, [
+              {
+                type: 'UPDATE',
+                fromRowIndex: max.row + 1,
+                toRowIndex: max.row + 1 + expandSelectionRowsCount,
+              },
+            ])
             setExpandSelectionRowsCount(0)
             setActiveCell({
               col: Math.min(

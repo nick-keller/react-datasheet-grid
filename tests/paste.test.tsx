@@ -64,10 +64,13 @@ test('Single value text', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: null },
-    { firstName: 'Jeff', lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: null },
+      { firstName: 'Jeff', lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 1, toRowIndex: 2 }]
+  )
 
   expect(ref.current.activeCell).toEqual({
     col: 0,
@@ -95,10 +98,13 @@ test('Single value text plain', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 1 }]
+  )
 })
 
 test('HTML over text', async () => {
@@ -124,10 +130,13 @@ test('HTML over text', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Musk' },
-    { firstName: null, lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Musk' },
+      { firstName: null, lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 1 }]
+  )
 })
 
 test('Single value on multiple rows selection', async () => {
@@ -154,10 +163,13 @@ test('Single value on multiple rows selection', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: null },
-    { firstName: 'Elon', lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: null },
+      { firstName: 'Elon', lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -197,10 +209,13 @@ test('Single row on multiple rows selection', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Elon', lastName: 'Musk' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Elon', lastName: 'Musk' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -240,10 +255,13 @@ test('Single row on multiple rows selection with overflow to the right', async (
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: null, lastName: 'Elon' },
-    { firstName: null, lastName: 'Elon' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: null, lastName: 'Elon' },
+      { firstName: null, lastName: 'Elon' },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -283,10 +301,13 @@ test('Multiple rows', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: null },
-    { firstName: 'Jeff', lastName: null },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: null },
+      { firstName: 'Jeff', lastName: null },
+    ],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -326,11 +347,10 @@ test('Multiple rows with overflow to the right', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { lastName: 'Elon' },
-    { lastName: 'Jeff' },
-    {},
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [{ lastName: 'Elon' }, { lastName: 'Jeff' }, {}],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 2 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -365,11 +385,17 @@ test('Multiple rows with overflow at the bottom', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-    { firstName: 'Richard', lastName: 'Branson' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+      { firstName: 'Richard', lastName: 'Branson' },
+    ],
+    [
+      { type: 'UPDATE', fromRowIndex: 0, toRowIndex: 1 },
+      { type: 'CREATE', fromRowIndex: 1, toRowIndex: 3 },
+    ]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {
@@ -405,9 +431,10 @@ test('Multiple rows with overflow at the bottom and locked rows', async () => {
 
   await waitFor(() => expect(onChange).toHaveBeenCalled())
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [{ firstName: 'Elon', lastName: 'Musk' }],
+    [{ type: 'UPDATE', fromRowIndex: 0, toRowIndex: 1 }]
+  )
 
   expect(ref.current.selection).toEqual({
     min: {

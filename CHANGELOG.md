@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.4.0
+> Date: 2021-12-23
+### Added
+- `onChange` now receives a second argument to track which rows were updated.
+
 ## 3.3.9
 > Date: 2021-12-07
 ### Fixed

@@ -38,21 +38,24 @@ test('Add single row', () => {
 
   userEvent.click(screen.getByText('Add'))
 
-  expect(onChange).toHaveBeenCalledWith([
-    {
-      id: 1,
-      firstName: 'Elon',
-      lastName: 'Musk',
-    },
-    {
-      id: 2,
-      firstName: 'Jeff',
-      lastName: 'Bezos',
-    },
-    {
-      id: 3,
-    },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      {
+        id: 1,
+        firstName: 'Elon',
+        lastName: 'Musk',
+      },
+      {
+        id: 2,
+        firstName: 'Jeff',
+        lastName: 'Bezos',
+      },
+      {
+        id: 3,
+      },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 2, toRowIndex: 3 }]
+  )
 })
 
 test('No add button when rows are locked', () => {
@@ -85,27 +88,30 @@ test('Add multiple rows', () => {
   userEvent.type(screen.getByRole('spinbutton'), '{selectall}3')
   userEvent.click(screen.getByText('Add'))
 
-  expect(onChange).toHaveBeenCalledWith([
-    {
-      id: 1,
-      firstName: 'Elon',
-      lastName: 'Musk',
-    },
-    {
-      id: 2,
-      firstName: 'Jeff',
-      lastName: 'Bezos',
-    },
-    {
-      id: 3,
-    },
-    {
-      id: 4,
-    },
-    {
-      id: 5,
-    },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      {
+        id: 1,
+        firstName: 'Elon',
+        lastName: 'Musk',
+      },
+      {
+        id: 2,
+        firstName: 'Jeff',
+        lastName: 'Bezos',
+      },
+      {
+        id: 3,
+      },
+      {
+        id: 4,
+      },
+      {
+        id: 5,
+      },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 2, toRowIndex: 5 }]
+  )
 
   expect(ref.current.activeCell).toEqual({
     col: 0,

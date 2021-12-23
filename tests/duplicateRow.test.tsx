@@ -40,11 +40,14 @@ test('Duplicate row with Cmd+D', () => {
 
   userEvent.keyboard('[MetaLeft>]d[/MetaLeft]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Richard', lastName: 'Branson' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Richard', lastName: 'Branson' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 1, toRowIndex: 2 }]
+  )
   expect(ref.current.selection).toEqual({
     min: {
       col: 0,
@@ -84,11 +87,14 @@ test('Duplicate row with Ctrl+D', () => {
 
   userEvent.keyboard('[ControlLeft>]d[/ControlLeft]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 2, toRowIndex: 3 }]
+  )
   expect(ref.current.selection).toEqual({
     min: {
       col: 0,
@@ -131,13 +137,16 @@ test('Duplicate multiple rows', () => {
 
   userEvent.keyboard('[ControlLeft>]d[/ControlLeft]')
 
-  expect(onChange).toHaveBeenCalledWith([
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-    { firstName: 'Elon', lastName: 'Musk' },
-    { firstName: 'Jeff', lastName: 'Bezos' },
-    { firstName: 'Richard', lastName: 'Branson' },
-  ])
+  expect(onChange).toHaveBeenCalledWith(
+    [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+      { firstName: 'Richard', lastName: 'Branson' },
+    ],
+    [{ type: 'CREATE', fromRowIndex: 2, toRowIndex: 4 }]
+  )
   expect(ref.current.selection).toEqual({
     min: {
       col: 0,

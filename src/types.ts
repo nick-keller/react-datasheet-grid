@@ -141,11 +141,17 @@ export type ContextMenuComponentProps = {
   close: () => void
 }
 
+export type Operation = {
+  type: 'UPDATE' | 'DELETE' | 'CREATE'
+  fromRowIndex: number
+  toRowIndex: number
+}
+
 export type DataSheetGridProps<T> = {
   value?: T[]
   style?: React.CSSProperties
   className?: string
-  onChange?: (value: T[]) => void
+  onChange?: (value: T[], operations: Operation[]) => void
   columns?: Partial<Column<T, any>>[]
   gutterColumn?: SimpleColumn<T, any> | false
   stickyRightColumn?: SimpleColumn<T, any>
