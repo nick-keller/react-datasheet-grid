@@ -85,6 +85,7 @@ export const DataSheetGrid = React.memo(
         onBlur = DEFAULT_EMPTY_CALLBACK,
         onActiveCellChange = DEFAULT_EMPTY_CALLBACK,
         onSelectionChange = DEFAULT_EMPTY_CALLBACK,
+        rowClassName,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -1553,6 +1554,7 @@ export const DataSheetGrid = React.memo(
         insertRowAfter,
         stopEditing,
         getContextMenuItems,
+        rowClassName,
       })
 
       const itemSize = useCallback(

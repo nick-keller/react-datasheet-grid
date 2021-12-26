@@ -24,6 +24,7 @@ const RowComponent = React.memo(
     duplicateRows,
     stopEditing,
     getContextMenuItems,
+    rowClassName,
   }: RowProps<any>) => {
     const firstRender = useFirstRender()
 
@@ -50,7 +51,16 @@ const RowComponent = React.memo(
     }, [insertRowAfter, index])
 
     return (
-      <div className="dsg-row" style={style}>
+      <div
+        className={cx(
+          'dsg-row',
+          typeof rowClassName === 'string' ? rowClassName : null,
+          typeof rowClassName === 'function'
+            ? rowClassName({ rowData: data, rowIndex: index })
+            : null
+        )}
+        style={style}
+      >
         {columns.map((column, i) => {
           const Component = column.component
 
@@ -153,6 +163,7 @@ export const Row = <T extends any>({
           : undefined
       }
       getContextMenuItems={data.getContextMenuItems}
+      rowClassName={data.rowClassName}
     />
   )
 }

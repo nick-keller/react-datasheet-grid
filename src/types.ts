@@ -64,6 +64,9 @@ export type ListItemData<T> = {
   insertRowAfter: (row: number, count?: number) => void
   stopEditing: (opts?: { nextRow?: boolean }) => void
   getContextMenuItems: () => ContextMenuItem[]
+  rowClassName?:
+    | string
+    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
 }
 
 export type HeaderContextType<T> = {
@@ -109,6 +112,9 @@ export type RowProps<T> = {
   insertRowAfter: (row: number, count?: number) => void
   stopEditing?: (opts?: { nextRow?: boolean }) => void
   getContextMenuItems: () => ContextMenuItem[]
+  rowClassName?:
+    | string
+    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
 }
 
 export type SimpleColumn<T, C> = Partial<
@@ -151,6 +157,9 @@ export type DataSheetGridProps<T> = {
   value?: T[]
   style?: React.CSSProperties
   className?: string
+  rowClassName?:
+    | string
+    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
   onChange?: (value: T[], operations: Operation[]) => void
   columns?: Partial<Column<T, any>>[]
   gutterColumn?: SimpleColumn<T, any> | false

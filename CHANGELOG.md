@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.5.0
+> Date: 2021-12-26
+### Added
+- New prop `rowClassName`
+
 ## 3.4.0
 > Date: 2021-12-23
 ### Added
