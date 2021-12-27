@@ -1,0 +1,361 @@
+---
+sidebar_position: 5
+---
+import {FinalResult} from '../../src/demos/trackRows.tsx'
+
+# Tracking rows changes
+
+For an app that offers a way to interact with a database, you might want to let the user do changes locally,
+then commit to the server or cancel their changes. This is easily achievable using the second argument of
+[`onChange`](../api-reference/props#onchange).
+
+## Setup
+
+First we want to setup our DataSheetGrid:
+```tsx
+const [data, setData] = useState([])
+
+return (
+  <DataSheetGrid
+    columns={[/*...*/]}
+    value={data}
+    onChange={(newValue) => setData(newValue)}
+  />
+)
+```
+Then we need a way to track rows to know which ones were added, deleted, or updated.
+We can simply add [unique ids](unique-ids):
+```tsx
+<DataSheetGrid
+  ...
+  createRow={() => ({ id: genId() })}
+  duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
+/>
+```
+
+Then we want to use the second argument of [`onChange`](../api-reference/props#onchange) to track changes:
+```tsx
+<DataSheetGrid
+  ...
+  onChange={(newValue, operations) => {
+    for (const operation of operations) {
+      // Handle operation
+    }
+
+    setData(newValue)
+  }}
+/>
+```
+
+## Tracking rows
+We can track ids of created, deleted, and updated rows using a [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
+and we use a `useMemo` to save its value between renders.
+
+```tsx
+const createdRowIds = useMemo(() => new Set(), [])
+const deletedRowIds = useMemo(() => new Set(), [])
+const updatedRowIds = useMemo(() => new Set(), [])
+
+return (
+  <DataSheetGrid
+    ...
+  />
+)
+```
+
+### Handle new rows
+```tsx
+<DataSheetGrid
+  onChange={(newValue, operations) => {
+    for (const operation of operations) {
+      if (operation.type === 'CREATE') {
+        newValue
+          .slice(operation.fromRowIndex, operation.toRowIndex)
+          .forEach(({ id }) => createdRowIds.add(id))
+      }
+
+      // Handle update
+      // Handle delete
+    }
+
+    setData(newValue)
+  }}
+/>
+```
+
+`.slice()` gives us the list of created rows that we then `.add()` to the set of created row ids one by one.
+
+### Handle updated rows
+
+This time we only want to track an updated row if it was not freshly created (to prevent an insert immediately
+followed by an update) or deleted (to prevent updating a row and immediately deleting it).
+
+```tsx
+<DataSheetGrid
+  onChange={(newValue, operations) => {
+    for (const operation of operations) {
+      // Handle new rows
+
+      if (operation.type === 'UPDATE') {
+        newValue
+          .slice(operation.fromRowIndex, operation.toRowIndex)
+          .forEach(({ id }) => {
+            if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
+              updatedRowIds.add(id)
+            }
+          })
+      }
+
+      // Handle delete
+    }
+
+    setData(newValue)
+  }}
+/>
+```
+
+### Handle deleted rows
+
+This time we the indices of the operation refer to the current `data`, not the `newValue`, because deleted rows
+are not present in `newValue`.
+
+```tsx
+<DataSheetGrid
+  onChange={(newValue, operations) => {
+    for (const operation of operations) {
+      // Handle new rows
+      // Handle update
+
+      if (operation.type === 'DELETE') {
+        let keptRows = 0
+
+        // Make sure to use data and not newValue
+        data
+          .slice(operation.fromRowIndex, operation.toRowIndex)
+          .forEach(({ id }, i) => {
+            // If the row was updated, ignore the update
+            // No need to update a row and immediately delete it
+            updatedRowIds.delete(id)
+
+            if (createdRowIds.has(id)) {
+              // Row was freshly created, simply ignore it
+              // No need to insert a row and immediately delete it
+              createdRowIds.delete(id)
+            } else {
+              // Track the row as deleted
+              deletedRowIds.add(id)
+              // Insert it back into newValue to display it in red to the user
+              newValue.splice(
+                operation.fromRowIndex + keptRows++,
+                0,
+                data[operation.fromRowIndex + i]
+              )
+            }
+          })
+      }
+    }
+
+    setData(newValue)
+  }}
+/>
+```
+
+## Styling
+
+We can now add a class to the rows based on the tracking:
+
+```tsx
+<DataSheetGrid
+  rowClassName={({ rowData }) => {
+    if (deletedRowIds.has(rowData.id)) {
+      return 'row-deleted'
+    }
+    if (createdRowIds.has(rowData.id)) {
+      return 'row-created'
+    }
+    if (updatedRowIds.has(rowData.id)) {
+      return 'row-updated'
+    }
+  }}
+/>
+```
+
+The add simple CSS to update the cell's color based on the row's calss:
+```css
+.row-deleted .dsg-cell {
+  /* Red */
+  background: #fff1f0;
+}
+
+.row-created .dsg-cell {
+  /* Green */
+  background: #f6ffed;
+}
+
+.row-updated .dsg-cell {
+  /* Orange */
+  background: #fff7e6;
+}
+```
+
+## Cancel button
+
+To cancel changes, simply rollback `data` and clear all tracking.
+```tsx
+const [data, setData] = useState([])
+const [prevData, setPrevData] = useState(data)
+
+const cancel = () => {
+  setData(prevData)
+  createdRowIds.clear()
+  deletedRowIds.clear()
+  updatedRowIds.clear()
+}
+
+return (
+  <>
+    <button onClick={cancel}>
+      Cancel
+    </button>
+
+    <DataSheetGrid
+      ...
+    />
+  </>
+)
+```
+
+## Commit button
+
+Tracking can be used to perform all database operations when the user commits its changes.
+Then the `data` can be updated to finally visually delete rows that were still displayed in red.
+All tracking can then be cleared.
+```tsx
+const commit = () => {
+  /* Use tracking to perform insert, update, and delete to the database */
+
+  const newData = data.filter(({ id }) => !deletedRowIds.has(id))
+  setData(newData)
+  setPrevData(newData)
+
+  createdRowIds.clear()
+  deletedRowIds.clear()
+  updatedRowIds.clear()
+}
+
+return (
+  <>
+    <button onClick={commit}>
+      Commit
+    </button>
+
+    <DataSheetGrid
+      ...
+    />
+  </>
+)
+```
+
+## Final result
+
+```tsx
+const [data, setData] = useState([])
+const [prevData, setPrevData] = useState(data)
+
+const createdRowIds = useMemo(() => new Set(), [])
+const deletedRowIds = useMemo(() => new Set(), [])
+const updatedRowIds = useMemo(() => new Set(), [])
+
+const cancel = () => {
+  setData(prevData)
+  createdRowIds.clear()
+  deletedRowIds.clear()
+  updatedRowIds.clear()
+}
+
+const commit = () => {
+  /* Use tracking to perform insert, update, and delete to the database */
+
+  const newData = data.filter(({ id }) => !deletedRowIds.has(id))
+  setData(newData)
+  setPrevData(newData)
+
+  createdRowIds.clear()
+  deletedRowIds.clear()
+  updatedRowIds.clear()
+}
+
+return (
+  <>
+    <button onClick={commit}>
+      Commit
+    </button>
+
+    <button onClick={cancel}>
+      Cancel
+    </button>
+
+    <DataSheetGrid
+      columns={[/*...*/]}
+      value={data}
+      createRow={() => ({ id: genId() })}
+      duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
+      rowClassName={({ rowData }) => {
+        if (deletedRowIds.has(rowData.id)) {
+          return 'row-deleted'
+        }
+        if (createdRowIds.has(rowData.id)) {
+          return 'row-created'
+        }
+        if (updatedRowIds.has(rowData.id)) {
+          return 'row-updated'
+        }
+      }}
+      onChange={(newValue, operations) => {
+        for (const operation of operations) {
+          if (operation.type === 'CREATE') {
+            newValue
+              .slice(operation.fromRowIndex, operation.toRowIndex)
+              .forEach(({ id }) => createdRowIds.add(id))
+          }
+
+          if (operation.type === 'UPDATE') {
+            newValue
+              .slice(operation.fromRowIndex, operation.toRowIndex)
+              .forEach(({ id }) => {
+                if (!createdRowIds.has(id) && !deletedRowIds.has(id)) {
+                  updatedRowIds.add(id)
+                }
+              })
+          }
+
+          if (operation.type === 'DELETE') {
+            let keptRows = 0
+
+            data
+              .slice(operation.fromRowIndex, operation.toRowIndex)
+              .forEach(({ id }, i) => {
+                updatedRowIds.delete(id)
+
+                if (createdRowIds.has(id)) {
+                  createdRowIds.delete(id)
+                } else {
+                  deletedRowIds.add(id)
+                  newValue.splice(
+                    operation.fromRowIndex + keptRows++,
+                    0,
+                    data[operation.fromRowIndex + i]
+                  )
+                }
+              })
+          }
+        }
+
+        setData(newValue)
+      }}
+    />
+  </>
+)
+```
+
+<FinalResult />

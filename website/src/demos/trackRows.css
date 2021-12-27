@@ -1,0 +1,27 @@
+.row-deleted .dsg-cell {
+  background: #fff1f0;
+}
+
+.row-created .dsg-cell {
+  background: #f6ffed;
+}
+
+.row-updated .dsg-cell {
+  background: #fff7e6;
+}
+
+.btn {
+  margin-bottom: 10px;
+  margin-right: 10px;
+  border: none;
+  background: var(--ifm-menu-color-background-active);
+  color: var(--ifm-menu-color);
+  border-radius: 0.25rem;
+  line-height: 1.25;
+  padding: var(--ifm-menu-link-padding-vertical) var(--ifm-menu-link-padding-horizontal);
+  font-size: 1rem;
+}
+
+.btn:hover {
+  color: var(--ifm-menu-color-active);
+}
