@@ -52,7 +52,7 @@ const CheckboxComponent = React.memo<CellProps<boolean, any>>(
 
 CheckboxComponent.displayName = 'CheckboxComponent'
 
-export const checkboxColumn: Partial<Column<boolean, any>> = {
+export const checkboxColumn: Partial<Column<boolean, any, string>> = {
   component: CheckboxComponent as CellComponent<boolean, any>,
   deleteValue: () => false,
   // We can customize what value is copied: when the checkbox is checked we copy YES, otherwise we copy NO

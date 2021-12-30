@@ -47,7 +47,7 @@ import { encode as encodeHtml } from 'html-entities'
 import { getAllTabbableElements } from '../utils/tab'
 
 const DEFAULT_DATA: any[] = []
-const DEFAULT_COLUMNS: Column<any, any>[] = []
+const DEFAULT_COLUMNS: Column<any, any, any>[] = []
 const DEFAULT_CREATE_ROW: DataSheetGridProps<any>['createRow'] = () => ({})
 const DEFAULT_EMPTY_CALLBACK: () => void = () => null
 const DEFAULT_DUPLICATE_ROW: DataSheetGridProps<any>['duplicateRow'] = ({
@@ -675,6 +675,20 @@ export const DataSheetGrid = React.memo(
 
             const min: Cell = selection?.min || activeCell
             const max: Cell = selection?.max || activeCell
+
+            const results = await Promise.all(
+              pasteData[0].map((_, columnIndex) => {
+                const prePasteValues =
+                  columns[min.col + columnIndex + 1]?.prePasteValues
+
+                const values = pasteData.map((row) => row[columnIndex])
+                return prePasteValues?.(values) ?? values
+              })
+            )
+
+            pasteData = pasteData.map((_, rowIndex) =>
+              results.map((column) => column[rowIndex])
+            )
 
             // Paste single row
             if (pasteData.length === 1) {

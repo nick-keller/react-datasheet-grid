@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.6.0
+> Date: 2021-12-30
+### Added
+- New column prop `prePasteValues`
+
 ## 3.5.0
 > Date: 2021-12-26
 ### Added

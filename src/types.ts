@@ -27,7 +27,7 @@ export type CellProps<T, C> = {
 
 export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
 
-export type Column<T, C> = {
+export type Column<T, C, PasteValue> = {
   id?: string
   headerClassName?: string
   title?: React.ReactNode
@@ -45,14 +45,15 @@ export type Column<T, C> = {
   keepFocus: boolean
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
-  pasteValue: (opt: { rowData: T; value: string; rowIndex: number }) => T
+  pasteValue: (opt: { rowData: T; value: PasteValue; rowIndex: number }) => T
+  prePasteValues: (values: string[]) => PasteValue[] | Promise<PasteValue[]>
   isCellEmpty: (opt: { rowData: T; rowIndex: number }) => boolean
 }
 
 export type ListItemData<T> = {
   data: T[]
   contentWidth?: number
-  columns: Column<T, any>[]
+  columns: Column<T, any, string>[]
   hasStickyRightColumn: boolean
   activeCell: Cell | null
   selectionMinRow?: number
@@ -70,7 +71,7 @@ export type ListItemData<T> = {
 }
 
 export type HeaderContextType<T> = {
-  columns: Column<T, any>[]
+  columns: Column<T, any, string>[]
   contentWidth?: number
   hasStickyRightColumn: boolean
   height: number
@@ -101,7 +102,7 @@ export type RowProps<T> = {
   data: T
   style: React.CSSProperties
   isScrolling?: boolean
-  columns: Column<T, any>[]
+  columns: Column<T, any, string>[]
   hasStickyRightColumn: boolean
   active: boolean
   activeColIndex: number | null
@@ -119,7 +120,7 @@ export type RowProps<T> = {
 
 export type SimpleColumn<T, C> = Partial<
   Pick<
-    Column<T, C>,
+    Column<T, C, string>,
     'title' | 'maxWidth' | 'minWidth' | 'width' | 'component' | 'columnData'
   >
 >
@@ -161,7 +162,7 @@ export type DataSheetGridProps<T> = {
     | string
     | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
   onChange?: (value: T[], operations: Operation[]) => void
-  columns?: Partial<Column<T, any>>[]
+  columns?: Partial<Column<T, any, any>>[]
   gutterColumn?: SimpleColumn<T, any> | false
   stickyRightColumn?: SimpleColumn<T, any>
   height?: number

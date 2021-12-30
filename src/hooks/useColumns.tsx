@@ -9,14 +9,15 @@ const defaultGutterComponent = ({ rowIndex }: CellProps<any, any>) => (
   <>{rowIndex + 1}</>
 )
 const cellAlwaysEmpty = () => true
+const defaultPrePasteValues = (values: string[]) => values
 
 export const useColumns = <T extends any>(
-  columns: Partial<Column<T, any>>[],
+  columns: Partial<Column<T, any, any>>[],
   gutterColumn?: SimpleColumn<T, any> | false,
   stickyRightColumn?: SimpleColumn<T, any>
-): Column<T, any>[] => {
-  return useMemo<Column<T, any>[]>(() => {
-    const partialColumns: Partial<Column<T, any>>[] = [
+): Column<T, any, any>[] => {
+  return useMemo<Column<T, any, any>[]>(() => {
+    const partialColumns: Partial<Column<T, any, any>>[] = [
       gutterColumn === false
         ? {
             width: 0,
@@ -49,7 +50,7 @@ export const useColumns = <T extends any>(
       })
     }
 
-    return partialColumns.map<Column<T, any>>((column) => ({
+    return partialColumns.map<Column<T, any, any>>((column) => ({
       ...column,
       width: column.width ?? 1,
       minWidth: column.minWidth ?? 100,
@@ -61,6 +62,7 @@ export const useColumns = <T extends any>(
       deleteValue: column.deleteValue ?? identityRow,
       copyValue: column.copyValue ?? defaultCopyValue,
       pasteValue: column.pasteValue ?? identityRow,
+      prePasteValues: column.prePasteValues ?? defaultPrePasteValues,
       isCellEmpty: column.isCellEmpty ?? defaultIsCellEmpty,
     }))
   }, [gutterColumn, stickyRightColumn, columns])

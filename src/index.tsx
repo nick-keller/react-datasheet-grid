@@ -12,7 +12,9 @@ import {
 import { DataSheetGrid as DataSheetGridBase } from './components/DataSheetGrid'
 import { StaticDataSheetGrid as StaticDataSheetGridBase } from './components/StaticDataSheetGrid'
 
-export type Column<T = any, C = any> = Partial<ColumnBase<T, C>>
+export type Column<T = any, C = any, PasteValue = string> = Partial<
+  ColumnBase<T, C, PasteValue>
+>
 export type CellComponent<T = any, C = any> = CellComponentBase<T, C>
 export type CellProps<T = any, C = any> = CellPropsBase<T, C>
 export type DataSheetGridProps<T = any> = DataSheetGridPropsBase<T>

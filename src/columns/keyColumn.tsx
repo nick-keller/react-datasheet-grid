@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { CellComponent, Column } from '../types'
 
-type ColumnData = { key: string; original: Partial<Column<any, any>> }
+type ColumnData = { key: string; original: Partial<Column<any, any, any>> }
 
 const KeyComponent: CellComponent<any, ColumnData> = ({
   columnData: { key, original },
@@ -41,11 +41,12 @@ const KeyComponent: CellComponent<any, ColumnData> = ({
 
 export const keyColumn = <
   T extends Record<string, any>,
-  K extends keyof T = keyof T
+  K extends keyof T = keyof T,
+  PasteValue = string
 >(
   key: K,
-  column: Partial<Column<T[K], any>>
-): Partial<Column<T, ColumnData>> => ({
+  column: Partial<Column<T[K], any, PasteValue>>
+): Partial<Column<T, ColumnData, PasteValue>> => ({
   id: key as string,
   ...column,
   // We pass the key and the original column as columnData to be able to retrieve them in the cell component

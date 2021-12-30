@@ -6,7 +6,7 @@ export const Cell: FC<{
   gutter: boolean
   stickyRight: boolean
   disabled?: boolean
-  column: Column<any, any>
+  column: Column<any, any, any>
   className: string
   active?: boolean
 }> = ({

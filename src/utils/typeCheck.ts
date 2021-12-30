@@ -4,7 +4,7 @@ export const getCell = (
   value: any,
   colMax: number,
   rowMax: number,
-  columns: Column<any, any>[]
+  columns: Column<any, any, any>[]
 ): Cell | null => {
   if (value === null || !colMax || !rowMax) {
     return null
@@ -33,7 +33,7 @@ export const getCell = (
 
 export const getCellWithId = (
   cell: Cell | null,
-  columns: Column<any, any>[]
+  columns: Column<any, any, any>[]
 ): typeof cell extends null ? CellWithId | null : CellWithId =>
   cell
     ? {
@@ -46,7 +46,7 @@ export const getSelection = (
   value: any,
   colMax: number,
   rowMax: number,
-  columns: Column<any, any>[]
+  columns: Column<any, any, any>[]
 ): Selection | null => {
   if (value === null || !colMax || !rowMax) {
     return null
@@ -70,7 +70,7 @@ export const getSelection = (
 
 export const getSelectionWithId = (
   selection: Selection | null,
-  columns: Column<any, any>[]
+  columns: Column<any, any, any>[]
 ): SelectionWithId | null =>
   selection
     ? {

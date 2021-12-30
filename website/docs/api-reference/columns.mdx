@@ -87,11 +87,19 @@ in the end.
 > Type: `({ rowData, value, rowIndex }) => any`
 
 A function that takes in a row and the `value`  to be pasted, and should return the updated row. If the value should
-be ignored, it should still return the unchanged row. The `value` is always a string and should therefore be casted
-to whatever type is needed.
+be ignored, it should still return the unchanged row. The `value` is always a string, except if `prePasteValues` returns
+something else, and should therefore be casted to whatever type is needed.
 
-It is recommended to make sure that the `pasteValue` can handle all values returned from `copyValue` otherwise a
-user might ba able to copy something but not paste it.
+It is recommended to make sure that the `pasteValue` can handle all values returned by `copyValue` otherwise a
+user might be able to copy something but not paste it.
+
+### prePasteValues
+> Type: `(values: string[]) => any[] | Promise<any[]>`
+
+This function is called right before `pasteValue` with all the data that the user is trying to paste for that column.
+This gives you the opportunity to treat the pasted data as a whole and change it before passing it to `pasteValue`.
+
+This is where you would do some asynchronous work (eg. mapping names to actual IDs) and return a Promise.
 
 ### deleteValue
 > Type: `({ rowData, rowIndex }) => any`

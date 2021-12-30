@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDeepEqualState } from './useDeepEqualState'
 
 export const useColumnWidths = (
-  columns: Column<any, any>[],
+  columns: Column<any, any, any>[],
   width?: number
 ) => {
   const [columnWidths, setColumnWidths] = useDeepEqualState<

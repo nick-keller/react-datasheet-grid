@@ -41,7 +41,7 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
 
 DateComponent.displayName = 'DateComponent'
 
-export const dateColumn: Partial<Column<Date | null, any>> = {
+export const dateColumn: Partial<Column<Date | null, any, string>> = {
   component: DateComponent as CellComponent<Date | null, any>,
   deleteValue: () => null,
   // We convert the date to a string for copying using toISOString
