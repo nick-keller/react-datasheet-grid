@@ -9,8 +9,7 @@
     "start": "concurrently \"tsc --watch\" \"cpx \\\"src/**/*.css\\\" dist --watch\"",
     "format": "prettier --write src/. && prettier --write example/src/.",
     "lint": "eslint src/.",
-    "test": "jest",
-    "report-coverage": "coveralls < coverage/lcov.info"
+    "test": "jest"
   },
   "keywords": [
     "react",
@@ -39,7 +38,6 @@
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "concurrently": "^6.2.0",
-    "coveralls": "^3.1.1",
     "cpx": "^1.5.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
