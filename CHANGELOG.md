@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.6.1
+> Date: 2022-01-13
+### Fixed
+- Flickering effect caused by scrollbars on non-integer pixel widths
+
 ## 3.6.0
 > Date: 2021-12-30
 ### Added
