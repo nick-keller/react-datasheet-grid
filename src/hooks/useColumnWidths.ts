@@ -70,7 +70,7 @@ export const useColumnWidths = (
   }, [width, columnsHash])
 
   return {
-    fullWidth: Math.abs((prevWidth ? prevWidth : 0) - (totalWidth ? totalWidth : 0)) < 0.1,
+    fullWidth: Math.abs((prevWidth ?? 0) - (totalWidth ?? 0)) < 0.1,
     columnWidths,
     columnRights,
     totalWidth,
