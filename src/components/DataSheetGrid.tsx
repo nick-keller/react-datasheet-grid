@@ -129,10 +129,10 @@ export const DataSheetGrid = React.memo(
         refreshRate: 100,
       })
 
-      setHeightDiff(height ? displayHeight - height : 0)
+      setHeightDiff(height ? displayHeight - Math.ceil(height) : 0)
 
       const edges = useEdges(outerRef, width, height)
-
+      
       const {
         fullWidth,
         totalWidth: contentWidth,
