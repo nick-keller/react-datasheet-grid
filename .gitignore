@@ -4,3 +4,5 @@
 /.idea
 tsconfig.tsbuildinfo
 /coverage
+/cypress/videos/
+/.nyc_output/
