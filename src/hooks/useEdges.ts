@@ -19,11 +19,11 @@ export const useEdges = (
       setEdges({
         top: ref.current?.scrollTop === 0,
         right:
-          ref.current?.scrollLeft ===
-          (ref.current?.scrollWidth ?? 0) - (width ?? 0),
+          (ref.current?.scrollLeft ?? 0) >=
+          (ref.current?.scrollWidth ?? 0) - (width ?? 0) - 1,
         bottom:
-          ref.current?.scrollTop ===
-          (ref.current?.scrollHeight ?? 0) - (height ?? 0),
+          (ref.current?.scrollTop ?? 0) >=
+          (ref.current?.scrollHeight ?? 0) - (height ?? 0) - 1,
         left: ref.current?.scrollLeft === 0,
       })
     })
