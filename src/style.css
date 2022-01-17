@@ -4,17 +4,17 @@
   --dsg-selection-border-radius: 2px;
   --dsg-selection-border-width: 2px;
   --dsg-selection-background-color: rgba(69, 128, 230, 0.04);
-  --dsg-selection-disabled-border-color: #9DA6AB;
+  --dsg-selection-disabled-border-color: #9da6ab;
   --dsg-selection-disabled-background-color: rgba(0, 0, 0, 0.04);
   --dsg-corner-indicator-width: 10px;
   --dsg-header-text-color: rgb(157, 166, 171);
   --dsg-header-active-text-color: black;
   --dsg-cell-background-color: white;
   --dsg-cell-disabled-background-color: rgb(250, 250, 250);
-  --dsg-transition-duration: .1s;
+  --dsg-transition-duration: 0.1s;
   --dsg-expand-rows-indicator-width: 10px;
   --dsg-scroll-shadow-width: 7px;
-  --dsg-scroll-shadow-color: rgba(0,0,0,.2);
+  --dsg-scroll-shadow-color: rgba(0, 0, 0, 0.2);
 }
 
 .dsg-container {
@@ -30,7 +30,8 @@
 .dsg-corner-indicator {
   margin: auto;
   width: 0;
-  border-bottom: solid var(--dsg-corner-indicator-width) var(--dsg-header-text-color);
+  border-bottom: solid var(--dsg-corner-indicator-width)
+    var(--dsg-header-text-color);
   border-left: solid var(--dsg-corner-indicator-width) transparent;
 }
 
@@ -72,7 +73,8 @@
   background: var(--dsg-cell-disabled-background-color);
 }
 
-.dsg-cell-header, .dsg-cell-gutter {
+.dsg-cell-header,
+.dsg-cell-gutter {
   color: var(--dsg-header-text-color);
   transition: color var(--dsg-transition-duration);
   box-shadow: none;
@@ -98,13 +100,16 @@
   z-index: 3;
 }
 
-.dsg-cell-header-active, .dsg-cell-gutter-active {
+.dsg-cell-header-active,
+.dsg-cell-gutter-active {
   color: var(--dsg-header-active-text-color);
 }
 
-.dsg-active-cell, .dsg-selection-rect {
+.dsg-active-cell,
+.dsg-selection-rect {
   position: absolute;
-  border: solid var(--dsg-selection-border-width) var(--dsg-selection-border-color);
+  border: solid var(--dsg-selection-border-width)
+    var(--dsg-selection-border-color);
   box-sizing: border-box;
   border-radius: var(--dsg-selection-border-radius);
   transition: all var(--dsg-transition-duration);
@@ -112,10 +117,11 @@
 }
 
 .dsg-active-cell-focus {
-  box-shadow: 0 2px 5px rgba(0,0,0,.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.dsg-active-cell-disabled, .dsg-selection-rect-disabled {
+.dsg-active-cell-disabled,
+.dsg-selection-rect-disabled {
   border-color: var(--dsg-selection-disabled-border-color);
 }
 
@@ -141,68 +147,244 @@
   border: solid 1px var(--dsg-border-color);
   border-bottom: none;
   border-right: none;
-  transition: box-shadow .3s;
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  transition: box-shadow 0.3s;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-r {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-b {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-b {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-r {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, 0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset, var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width) calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color) inset;
+  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    0 calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset,
+    var(--dsg-scroll-shadow-width) 0 var(--dsg-scroll-shadow-width)
+      calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
+      inset;
 }
 
 .dsg-selection-col-marker-container {
@@ -229,13 +411,17 @@
   width: var(--dsg-selection-border-width);
 }
 
-.dsg-selection-col-marker-container, .dsg-selection-col-marker, .dsg-selection-row-marker-container, .dsg-selection-row-marker {
+.dsg-selection-col-marker-container,
+.dsg-selection-col-marker,
+.dsg-selection-row-marker-container,
+.dsg-selection-row-marker {
   z-index: 2;
   transition: all var(--dsg-transition-duration);
   pointer-events: none;
 }
 
-.dsg-selection-col-marker-disabled ,.dsg-selection-row-marker-disabled {
+.dsg-selection-col-marker-disabled,
+.dsg-selection-row-marker-disabled {
   background: var(--dsg-selection-disabled-border-color);
 }
 
@@ -252,7 +438,8 @@
   margin-right: 10px;
 }
 
-.dsg-add-row-btn, .dsg-add-row-input {
+.dsg-add-row-btn,
+.dsg-add-row-input {
   background: white;
   padding: 7px 10px;
   display: flex;
@@ -260,24 +447,26 @@
   position: relative;
   border: 1px solid #dcdcdc;
   border-radius: 2px;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 
 .dsg-add-row-input {
   width: 40px;
 }
 
-.dsg-add-row-btn:hover, .dsg-add-row-input:hover {
+.dsg-add-row-btn:hover,
+.dsg-add-row-input:hover {
   border-color: #c7c7c7;
 }
 
-.dsg-add-row-btn:focus, .dsg-add-row-input:focus {
+.dsg-add-row-btn:focus,
+.dsg-add-row-input:focus {
   border-color: var(--dsg-selection-border-color);
   outline: none;
 }
 
 .dsg-add-row-btn:before {
-  content: "";
+  content: '';
   display: inline-block;
   margin-right: 10px;
   background: #9da6ab;
@@ -286,7 +475,7 @@
 }
 
 .dsg-add-row-btn:after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   left: 14px;
@@ -311,7 +500,7 @@
 
 .dsg-input-suffix {
   padding-right: 10px;
-  opacity: .5;
+  opacity: 0.5;
   margin-left: -5px;
 }
 
@@ -328,7 +517,7 @@
   background: white;
   z-index: 10000;
   border-radius: 4px;
-  box-shadow: 0 2px 6px 2px rgba(60,64,67,.15);
+  box-shadow: 0 2px 6px 2px rgba(60, 64, 67, 0.15);
   padding: 5px 0;
   color: black;
 }
@@ -363,5 +552,5 @@
   box-sizing: border-box;
   transition: all var(--dsg-transition-duration);
   pointer-events: none;
-  background: rgba(0,0,0,.03);
+  background: rgba(0, 0, 0, 0.03);
 }

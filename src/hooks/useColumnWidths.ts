@@ -62,7 +62,9 @@ export const useColumnWidths = (
     children.forEach((child) => el.appendChild(child))
     document.body.insertBefore(el, null)
 
-    setColumnWidths(children.map((child) => child.getBoundingClientRect().width))
+    setColumnWidths(
+      children.map((child) => child.getBoundingClientRect().width)
+    )
     setPrevWidth(width)
 
     el.remove()
