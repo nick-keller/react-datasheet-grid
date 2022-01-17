@@ -1,5 +1,11 @@
 # Change Log
 
+## 3.6.3
+> Date: 2022-01-17
+### Fixed
+- Endless re-renders with non-integer height
+- Right and bottom shadow had false positive with non-integer sizes
+
 ## 3.6.2
 > Date: 2022-01-13
 ### Fixed
