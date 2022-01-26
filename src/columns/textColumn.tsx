@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import { CellComponent, CellProps, Column } from '../types'
 import cx from 'classnames'
+import { useFirstRender } from '../hooks/useFirstRender'
 
 type TextColumnOptions<T> = {
   placeholder?: string
@@ -34,6 +35,7 @@ const TextComponent = React.memo<
   CellProps<string | null, TextColumnData<string | null>>
 >(
   ({
+    active,
     focus,
     rowData,
     setRowData,
@@ -47,6 +49,7 @@ const TextComponent = React.memo<
     },
   }) => {
     const ref = useRef<HTMLInputElement>(null)
+    const firstRender = useFirstRender()
 
     // We create refs for async access so we don't have to add it to the useEffect dependencies
     const asyncRef = useRef({
@@ -56,6 +59,7 @@ const TextComponent = React.memo<
       setRowData,
       parseUserInput,
       continuousUpdates,
+      firstRender,
       // This allows us to keep track of whether or not the user blurred the input using the Esc key
       // If the Esc key is used we do not update the row's value (only relevant when continuousUpdates is false)
       escPressed: false,
@@ -67,6 +71,7 @@ const TextComponent = React.memo<
       setRowData,
       parseUserInput,
       continuousUpdates,
+      firstRender,
       // Keep the same value across renders
       escPressed: asyncRef.current.escPressed,
     }
@@ -95,7 +100,8 @@ const TextComponent = React.memo<
           // Update the row's value on blur only if the user did not press escape (only relevant when continuousUpdates is false)
           if (
             !asyncRef.current.escPressed &&
-            !asyncRef.current.continuousUpdates
+            !asyncRef.current.continuousUpdates &&
+            !asyncRef.current.firstRender
           ) {
             asyncRef.current.setRowData(
               asyncRef.current.parseUserInput(ref.current.value)
@@ -118,7 +124,7 @@ const TextComponent = React.memo<
         // We use an uncontrolled component for better performance
         defaultValue={formatBlurredInput(rowData)}
         className={cx('dsg-input', alignRight && 'dsg-input-align-right')}
-        placeholder={placeholder}
+        placeholder={active ? placeholder : undefined}
         // Important to prevent any undesired "tabbing"
         tabIndex={-1}
         ref={ref}

@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.0.1
+> Date: 2022-01-26
+### Fixed
+- `createTextColumn` placeholder was always displaying, it is now only displaying on active cells.
+- `createTextColumn` was updating the row on first render when `continuousUpdates` was false.
+
 ## 4.0.0
 > Date: 2022-01-26
 ### Changed
