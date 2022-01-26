@@ -54,7 +54,10 @@ module.exports = {
             'https://github.com/Equify/react-datasheet-grid/edit/master/website/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [
+            require.resolve('./src/css/custom.css'),
+            require.resolve('react-datasheet-grid/dist/style.css'),
+          ],
         },
         gtag: {
           trackingID: 'G-PZ8BTMNFN9',
