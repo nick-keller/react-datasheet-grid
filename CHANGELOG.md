@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.0.0
+> Date: 2022-01-26
+### Changed
+- CSS is no longer automatically imported and should be manually imported by the end user.
+  This allows support for Nextjs and other frameworks.
+- `data` prop is no longer supported in favor of `value`
+
 ## 3.6.3
 > Date: 2022-01-17
 ### Fixed

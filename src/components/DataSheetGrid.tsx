@@ -19,7 +19,6 @@ import {
   SelectionContextType,
 } from '../types'
 import { VariableSizeList } from 'react-window'
-import '../style.css'
 import { Row } from './Row'
 import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useResizeDetector } from 'react-resize-detector'
@@ -59,11 +58,7 @@ export const DataSheetGrid = React.memo(
   React.forwardRef<DataSheetGridRef, DataSheetGridProps<any>>(
     <T extends any>(
       {
-        // Data is deprecated but still supported, value should be used instead
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        data: deprecatedValue,
-        value: data = deprecatedValue ?? DEFAULT_DATA,
+        value: data = DEFAULT_DATA,
         className,
         style,
         height: maxHeight = 400,
@@ -89,16 +84,6 @@ export const DataSheetGrid = React.memo(
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
-      // Display a warning message message when `data` is used instead of `value`
-      useMemo(() => {
-        if (deprecatedValue !== undefined) {
-          console.warn(
-            'Property `data` of <DataSheetGrid /> is deprecated, please use `value` instead.'
-          )
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-
       const lastEditingCellRef = useRef<Cell | null>(null)
       const disableContextMenu = disableContextMenuRaw || lockRows
       const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
