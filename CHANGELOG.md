@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.0.2
+> Date: 2022-01-27
+### Changed
+- Changed module types to `commonjs` to improve compatibility
+
 ## 4.0.1
 > Date: 2022-01-26
 ### Fixed

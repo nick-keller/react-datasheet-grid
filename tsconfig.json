@@ -1,26 +1,37 @@
 {
   "compilerOptions": {
-     "incremental": true,
+    "incremental": true,
     "target": "ES2015",
-    "module": "ES2020",
-     "allowJs": false,
-     "jsx": "react",
-     "declaration": true,
-     "declarationMap": true,
-     "sourceMap": true,
+    "module": "commonjs",
+    "allowJs": false,
+    "jsx": "react",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "rootDir": "src",
-    "lib": ["DOM", "ESNext"],
-     "outDir": "dist",
-     "downlevelIteration": true,
-     "isolatedModules": true,
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
+    "outDir": "dist",
+    "downlevelIteration": true,
+    "isolatedModules": true,
     "strict": true,
-     "alwaysStrict": true,
+    "alwaysStrict": true,
     "noImplicitReturns": true,
-     "moduleResolution": "node",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["node_modules", "dist", "example", "src/**/*.test.ts", "src/**/*.test.tsx"],
-  "include": ["src/**/*"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "example",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
+  "include": [
+    "src/**/*"
+  ]
 }
