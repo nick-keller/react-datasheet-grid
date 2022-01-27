@@ -1027,7 +1027,7 @@ export const DataSheetGrid = React.memo(
       const onMouseUp = useCallback(() => {
         if (expandingSelectionFromRowIndex !== null) {
           if (expandSelectionRowsCount > 0 && activeCell) {
-            const copyData: Array<Array<string>> = []
+            let copyData: Array<Array<string>> = []
 
             const min: Cell = selection?.min || activeCell
             const max: Cell = selection?.max || activeCell
@@ -1043,47 +1043,63 @@ export const DataSheetGrid = React.memo(
               }
             }
 
-            const newData = [...data]
+            Promise.all(
+              copyData[0].map((_, columnIndex) => {
+                const prePasteValues =
+                  columns[min.col + columnIndex + 1]?.prePasteValues
 
-            for (
-              let columnIndex = 0;
-              columnIndex < copyData[0].length;
-              columnIndex++
-            ) {
-              const pasteValue = columns[min.col + columnIndex + 1]?.pasteValue
+                const values = copyData.map((row) => row[columnIndex])
+                return prePasteValues?.(values) ?? values
+              })
+            ).then((results) => {
+              copyData = copyData.map((_, rowIndex) =>
+                results.map((column) => column[rowIndex])
+              )
 
-              if (pasteValue) {
-                for (
-                  let rowIndex = max.row + 1;
-                  rowIndex <= max.row + expandSelectionRowsCount;
-                  rowIndex++
-                ) {
-                  if (
-                    !isCellDisabled({
-                      col: columnIndex + min.col,
-                      row: rowIndex,
-                    })
+              const newData = [...data]
+
+              for (
+                let columnIndex = 0;
+                columnIndex < copyData[0].length;
+                columnIndex++
+              ) {
+                const pasteValue =
+                  columns[min.col + columnIndex + 1]?.pasteValue
+
+                if (pasteValue) {
+                  for (
+                    let rowIndex = max.row + 1;
+                    rowIndex <= max.row + expandSelectionRowsCount;
+                    rowIndex++
                   ) {
-                    newData[rowIndex] = pasteValue({
-                      rowData: newData[rowIndex],
-                      value:
-                        copyData[(rowIndex - max.row - 1) % copyData.length][
-                          columnIndex
-                        ],
-                      rowIndex,
-                    })
+                    if (
+                      !isCellDisabled({
+                        col: columnIndex + min.col,
+                        row: rowIndex,
+                      })
+                    ) {
+                      newData[rowIndex] = pasteValue({
+                        rowData: newData[rowIndex],
+                        value:
+                          copyData[(rowIndex - max.row - 1) % copyData.length][
+                            columnIndex
+                          ],
+                        rowIndex,
+                      })
+                    }
                   }
                 }
               }
-            }
 
-            onChange(newData, [
-              {
-                type: 'UPDATE',
-                fromRowIndex: max.row + 1,
-                toRowIndex: max.row + 1 + expandSelectionRowsCount,
-              },
-            ])
+              onChange(newData, [
+                {
+                  type: 'UPDATE',
+                  fromRowIndex: max.row + 1,
+                  toRowIndex: max.row + 1 + expandSelectionRowsCount,
+                },
+              ])
+            })
+
             setExpandSelectionRowsCount(0)
             setActiveCell({
               col: Math.min(

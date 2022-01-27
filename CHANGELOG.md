@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.0.3
+> Date: 2022-01-27
+### Fixed
+- `prePasteValues` was not called when expanding the selection
+
 ## 4.0.2
 > Date: 2022-01-27
 ### Changed
