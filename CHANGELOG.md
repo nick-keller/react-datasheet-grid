@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.0.5
+> Date: 2022-01-29
+### Fixed
+- Prevent columns created with `createTextColumn` with `continuousUpdates` set to false
+  to update when focus state flickers.
+
 ## 4.0.3
 > Date: 2022-01-27
 ### Fixed

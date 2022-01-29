@@ -60,6 +60,10 @@ const TextComponent = React.memo<
       parseUserInput,
       continuousUpdates,
       firstRender,
+      // Timestamp of last focus (when focus becomes true) and last change (input change)
+      // used to prevent un-necessary updates when value was not changed
+      focusedAt: 0,
+      changedAt: 0,
       // This allows us to keep track of whether or not the user blurred the input using the Esc key
       // If the Esc key is used we do not update the row's value (only relevant when continuousUpdates is false)
       escPressed: false,
@@ -72,7 +76,9 @@ const TextComponent = React.memo<
       parseUserInput,
       continuousUpdates,
       firstRender,
-      // Keep the same value across renders
+      // Keep the same values across renders
+      focusedAt: asyncRef.current.focusedAt,
+      changedAt: asyncRef.current.changedAt,
       escPressed: asyncRef.current.escPressed,
     }
 
@@ -92,6 +98,8 @@ const TextComponent = React.memo<
 
         // We immediately reset the escPressed
         asyncRef.current.escPressed = false
+        // Save current timestamp
+        asyncRef.current.focusedAt = Date.now()
       }
       // When the cell looses focus (by pressing Esc, Enter, clicking away...) we make sure to blur the input
       // Otherwise the user would still see the cursor blinking
@@ -101,7 +109,9 @@ const TextComponent = React.memo<
           if (
             !asyncRef.current.escPressed &&
             !asyncRef.current.continuousUpdates &&
-            !asyncRef.current.firstRender
+            !asyncRef.current.firstRender &&
+            // Make sure that focus was gained more than 10 ms ago, used to prevent flickering
+            asyncRef.current.changedAt >= asyncRef.current.focusedAt
           ) {
             asyncRef.current.setRowData(
               asyncRef.current.parseUserInput(ref.current.value)
@@ -133,6 +143,8 @@ const TextComponent = React.memo<
         // and the user cannot click and edit the input (this part is handled by DataSheetGrid itself)
         style={{ pointerEvents: focus ? 'auto' : 'none' }}
         onChange={(e) => {
+          asyncRef.current.changedAt = Date.now()
+
           // Only update the row's value as the user types if continuousUpdates is true
           if (continuousUpdates) {
             setRowData(parseUserInput(e.target.value))
