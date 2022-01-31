@@ -23,7 +23,7 @@ return (
   />
 )
 ```
-Then we need a way to track rows to know which ones were added, deleted, or updated.
+Then we need a way to identify rows to know which ones were added, deleted, or updated.
 We can simply add [unique ids](unique-ids):
 ```tsx
 <DataSheetGrid
@@ -32,6 +32,7 @@ We can simply add [unique ids](unique-ids):
   duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
 />
 ```
+Of course in a real world app you would not let the front choose the ids, but that will work just fine for this example.
 
 Then we want to use the second argument of [`onChange`](../api-reference/props#onchange) to track changes:
 ```tsx
@@ -83,7 +84,7 @@ return (
 />
 ```
 
-`.slice()` gives us the list of created rows that we then `.add()` to the set of created row ids one by one.
+`.slice()` gives us the list of created rows, we then `.add()` them to the set of created row ids one by one.
 
 ### Handle updated rows
 
@@ -116,8 +117,8 @@ followed by an update) or deleted (to prevent updating a row and immediately del
 
 ### Handle deleted rows
 
-This time we the indices of the operation refer to the current `data`, not the `newValue`, because deleted rows
-are not present in `newValue`.
+For deleted rows, the indices of the operation refer to the current `data`, not the `newValue` passed as first argument.
+That makes sense since deleted rows are not present in `newValue` (they were deleted).
 
 ```tsx
 <DataSheetGrid
@@ -129,11 +130,11 @@ are not present in `newValue`.
       if (operation.type === 'DELETE') {
         let keptRows = 0
 
-        // Make sure to use data and not newValue
+        // Make sure to use `data` and not `newValue`
         data
           .slice(operation.fromRowIndex, operation.toRowIndex)
           .forEach(({ id }, i) => {
-            // If the row was updated, ignore the update
+            // If the row was updated, dismiss the update
             // No need to update a row and immediately delete it
             updatedRowIds.delete(id)
 
@@ -142,7 +143,7 @@ are not present in `newValue`.
               // No need to insert a row and immediately delete it
               createdRowIds.delete(id)
             } else {
-              // Track the row as deleted
+              // Add the row to the deleted Set
               deletedRowIds.add(id)
               // Insert it back into newValue to display it in red to the user
               newValue.splice(
@@ -162,7 +163,7 @@ are not present in `newValue`.
 
 ## Styling
 
-We can now add a class to the rows based on the tracking:
+We can now add a class to the rows based on the Set that might contain them:
 
 ```tsx
 <DataSheetGrid
@@ -180,7 +181,7 @@ We can now add a class to the rows based on the tracking:
 />
 ```
 
-The add simple CSS to update the cell's color based on the row's calss:
+The add simple CSS to update the cell's color based on the row's class:
 ```css
 .row-deleted .dsg-cell {
   /* Red */
@@ -232,7 +233,7 @@ Then the `data` can be updated to finally visually delete rows that were still d
 All tracking can then be cleared.
 ```tsx
 const commit = () => {
-  /* Use tracking to perform insert, update, and delete to the database */
+  /* Perform insert, update, and delete to the database here */
 
   const newData = data.filter(({ id }) => !deletedRowIds.has(id))
   setData(newData)
@@ -274,7 +275,7 @@ const cancel = () => {
 }
 
 const commit = () => {
-  /* Use tracking to perform insert, update, and delete to the database */
+  /* Perform insert, update, and delete to the database here */
 
   const newData = data.filter(({ id }) => !deletedRowIds.has(id))
   setData(newData)
