@@ -82,6 +82,7 @@
 
 .dsg-cell-header-container {
   padding: 0 10px;
+  line-height: 15px;
 }
 
 .dsg-cell-header.dsg-cell-gutter {
@@ -432,6 +433,7 @@
   padding: 7px 10px;
   display: flex;
   align-items: center;
+  color: black;
 }
 
 .dsg-add-row > * {
@@ -451,7 +453,7 @@
 }
 
 .dsg-add-row-input {
-  width: 40px;
+  width: 55px;
 }
 
 .dsg-add-row-btn:hover,
