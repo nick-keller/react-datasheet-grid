@@ -153,5 +153,7 @@ describe('parsePlainTextData', () => {
 })
 
 test('encodeHtml', () => {
-  expect(encodeHtml('<div title="foo\'bar">baz</div>')).toBe('&lt;div title=&quot;foo&#039;bar&quot;&gt;baz&lt;/div&gt;')
+  expect(encodeHtml('<div title="foo\'bar">baz</div>')).toBe(
+    '&lt;div title=&quot;foo&#039;bar&quot;&gt;baz&lt;/div&gt;'
+  )
 })
