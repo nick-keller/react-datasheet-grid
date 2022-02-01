@@ -1,5 +1,11 @@
 # Change Log
 
+## 4.0.6
+> Date: 2022-02-01
+### Fixed
+- Remove dependency on `html-entities`
+- Fixed style issues
+
 ## 4.0.5
 > Date: 2022-01-29
 ### Fixed

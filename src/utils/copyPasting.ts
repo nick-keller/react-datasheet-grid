@@ -94,3 +94,12 @@ export const parseTextPlainData = (data: string): string[][] => {
 
   return output
 }
+
+export const encodeHtml = (str: string) => {
+  return str
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;')
+}

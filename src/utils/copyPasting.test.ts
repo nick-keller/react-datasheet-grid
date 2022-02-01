@@ -1,4 +1,8 @@
-import { parseTextPlainData, parseTextHtmlData } from './copyPasting'
+import {
+  parseTextPlainData,
+  parseTextHtmlData,
+  encodeHtml,
+} from './copyPasting'
 import { JSDOM } from 'jsdom'
 
 jest.mock('./domParser', () => ({
@@ -146,4 +150,8 @@ describe('parsePlainTextData', () => {
     expect(parseTextPlainData('"foo\tbar"')).toEqual([['"foo', 'bar"']])
     expect(parseTextPlainData('"foo"\t"bar"')).toEqual([['"foo"', '"bar"']])
   })
+})
+
+test('encodeHtml', () => {
+  expect(encodeHtml('<div title="foo\'bar">baz</div>')).toBe('&lt;div title=&quot;foo&#039;bar&quot;&gt;baz&lt;/div&gt;')
 })

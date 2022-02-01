@@ -35,14 +35,17 @@ import { AddRows } from './AddRows'
 import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
-import { parseTextPlainData, parseTextHtmlData } from '../utils/copyPasting'
+import {
+  parseTextPlainData,
+  parseTextHtmlData,
+  encodeHtml,
+} from '../utils/copyPasting'
 import {
   getCell,
   getCellWithId,
   getSelection,
   getSelectionWithId,
 } from '../utils/typeCheck'
-import { encode as encodeHtml } from 'html-entities'
 import { getAllTabbableElements } from '../utils/tab'
 
 const DEFAULT_DATA: any[] = []
