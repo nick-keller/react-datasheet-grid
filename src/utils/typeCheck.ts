@@ -37,7 +37,8 @@ export const getCellWithId = (
 ): typeof cell extends null ? CellWithId | null : CellWithId =>
   cell
     ? {
-        ...cell,
+        col: cell.col,
+        row: cell.row,
         colId: columns[cell.col + 1]?.id,
       }
     : (null as never)
