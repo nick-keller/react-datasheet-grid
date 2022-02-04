@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.1.0
+> Date: 2022-02-04
+### Changed
+- Improved scroll behavior when selecting a row or column 
+
 ## 4.0.6
 > Date: 2022-02-01
 ### Fixed

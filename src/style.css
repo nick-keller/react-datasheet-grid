@@ -25,6 +25,7 @@
   user-select: none;
   box-sizing: border-box;
   color: black;
+  background: white;
 }
 
 .dsg-corner-indicator {
