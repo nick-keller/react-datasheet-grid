@@ -1,0 +1,257 @@
+---
+sidebar_position: 6
+---
+import {FinalResult} from '../../src/demos/collapsibleRows.tsx'
+
+# Collapsible rows
+Collapsible rows is not supported natively, but it is fairly easy to implement it, the whole idea is to
+build a flat array of rows to display and pass that flat array to DSG instead of passing the nested data.
+
+## Setup
+We first need two states. `groups` as our nested data, and `openedGroups` that is an array of indices.
+```tsx
+const [groups, setGroups] = useState([])
+const [openedGroups, setOpenedGroups] = useState([])
+```
+
+`groups` is shaped like so, with an array of collapsible `children:
+```json
+[
+  {
+    "name": "Senior Integration Producer",
+    "children": [
+      {
+        "firstName": "Daniella",
+        "lastName": "Zulauf",
+        "salary": 2793
+      },
+      {
+        "firstName": "Jackie",
+        "lastName": "Mraz",
+        "salary": 2892
+      },
+    ]
+  },
+  {
+    "name": "Senior Directives Assistant",
+    "children": [
+      {
+        "firstName": "Lucienne",
+        "lastName": "Mohr",
+        "salary": 2618
+      }
+    ]
+  },
+]
+```
+
+We can then create a function to toggle a group's visibility:
+```tsx
+// We use useCallback to avoid creating a new function each time
+const toggleGroup = useCallback((i) => {
+  setOpenedGroups((opened) => {
+    if (opened.includes(i)) {
+      // Remove i from the array
+      return opened.filter((x) => x !== i)
+    }
+
+    // Add i to the array
+    return [...opened, i]
+  })
+}, [])
+```
+
+## Flattening rows
+
+Then we need to flatten `groups` to create the rows that can be used by DSG:
+```tsx
+const rows = useMemo(() => {
+  // We start with an empty array that we'll return at the end
+  const result = []
+
+  // Go over each group
+  for (let i = 0; i < groups.length; i++) {
+
+    result.push(/* Add a row for that group */)
+
+    // If group is opened, add one row per child
+    if (openedGroups.includes(i)) {
+      for (let j = 0; j < groups[i].children.length; j++) {
+
+        result.push(/* Add a row for that child */)
+      }
+    }
+  }
+
+  return result
+}, [groups, openedGroups]) // Recompute the rows when groups or openedGroups changes
+```
+
+Now the question is, what to put in those rows?
+First we can add a `type` key to discriminate between groups and children, and a `groupIndex` and
+`childIndex` (for children only) for easier manipulation later.
+Then we add any data we want to display, for groups it might look like this:
+
+```ts
+result.push({
+  // To discriminate between groups and children
+  type: 'GROUP',
+  // Index of the group, just for reference
+  groupIndex: i,
+  // Sum of all salaries of children (will not be editable)
+  salary: groups[i].children.reduce((acc, cur) => acc + (cur.salary ?? 0), 0),
+  // Whether or not the group is opened, to display a chevron for example
+  opened: openedGroups.includes(i),
+  // The name to display to the user
+  name: groups[i].name,
+})
+```
+And for children:
+```ts
+result.push({
+  type: 'CHILD',
+  // Children have both indices
+  groupIndex: i,
+  childIndex: j,
+  // We spread the firstName, lastName, and salary
+  ...groups[i].children[j],
+})
+```
+
+## Final result
+
+```tsx
+const [groups, setGroups] = useState([/* Your groups */])
+const [openedGroups, setOpenedGroups] = useState([])
+
+// Function to toggle group visibility
+const toggleGroup = useCallback((i) => {
+  setOpenedGroups((opened) => {
+    if (opened.includes(i)) {
+      return opened.filter((x) => x !== i)
+    }
+
+    return [...opened, i]
+  })
+}, [])
+
+// Flatten version of groups
+const rows = useMemo(() => {
+  const result = []
+
+  for (let i = 0; i < groups.length; i++) {
+    result.push({
+      type: 'GROUP',
+      salary: groups[i].children.reduce((acc, cur) => acc + (cur.salary ?? 0), 0),
+      groupIndex: i,
+      opened: openedGroups.includes(i),
+      name: groups[i].name,
+    })
+
+    if (openedGroups.includes(i)) {
+      for (let j = 0; j < groups[i].children.length; j++) {
+        result.push({
+          type: 'CHILD',
+          groupIndex: i,
+          childIndex: j,
+          ...groups[i].children[j],
+        })
+      }
+    }
+  }
+
+  return result
+}, [groups, openedGroups])
+
+const handleChange = (newRows, operations) => {
+  for (const operation of operations) {
+    if (operation.type === 'UPDATE') {
+      for (const row of newRows.slice(operation.fromRowIndex, operation.toRowIndex)) {
+        if (row.type === 'CHILD') {
+          groups[row.groupIndex].children[row.childIndex] = {
+            firstName: row.firstName,
+            lastName: row.lastName,
+            salary: row.salary,
+          }
+        }
+      }
+    }
+
+    if (operation.type === 'CREATE') {
+      const groupIndex = newRows[operation.fromRowIndex - 1].groupIndex
+      const childIndex = newRows[operation.fromRowIndex - 1].childIndex ?? -1
+
+      groups[groupIndex].children = [
+        ...groups[groupIndex].children.slice(0, childIndex + 1),
+        ...newRows
+          .slice(operation.fromRowIndex, operation.toRowIndex)
+          .map((row) => ({
+            firstName: row.firstName,
+            lastName: row.lastName,
+            salary: row.salary,
+          })),
+        ...groups[groupIndex].children.slice(childIndex + 1),
+      ]
+    }
+
+    if (operation.type === 'DELETE') {
+      const deletedRows = rows
+        .slice(operation.fromRowIndex, operation.toRowIndex)
+        .reverse()
+
+      for (const deletedRow of deletedRows) {
+        if (deletedRow.type === 'CHILD') {
+          groups[deletedRow.groupIndex].children.splice(deletedRow.childIndex, 1)
+        }
+      }
+    }
+  }
+
+  setGroups([...groups])
+}
+
+return (
+  <DataSheetGrid<Row>
+    value={rows}
+    onChange={handleChange}
+    columns={[
+      {
+        title: 'Group',
+        disabled: ({ rowData }) => rowData.type === 'CHILD',
+        isCellEmpty: () => true,
+        component: ({ rowData, focus, stopEditing }) => {
+          useEffect(() => {
+            if (focus) {
+              toggleGroup(rowData.groupIndex)
+              stopEditing({ nextRow: false })
+            }
+          }, [focus, rowData.groupIndex, stopEditing])
+
+          if (rowData.type === 'CHILD') {
+            return null
+          }
+
+          return (rowData.opened ? '👇' : '👉️') + rowData.name
+        },
+      },
+      {
+        ...keyColumn('firstName', textColumn),
+        title: 'First name',
+        disabled: ({ rowData }) => rowData.type === 'GROUP',
+      },
+      {
+        ...keyColumn('lastName', textColumn),
+        title: 'Last name',
+        disabled: ({ rowData }) => rowData.type === 'GROUP',
+      },
+      {
+        ...keyColumn('salary', intColumn),
+        title: 'Salary',
+        disabled: ({ rowData }) => rowData.type === 'GROUP',
+      },
+    ]}
+  />
+)
+```
+
+<FinalResult />
