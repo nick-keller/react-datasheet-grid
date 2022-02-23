@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.1.1
+> Date: 2022-02-23
+### Changed
+- Support more keys to start editing a cell
+
 ## 4.1.0
 > Date: 2022-02-04
 ### Changed
