@@ -1409,7 +1409,7 @@ export const DataSheetGrid = React.memo(
             )
             event.preventDefault()
           } else if (
-            event.key.match(/^[a-zA-Z0-9 ,.+-]$/) &&
+            event.key.match(/^[ -~]$/) &&
             !event.ctrlKey &&
             !event.metaKey &&
             !event.altKey
