@@ -1372,7 +1372,7 @@ export const DataSheetGrid = React.memo(
             setSelectionCell(null)
             setEditing(false)
           } else if (
-            event.key === 'Enter' &&
+            (event.key === 'Enter' || event.key === 'F2') &&
             !event.ctrlKey &&
             !event.metaKey &&
             !event.altKey &&
