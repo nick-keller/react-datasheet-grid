@@ -145,6 +145,7 @@ export type ContextMenuComponentProps = {
   clientX: number
   clientY: number
   items: ContextMenuItem[]
+  cursorIndex: Cell
   close: () => void
 }
 

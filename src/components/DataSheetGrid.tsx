@@ -137,6 +137,7 @@ export const DataSheetGrid = React.memo(
       const [contextMenu, setContextMenu] = useState<{
         x: number
         y: number
+        cursorIndex: Cell
       } | null>(null)
 
       // Items of the context menu
@@ -926,7 +927,11 @@ export const DataSheetGrid = React.memo(
             cursorIndex.row <= selection.max.row
 
           if (rightClick && !disableContextMenu) {
-            setContextMenu({ x: event.clientX, y: event.clientY })
+            setContextMenu({
+              x: event.clientX,
+              y: event.clientY,
+              cursorIndex: cursorIndex as Cell,
+            })
           }
 
           if (
@@ -1767,6 +1772,7 @@ export const DataSheetGrid = React.memo(
             <ContextMenuComponent
               clientX={contextMenu.x}
               clientY={contextMenu.y}
+              cursorIndex={contextMenu.cursorIndex}
               items={contextMenuItems}
               close={() => setContextMenu(null)}
             />
