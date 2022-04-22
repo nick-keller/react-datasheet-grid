@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.2.0
+> Date: 2022-04-22
+### Added
+- Add support for `F2` key to start editing a cell, like in Excel
+- The context menu component now has an extra prop `cursorIndex`, which is a `Cell`, 
+  that holds the information about which cell was right-clicked on. `-1` means header or gutter column
+
 ## 4.1.1
 > Date: 2022-02-23
 ### Changed
