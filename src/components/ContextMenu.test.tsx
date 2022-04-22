@@ -8,7 +8,13 @@ import { MatcherFunction } from '@testing-library/dom/types/matches'
 test('Closes properly', () => {
   const onClose = jest.fn()
   const { container } = render(
-    <ContextMenu clientX={0} clientY={0} items={[]} close={onClose} />
+    <ContextMenu
+      cursorIndex={{ col: 0, row: 0 }}
+      clientX={0}
+      clientY={0}
+      items={[]}
+      close={onClose}
+    />
   )
   userEvent.click(container)
   expect(onClose).toHaveBeenCalled()
@@ -19,6 +25,7 @@ test('Click on item', () => {
   const onInsertRowBelow = jest.fn()
   render(
     <ContextMenu
+      cursorIndex={{ col: 0, row: 0 }}
       clientX={0}
       clientY={0}
       items={[{ type: 'INSERT_ROW_BELLOW', action: onInsertRowBelow }]}
@@ -45,6 +52,7 @@ const textContentMatcher = (text: string): MatcherFunction => {
 test('Check all items', () => {
   render(
     <ContextMenu
+      cursorIndex={{ col: 0, row: 0 }}
       clientX={0}
       clientY={0}
       items={[
@@ -71,6 +79,7 @@ test('Check all items', () => {
 test('Fallback for unknown item', () => {
   render(
     <ContextMenu
+      cursorIndex={{ col: 0, row: 0 }}
       clientX={0}
       clientY={0}
       items={[
