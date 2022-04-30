@@ -76,6 +76,7 @@ export const DataSheetGrid = React.memo(
         headerRowHeight = rowHeight,
         gutterColumn,
         stickyRightColumn,
+        key,
         addRowsComponent: AddRowsComponent = AddRows,
         createRow = DEFAULT_CREATE_ROW as () => T,
         autoAddRow = false,
@@ -1744,6 +1745,11 @@ export const DataSheetGrid = React.memo(
                 itemData={itemData}
                 outerRef={outerRef}
                 innerRef={innerRef}
+                itemKey={(index, data) => {
+                  const row = data.data[index] as Record<string, any>
+                  console.log(row)
+                  return !key || !(key in row) ? index : row[key]
+                }}
                 innerElementType={InnerContainer}
                 children={Row}
                 useIsScrolling={columns.some(
