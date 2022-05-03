@@ -15,7 +15,7 @@ const KeyComponent: CellComponent<any, ColumnData> = ({
 
   // We wrap the setRowData function to assign the value to the desired key
   const setKeyData = useCallback(
-    (value) => {
+    (value: any) => {
       setRowData({ ...rowDataRef.current, [key]: value })
     },
     [key, setRowData]

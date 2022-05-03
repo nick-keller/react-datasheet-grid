@@ -9,6 +9,7 @@ export const Cell: FC<{
   column: Column<any, any, any>
   className: string
   active?: boolean
+  children?: any
 }> = ({
   children,
   gutter,

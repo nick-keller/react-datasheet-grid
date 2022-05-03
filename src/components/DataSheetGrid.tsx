@@ -1627,7 +1627,7 @@ export const DataSheetGrid = React.memo(
       })
 
       const itemSize = useCallback(
-        (index) => (index === 0 ? headerRowHeight : rowHeight),
+        (index: number) => (index === 0 ? headerRowHeight : rowHeight),
         [headerRowHeight, rowHeight]
       )
 

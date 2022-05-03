@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.3.0
+> Date: 2022-05-03
+### Added
+- Add support for React 18
+
 ## 4.2.0
 > Date: 2022-04-22
 ### Added

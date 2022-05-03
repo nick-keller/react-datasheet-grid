@@ -4,7 +4,7 @@ import { SelectionRect } from './SelectionRect'
 
 export const InnerContainer = React.forwardRef<
   HTMLDivElement,
-  { style: React.CSSProperties }
+  { style: React.CSSProperties; children?: any }
 >(({ children, ...rest }, ref) => {
   return (
     <div ref={ref} {...rest}>
