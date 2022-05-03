@@ -1633,11 +1633,19 @@ export const DataSheetGrid = React.memo(
       )
 
       const itemKey = useCallback(
-        (index: number, { data }: ListItemData<T>) => {
-          const row = data[index - 1] as Record<any, any>
-          return index === 0 || !rowKey || !(rowKey in row)
-            ? index
-            : row[rowKey]
+        (index: number, { data }: ListItemData<T>): React.Key => {
+          if (rowKey && index > 0) {
+            const row = data[index - 1]
+            const column =
+              typeof rowKey === 'string' ? rowKey : rowKey(row, index)
+            if (row instanceof Object && column in row) {
+              const key = row[column as keyof T]
+              if (typeof key === 'string' || typeof key === 'number') {
+                return key
+              }
+            }
+          }
+          return index
         },
         [rowKey]
       )
