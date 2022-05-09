@@ -1636,10 +1636,14 @@ export const DataSheetGrid = React.memo(
         (index: number, { data }: ListItemData<T>): React.Key => {
           if (rowKey && index > 0) {
             const row = data[index - 1]
-            const column =
-              typeof rowKey === 'string' ? rowKey : rowKey(row, index)
-            if (row instanceof Object && column in row) {
-              const key = row[column as keyof T]
+            if (typeof rowKey === 'function') {
+              return rowKey(row, index)
+            } else if (
+              typeof rowKey === 'string' &&
+              row instanceof Object &&
+              rowKey in row
+            ) {
+              const key = row[rowKey as keyof T]
               if (typeof key === 'string' || typeof key === 'number') {
                 return key
               }
