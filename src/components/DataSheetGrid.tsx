@@ -76,6 +76,7 @@ export const DataSheetGrid = React.memo(
         headerRowHeight = rowHeight,
         gutterColumn,
         stickyRightColumn,
+        rowKey,
         addRowsComponent: AddRowsComponent = AddRows,
         createRow = DEFAULT_CREATE_ROW as () => T,
         autoAddRow = false,
@@ -1631,6 +1632,28 @@ export const DataSheetGrid = React.memo(
         [headerRowHeight, rowHeight]
       )
 
+      const itemKey = useCallback(
+        (index: number, { data }: ListItemData<T>): React.Key => {
+          if (rowKey && index > 0) {
+            const row = data[index - 1]
+            if (typeof rowKey === 'function') {
+              return rowKey(row, index)
+            } else if (
+              typeof rowKey === 'string' &&
+              row instanceof Object &&
+              rowKey in row
+            ) {
+              const key = row[rowKey as keyof T]
+              if (typeof key === 'string' || typeof key === 'number') {
+                return key
+              }
+            }
+          }
+          return index
+        },
+        [rowKey]
+      )
+
       useImperativeHandle(ref, () => ({
         activeCell: getCellWithId(activeCell, columns),
         selection: getSelectionWithId(
@@ -1740,6 +1763,7 @@ export const DataSheetGrid = React.memo(
                 height={displayHeight}
                 itemCount={data.length + 1}
                 itemSize={itemSize}
+                itemKey={itemKey}
                 estimatedItemSize={rowHeight}
                 itemData={itemData}
                 outerRef={outerRef}
