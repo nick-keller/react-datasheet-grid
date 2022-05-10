@@ -1,7 +1,7 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { AddRows } from './AddRows'
 
 test('Has correct classes', () => {
@@ -36,15 +36,21 @@ test('Resets on blur when value is invalid', () => {
   // Force the input to be of type "text" to test what happens if the user types in non-number characters
   input.type = 'text'
 
-  userEvent.type(input, '{selectall}{backspace}')
-  input.blur()
+  act(() => {
+    userEvent.type(input, '{selectall}{backspace}')
+    input.blur()
+  })
   expect(input.value).toBe('1')
 
-  userEvent.type(input, '{selectall}456xyz')
-  input.blur()
+  act(() => {
+    userEvent.type(input, '{selectall}456xyz')
+    input.blur()
+  })
   expect(input.value).toBe('456')
 
-  userEvent.type(input, '{selectall}abc')
-  input.blur()
+  act(() => {
+    userEvent.type(input, '{selectall}abc')
+    input.blur()
+  })
   expect(input.value).toBe('1')
 })
