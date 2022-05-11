@@ -1637,7 +1637,7 @@ export const DataSheetGrid = React.memo(
           if (rowKey && index > 0) {
             const row = data[index - 1]
             if (typeof rowKey === 'function') {
-              return rowKey(row, index)
+              return rowKey({ rowData: row, rowIndex: index })
             } else if (
               typeof rowKey === 'string' &&
               row instanceof Object &&

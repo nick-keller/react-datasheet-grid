@@ -190,6 +190,19 @@ CSS class of the outer `<div />`.
 Style of the outer `<div />`.
 
 ## Row behavior
+### rowKey
+> Type: `string | (({ rowData: T; rowIndex: number }) => string)`<br />
+> Default: `({ rowIndex }) => rowIndex`
+
+By default, rows use the row index as the `key`, this is not ideal when inserting / deleting rows in the middle of the grid:
+React will update all rows instead of adding / deleting a single one in the middle.
+For better performance and to avoid tricky behaviors, it is recommended to use some unique id for each row.
+
+You can specify a `string` that should be a key of the row object `<DataSheetGrid value={[{ id: 'foo' }, ...]} rowKey="id" />`.
+
+For more complex cases (nested properties, compound primary keys, non object rows...) you may specify a function
+that take the row object and row index as parameters.
+
 ### createRow
 > Type: `() => any`<br />
 > Default: `() => ({})`
