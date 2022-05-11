@@ -15,5 +15,6 @@ Try deleting, creating, or duplicating rows:
 <DataSheetGrid
   createRow={() => ({ id: genId() })}
   duplicateRow={({ rowData }) => ({ ...rowData, id: genId() })}
+  rowKey="id"
 />
 ```

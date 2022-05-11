@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.4.0
+> Date: 2022-05-11
+### Added
+- Add `rowKey` prop to handle complex edge cases when inserting / deleting rows in the middle of the grid
+
 ## 4.3.0
 > Date: 2022-05-03
 ### Added
