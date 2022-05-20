@@ -12,6 +12,11 @@ module.exports = {
   organizationName: 'Equify', // Usually your GitHub org/user name.
   projectName: 'react-datasheet-grid', // Usually your repo name.
   themeConfig: {
+    announcementBar: {
+      content:
+        '⭐️ <b>If you like React-Datasheet-Grid, give it a star on <a target="_blank" href="https://github.com/Equify/react-datasheet-grid">GitHub</a> and follow us on <a target="_blank" href="https://twitter.com/NicolasKa3">Twitter</a>!</b>',
+      backgroundColor: '#8bd6c4',
+    },
     navbar: {
       title: 'React Datasheet Grid',
       items: [
