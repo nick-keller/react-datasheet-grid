@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 import BuiltInColumns from '../src/demos/builtInColumns'
 
@@ -7,6 +7,23 @@ import BuiltInColumns from '../src/demos/builtInColumns'
 
 DSG is column based, meaning that all cells of a given column are of the same type and have the same widget.
 This is why it is more like Notion or Airtable, and less like Excel.
+
+## The columns array
+
+Columns are simple objects, and the list of columns is a simple array of column objects:
+```js
+const columns = [{}, {}]
+```
+
+If you are using typescript:
+```tsx
+import { Column } from 'react-datasheet-grid'
+
+const columns: Column[] = [{}, {}]
+// You may specify the row type
+type Row = { firstName: string, lastName: string }
+const columns: Column<Row>[] = [{}, {}]
+```
 
 ## Built-in columns
 
@@ -128,6 +145,20 @@ const columns = [
 ]
 ```
 
+### Typescript
+`keyColumn` is a generic that takes the row type and the key as parameters:
+```tsx
+const columns = [
+  {
+    ...keyColumn<Row, 'active'>('active', checkboxColumn),
+    title: 'Active'
+  },
+  // ...
+]
+```
+
+Unfortunately, due to the complexity of the type, you have to type the key twice (eg. `'active'` is written twice).
+
 ## Building custom columns
 Built-in columns are there to get your project started, but often you end up building you own custom columns
 to fit your needs. Note that built-in columns and helpers have nothing special, they are built on top
@@ -141,6 +172,8 @@ to implement a custom component from scratch and can instead use `createTextColu
 import { createTextColumn } from 'react-datasheet-grid'
 
 const columns = [ createTextColumn({ /* options */ }) ]
+// When using Typescript you may specify the data type:
+const columns = [ createTextColumn<number>({ /* options */ }) ]
 ```
 
 #### placeholder

@@ -1,0 +1,72 @@
+---
+sidebar_position: 3
+---
+
+# Typescript
+
+This library is written in Typescript and all types are exported directly.
+
+## Quick start
+
+```tsx
+import {
+  checkboxColumn,
+  Column,
+  DataSheetGrid,
+  keyColumn,
+  textColumn,
+} from 'react-datasheet-grid'
+import 'react-datasheet-grid/dist/style.css'
+
+// Define your row type anywhere
+type Row = {
+  active: boolean
+  firstName: string | null
+  lastName: string | null
+}
+
+function App() {
+  // Type your data (not DSG specific)
+  const [data, setData] = useState<Row[]>([
+    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+  ])
+
+  // Type your columns to get type checks in your IDE
+  const columns: Column<Row>[] = [
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      width: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      width: 2,
+    },
+  ]
+
+  return (
+    <DataSheetGrid
+      value={data}
+      onChange={setData}
+      columns={columns}
+    />
+  )
+}
+```
+
+## Generic props
+
+Alternatively you can pass the row type to the component:
+```tsx
+<DataSheetGrid<Row>
+  value={data}
+  onChange={setData}
+  columns={columns}
+/>
+```
