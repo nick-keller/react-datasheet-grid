@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.4.1
+> Date: 2022-05-31
+### Fixed
+- Fix build, previous changes are now present
+
 ## 4.4.0
 > Date: 2022-05-11
 ### Added
