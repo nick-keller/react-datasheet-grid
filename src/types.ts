@@ -41,7 +41,7 @@ export type Column<T, C, PasteValue> = {
   disabled: boolean | ((opt: { rowData: T; rowIndex: number }) => boolean)
   cellClassName?:
     | string
-    | ((opt: { rowData: T; rowIndex: number, columnId: string | undefined }) => string | undefined)
+    | ((opt: { rowData: T; rowIndex: number, columnId?: string }) => string | undefined)
   keepFocus: boolean
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
