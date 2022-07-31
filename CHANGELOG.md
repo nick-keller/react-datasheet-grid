@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.4.2
+> Date: 2022-07-31
+### Changed
+- Transferred ownership of the repo
+
 ## 4.4.1
 > Date: 2022-05-31
 ### Fixed

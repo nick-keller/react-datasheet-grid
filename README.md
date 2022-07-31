@@ -1,6 +1,6 @@
 # react-datasheet-grid
 
-[![Travis (.com)](https://img.shields.io/travis/com/nick-keller/react-datasheet-grid)](https://app.travis-ci.com/github/nick-keller/react-datasheet-grid)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nick-keller/react-datasheet-grid/CI)
 [![Coveralls](https://img.shields.io/coveralls/github/nick-keller/react-datasheet-grid)](https://coveralls.io/github/nick-keller/react-datasheet-grid)
 [![npm](https://img.shields.io/npm/dm/react-datasheet-grid)](https://www.npmjs.com/package/react-datasheet-grid)
 [![GitHub last commit](https://img.shields.io/github/last-commit/nick-keller/react-datasheet-grid)](https://github.com/nick-keller/react-datasheet-grid)
