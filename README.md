@@ -1,9 +1,9 @@
 # react-datasheet-grid
 
-[![Travis (.com)](https://img.shields.io/travis/com/Equify/react-datasheet-grid)](https://app.travis-ci.com/github/Equify/react-datasheet-grid)
-[![Coveralls](https://img.shields.io/coveralls/github/Equify/react-datasheet-grid)](https://coveralls.io/github/Equify/react-datasheet-grid)
+[![Travis (.com)](https://img.shields.io/travis/com/nick-keller/react-datasheet-grid)](https://app.travis-ci.com/github/nick-keller/react-datasheet-grid)
+[![Coveralls](https://img.shields.io/coveralls/github/nick-keller/react-datasheet-grid)](https://coveralls.io/github/nick-keller/react-datasheet-grid)
 [![npm](https://img.shields.io/npm/dm/react-datasheet-grid)](https://www.npmjs.com/package/react-datasheet-grid)
-[![GitHub last commit](https://img.shields.io/github/last-commit/Equify/react-datasheet-grid)](https://github.com/Equify/react-datasheet-grid)
+[![GitHub last commit](https://img.shields.io/github/last-commit/nick-keller/react-datasheet-grid)](https://github.com/nick-keller/react-datasheet-grid)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/react-datasheet-grid)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 

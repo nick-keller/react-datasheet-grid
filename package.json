@@ -24,7 +24,7 @@
   ],
   "author": "Nicolas Keller (https://github.com/nick-keller)",
   "license": "MIT",
-  "repository": "Equify/react-datasheet-grid",
+  "repository": "nick-keller/react-datasheet-grid",
   "homepage": "https://react-datasheet-grid.netlify.app/",
   "devDependencies": {
     "@jest/types": "^27.4.2",
