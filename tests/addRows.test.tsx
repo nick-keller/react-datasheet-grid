@@ -64,6 +64,12 @@ test('No add button when rows are locked', () => {
   expect(screen.queryByText('Add')).not.toBeInTheDocument()
 })
 
+test('No add button when addRowsComponent receives false', () => {
+  render(<DataSheetGrid addRowsComponent={false} />)
+
+  expect(screen.queryByText('Add')).not.toBeInTheDocument()
+})
+
 test('Add multiple rows', () => {
   const ref = { current: null as unknown as DataSheetGridRef }
   const onChange = jest.fn()
