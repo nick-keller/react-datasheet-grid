@@ -80,7 +80,7 @@ const RowComponent = React.memo(
               className={cx(
                 !column.renderWhenScrolling && renderLight && 'dsg-cell-light',
                 typeof column.cellClassName === 'function'
-                  ? column.cellClassName({ rowData: data, rowIndex: index })
+                  ? column.cellClassName({ rowData: data, rowIndex: index, columnId: column.id })
                   : column.cellClassName
               )}
             >
