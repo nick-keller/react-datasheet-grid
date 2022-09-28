@@ -7,7 +7,6 @@ import {
   textColumn,
 } from 'react-datasheet-grid'
 import 'react-datasheet-grid/dist/style.css'
-import './style.css'
 
 type Row = {
   active: boolean

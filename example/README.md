@@ -11,5 +11,5 @@ npm start
 ```
 cd example
 npm i
-npm start
+npm run dev
 ```

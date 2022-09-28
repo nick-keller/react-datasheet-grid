@@ -1,37 +1,23 @@
 {
   "name": "example",
-  "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@types/node": "^12.20.15",
-    "@types/react": "^18.0.8",
-    "@types/react-dom": "^18.0.3",
-    "react": "file:../node_modules/react",
-    "react-datasheet-grid": "file:..",
-    "react-dom": "^18.1.0",
-    "react-scripts": "^5.0.1",
-    "typescript": "^4.3.3",
-    "web-vitals": "^1.1.2"
-  },
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-datasheet-grid": "file:.."
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.1.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0"
   }
 }
