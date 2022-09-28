@@ -1787,7 +1787,7 @@ export const DataSheetGrid = React.memo(
               })
             }}
           />
-          {!lockRows && (
+          {!lockRows && AddRowsComponent && (
             <AddRowsComponent
               addRows={(count) => insertRowAfter(data.length - 1, count)}
             />
