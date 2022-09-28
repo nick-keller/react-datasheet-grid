@@ -13,6 +13,10 @@ export const HeaderRow = React.memo(() => {
     activeColMax,
   } = useContext(HeaderContext)
 
+  if (height === 0) {
+    return null
+  }
+
   return (
     <div
       className={cx('dsg-row', 'dsg-row-header')}

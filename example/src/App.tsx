@@ -5,8 +5,8 @@ import {
   DataSheetGrid,
   keyColumn,
   textColumn,
-} from 'react-datasheet-grid'
-import 'react-datasheet-grid/dist/style.css'
+} from '../../src'
+import '../../dist/style.css'
 
 type Row = {
   active: boolean
