@@ -557,7 +557,7 @@ function App() {
 ```tsx
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { DataSheetGrid, CellProps, Column } from 'react-datasheet-grid'
-import Select from 'react-select'
+import Select, { GroupBase, SelectInstance } from 'react-select'
 
 type Choice = {
   label: string
@@ -578,7 +578,7 @@ const SelectComponent = React.memo(
     stopEditing,
     columnData,
   }: CellProps<string | null, SelectOptions>) => {
-    const ref = useRef<Select>(null)
+    const ref = useRef<SelectInstance<Choice, false, GroupBase<Choice>>>(null)
 
     useLayoutEffect(() => {
       if (focus) {
@@ -624,10 +624,12 @@ const SelectComponent = React.memo(
         }
         menuPortalTarget={document.body}
         menuIsOpen={focus}
-        onChange={({ value }) => {
-          setRowData(value)
-          setTimeout(stopEditing, 0)
-        }}
+        onChange={(choice) => {
+          if (choice === null) return;
+
+          setRowData(choice.value);
+          setTimeout(stopEditing, 0);
+          }}
         onMenuClose={() => stopEditing({ nextRow: false })}
         options={columnData.choices}
       />
@@ -645,7 +647,7 @@ const selectColumn = (
   disabled: options.disabled,
   deleteValue: () => null,
   copyValue: ({ rowData }) =>
-    options.choices.find((choice) => choice.value === rowData)?.label,
+    options.choices.find((choice) => choice.value === rowData)?.label ?? null,
   pasteValue: ({ value }) =>
     options.choices.find((choice) => choice.label === value)?.value ?? null,
 })
