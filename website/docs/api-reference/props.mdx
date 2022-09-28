@@ -189,6 +189,11 @@ CSS class of the outer `<div />`.
 
 Style of the outer `<div />`.
 
+### rowClassName
+> Type: `string | ((opt: { rowData: T; rowIndex: number }) => string | undefined)`
+
+CSS class of a row, or a function that returns a CSS class for a given row.
+
 ## Row behavior
 ### rowKey
 > Type: `string | (({ rowData: T; rowIndex: number }) => string)`<br />
