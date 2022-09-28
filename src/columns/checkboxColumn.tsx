@@ -19,7 +19,7 @@ const FALSY = [
 ]
 
 const CheckboxComponent = React.memo<CellProps<boolean, any>>(
-  ({ focus, rowData, setRowData, active, stopEditing }) => {
+  ({ focus, rowData, setRowData, active, stopEditing, disabled }) => {
     const ref = useRef<HTMLInputElement>(null)
 
     // When cell becomes focus we immediately toggle the checkbox and blur the cell by calling `stopEditing`
@@ -40,6 +40,7 @@ const CheckboxComponent = React.memo<CellProps<boolean, any>>(
         tabIndex={-1}
         type="checkbox"
         ref={ref}
+        disabled={disabled}
         checked={Boolean(rowData)}
         // When cell is not active, we allow the user to toggle the checkbox by clicking on it
         // When cell becomes active, we disable this feature and rely on focus instead (see `useLayoutEffect` above)
