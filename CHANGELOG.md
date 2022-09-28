@@ -1,5 +1,13 @@
 # Change Log
 
+## 4.5.0
+> Date: 2022-09-28
+### Added
+- `headerRowHeight` now supports 0 as a value and completely hides the header row
+- `checkboxColumn` now disables the checkbox when the cell itself is disabled
+- `addRowsComponent` now supports `false` as a value to hide the component
+- `cellClassName` now receives `columnId`
+
 ## 4.4.2
 > Date: 2022-07-31
 ### Changed
