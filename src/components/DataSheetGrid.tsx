@@ -854,7 +854,7 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          const rightClick = event.button === 2
+          const rightClick = event.button === 2 || (event.button === 0 && event.ctrlKey)
           const clickInside =
             innerRef.current?.contains(event.target as Node) || false
 
