@@ -1,80 +1,126 @@
 import { Column } from '../types'
-import { useEffect, useMemo, useState } from 'react'
-import { useDeepEqualState } from './useDeepEqualState'
+import { useMemo } from 'react'
+
+export const getColumnWidths = (
+  containerWidth: number,
+  columns: Pick<
+    Column<any, any, any>,
+    'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
+  >[]
+) => {
+  const items = columns.map(({ basis, minWidth, maxWidth }) => ({
+    basis,
+    minWidth,
+    maxWidth,
+    size: basis,
+    violation: 0,
+    frozen: false,
+    factor: 0,
+  }))
+
+  let availableWidth = items.reduce(
+    (acc, cur) => acc - cur.size,
+    containerWidth
+  )
+
+  if (availableWidth > 0) {
+    columns.forEach(({ grow }, i) => {
+      items[i].factor = grow
+    })
+  } else if (availableWidth < 0) {
+    columns.forEach(({ shrink }, i) => {
+      items[i].factor = shrink
+    })
+  }
+
+  for (const item of items) {
+    if (item.factor === 0) {
+      item.frozen = true
+    }
+  }
+
+  while (items.some(({ frozen }) => !frozen)) {
+    const sumFactors = items.reduce(
+      (acc, cur) => acc + (cur.frozen ? 0 : cur.factor),
+      0
+    )
+
+    let totalViolation = 0
+
+    for (const item of items) {
+      if (!item.frozen) {
+        item.size += (availableWidth * item.factor) / sumFactors
+
+        if (item.size < item.minWidth) {
+          item.violation = item.minWidth - item.size
+        } else if (item.maxWidth !== undefined && item.size > item.maxWidth) {
+          item.violation = item.maxWidth - item.size
+        } else {
+          item.violation = 0
+        }
+
+        item.size += item.violation
+        totalViolation += item.violation
+      }
+    }
+
+    if (totalViolation > 0) {
+      for (const item of items) {
+        if (item.violation > 0) {
+          item.frozen = true
+        }
+      }
+    } else if (totalViolation < 0) {
+      for (const item of items) {
+        if (item.violation < 0) {
+          item.frozen = true
+        }
+      }
+    } else {
+      break
+    }
+
+    availableWidth = items.reduce((acc, cur) => acc - cur.size, containerWidth)
+  }
+
+  return items.map(({ size }) => size)
+}
 
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
   width?: number
 ) => {
-  const [columnWidths, setColumnWidths] = useDeepEqualState<
-    number[] | undefined
-  >(undefined)
-  const [prevWidth, setPrevWidth] = useState(width)
-
-  const { totalWidth, columnRights } = useMemo(() => {
-    if (!columnWidths) {
-      return { totalWidth: undefined, columnRights: undefined }
-    }
-
-    let total = 0
-
-    const columnRights = columnWidths.map((w, i) => {
-      total += w
-      return i === columnWidths.length - 1 ? Infinity : total
-    })
-
-    return {
-      columnRights,
-      totalWidth: total,
-    }
-  }, [columnWidths])
-
   const columnsHash = columns
-    .map(({ width, minWidth, maxWidth }) =>
-      [width, minWidth, maxWidth].join(',')
+    .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
+      [basis, minWidth, maxWidth, grow, shrink].join(',')
     )
     .join('|')
 
-  useEffect(() => {
+  return useMemo(() => {
     if (width === undefined) {
-      return
+      return {
+        fullWidth: false,
+        columnWidths: undefined,
+        columnRights: undefined,
+        totalWidth: undefined,
+      }
     }
 
-    const el = document.createElement('div')
+    const columnWidths = getColumnWidths(width, columns)
 
-    el.style.display = 'flex'
-    el.style.position = 'fixed'
-    el.style.width = `${width}px`
-    el.style.left = '-999px'
-    el.style.top = '-1px'
+    let totalWidth = 0
 
-    const children = columns.map((column) => {
-      const child = document.createElement('div')
-
-      child.style.display = 'block'
-      child.style.flex = String(column.width)
-      child.style.minWidth = `${column.minWidth}px`
-      child.style.maxWidth = `${column.maxWidth}px`
-
-      return child
+    const columnRights = columnWidths.map((w, i) => {
+      totalWidth += w
+      return i === columnWidths.length - 1 ? Infinity : totalWidth
     })
 
-    children.forEach((child) => el.appendChild(child))
-    document.body.insertBefore(el, null)
-
-    setColumnWidths(
-      children.map((child) => child.getBoundingClientRect().width)
-    )
-    setPrevWidth(width)
-
-    el.remove()
+    return {
+      fullWidth: Math.abs(width - totalWidth) < 0.1,
+      columnWidths,
+      columnRights,
+      totalWidth,
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, columnsHash])
-
-  return {
-    fullWidth: Math.abs((prevWidth ?? 0) - (totalWidth ?? 0)) < 0.1,
-    columnWidths,
-    columnRights,
-    totalWidth,
-  }
 }

@@ -1,7 +1,5 @@
 import React from 'react'
 
-export type ColumnWidth = string | number
-
 export type Cell = {
   col: number
   row: number
@@ -31,7 +29,11 @@ export type Column<T, C, PasteValue> = {
   id?: string
   headerClassName?: string
   title?: React.ReactNode
-  width: ColumnWidth
+  /** @deprecated Use `basis`, `grow`, and `shrink` instead */
+  width?: string | number
+  basis: number
+  grow: number
+  shrink: number
   minWidth: number
   maxWidth?: number
   renderWhenScrolling: boolean
@@ -41,7 +43,11 @@ export type Column<T, C, PasteValue> = {
   disabled: boolean | ((opt: { rowData: T; rowIndex: number }) => boolean)
   cellClassName?:
     | string
-    | ((opt: { rowData: T; rowIndex: number, columnId?: string }) => string | undefined)
+    | ((opt: {
+        rowData: T
+        rowIndex: number
+        columnId?: string
+      }) => string | undefined)
   keepFocus: boolean
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
@@ -121,7 +127,14 @@ export type RowProps<T> = {
 export type SimpleColumn<T, C> = Partial<
   Pick<
     Column<T, C, string>,
-    'title' | 'maxWidth' | 'minWidth' | 'width' | 'component' | 'columnData'
+    | 'title'
+    | 'maxWidth'
+    | 'minWidth'
+    | 'basis'
+    | 'grow'
+    | 'shrink'
+    | 'component'
+    | 'columnData'
   >
 >
 

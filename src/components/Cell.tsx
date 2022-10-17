@@ -30,7 +30,9 @@ export const Cell: FC<{
         className
       )}
       style={{
-        flex: String(column.width),
+        flexBasis: column.basis,
+        flexGrow: column.grow,
+        flexShrink: column.shrink,
         minWidth: column.minWidth,
         maxWidth: column.maxWidth,
       }}
