@@ -19,6 +19,7 @@ Feature rich:
 - Keyboard navigation and shortcuts fully-supported
 - Supports right-clicking and custom context menu
 - Supports dragging corner to expand selection
+- Highlights cells in error
 - Easy to extend and implement custom widgets
 - Blazing fast, optimized for speed, minimal renders count
 - Smooth animations
@@ -71,6 +72,54 @@ const Example = () => {
       value={data}
       onChange={setData}
       columns={columns}
+    />
+  )
+}
+```
+### Manage cell highlighting
+
+```tsx
+import {
+  DataSheetGrid,
+  checkboxColumn,
+  textColumn,
+  keyColumn,
+} from 'react-datasheet-grid'
+
+// Import the style only once in your app!
+import 'react-datasheet-grid/dist/style.css'
+import {Cell} from "./types";
+
+const Example = () => {
+  const [data, setData] = useState([
+    {active: true, firstName: 'Elon', lastName: 'Musk'},
+    {active: false, firstName: 'Jeff', lastName: 'Bezos'},
+  ])
+
+  const columns = [
+    {
+      ...keyColumn('active', checkboxColumn),
+      title: 'Active',
+    },
+    {
+      ...keyColumn('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn('lastName', textColumn),
+      title: 'Last name',
+    },
+  ]
+
+  // Simply create an array of cells that are in error.
+  const errorCells: Cell[] = [{col: 0, row: 0}, {col: 0, row: 1}];
+
+  return (
+    <DataSheetGrid
+      value={data}
+      onChange={setData}
+      columns={columns}
+      errorData={errorCells} // Put your array in errorData prop.
     />
   )
 }

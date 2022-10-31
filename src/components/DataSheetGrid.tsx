@@ -49,6 +49,7 @@ import {
 import { getAllTabbableElements } from '../utils/tab'
 
 const DEFAULT_DATA: any[] = []
+const DEFAULT_ERROR_DATA: Cell[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
 const DEFAULT_CREATE_ROW: DataSheetGridProps<any>['createRow'] = () => ({})
 const DEFAULT_EMPTY_CALLBACK: () => void = () => null
@@ -67,6 +68,7 @@ export const DataSheetGrid = React.memo(
     <T extends any>(
       {
         value: data = DEFAULT_DATA,
+        errorData: error = DEFAULT_ERROR_DATA,
         className,
         style,
         height: maxHeight = 400,
@@ -854,7 +856,8 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          const rightClick = event.button === 2 || (event.button === 0 && event.ctrlKey)
+          const rightClick =
+            event.button === 2 || (event.button === 0 && event.ctrlKey)
           const clickInside =
             innerRef.current?.contains(event.target as Node) || false
 
@@ -1611,6 +1614,7 @@ export const DataSheetGrid = React.memo(
 
       const itemData = useMemoObject<ListItemData<T>>({
         data,
+        errorData: error,
         contentWidth: fullWidth ? undefined : contentWidth,
         columns,
         hasStickyRightColumn,

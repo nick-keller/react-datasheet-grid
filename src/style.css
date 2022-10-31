@@ -15,6 +15,7 @@
   --dsg-expand-rows-indicator-width: 10px;
   --dsg-scroll-shadow-width: 7px;
   --dsg-scroll-shadow-color: rgba(0, 0, 0, 0.2);
+  --dsg-error-background-cell-color: rgba(255, 69, 69, 0.5);
 }
 
 .dsg-container {
@@ -58,6 +59,10 @@
   border-right: none;
   box-shadow: 1px 1px var(--dsg-border-color);
   position: relative;
+}
+
+.dsg-error-cell {
+  background-color: var(--dsg-error-background-cell-color);
 }
 
 .dsg-hidden-cell {

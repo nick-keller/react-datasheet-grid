@@ -1,5 +1,5 @@
 import { areEqual, ListChildComponentProps } from 'react-window'
-import { ListItemData, RowProps } from '../types'
+import { Cell as CellType, ListItemData, RowProps } from '../types'
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 import { Cell } from './Cell'
@@ -12,6 +12,7 @@ const RowComponent = React.memo(
     index,
     style,
     data,
+    errorData,
     isScrolling,
     columns,
     hasStickyRightColumn,
@@ -69,6 +70,9 @@ const RowComponent = React.memo(
             (typeof column.disabled === 'function' &&
               column.disabled({ rowData: data, rowIndex: index }))
 
+          const isCellInError = errorData?.find(
+            (cell: CellType) => cell.col === i - 1 && cell.row === index
+          )
           return (
             <Cell
               key={i}
@@ -80,9 +84,14 @@ const RowComponent = React.memo(
               className={cx(
                 !column.renderWhenScrolling && renderLight && 'dsg-cell-light',
                 typeof column.cellClassName === 'function'
-                  ? column.cellClassName({ rowData: data, rowIndex: index, columnId: column.id })
+                  ? column.cellClassName({
+                      rowData: data,
+                      rowIndex: index,
+                      columnId: column.id,
+                    })
                   : column.cellClassName
               )}
+              error={!!isCellInError}
             >
               {(column.renderWhenScrolling || !renderLight) && (
                 <Component
@@ -137,6 +146,7 @@ export const Row = <T extends any>({
     <RowComponent
       index={index - 1}
       data={data.data[index - 1]}
+      errorData={data.errorData}
       columns={data.columns}
       style={{
         ...style,

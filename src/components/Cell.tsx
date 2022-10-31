@@ -10,6 +10,7 @@ export const Cell: FC<{
   className: string
   active?: boolean
   children?: any
+  error?: boolean
 }> = ({
   children,
   gutter,
@@ -18,6 +19,7 @@ export const Cell: FC<{
   active,
   disabled,
   className,
+  error,
 }) => {
   return (
     <div
@@ -27,6 +29,7 @@ export const Cell: FC<{
         disabled && 'dsg-cell-disabled',
         gutter && active && 'dsg-cell-gutter-active',
         stickyRight && 'dsg-cell-sticky-right',
+        error && 'dsg-error-cell',
         className
       )}
       style={{

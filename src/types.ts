@@ -41,7 +41,11 @@ export type Column<T, C, PasteValue> = {
   disabled: boolean | ((opt: { rowData: T; rowIndex: number }) => boolean)
   cellClassName?:
     | string
-    | ((opt: { rowData: T; rowIndex: number, columnId?: string }) => string | undefined)
+    | ((opt: {
+        rowData: T
+        rowIndex: number
+        columnId?: string
+      }) => string | undefined)
   keepFocus: boolean
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
@@ -52,6 +56,7 @@ export type Column<T, C, PasteValue> = {
 
 export type ListItemData<T> = {
   data: T[]
+  errorData: Cell[]
   contentWidth?: number
   columns: Column<T, any, string>[]
   hasStickyRightColumn: boolean
@@ -100,6 +105,7 @@ export type SelectionContextType = {
 export type RowProps<T> = {
   index: number
   data: T
+  errorData?: Cell[]
   style: React.CSSProperties
   isScrolling?: boolean
   columns: Column<T, any, string>[]
@@ -157,6 +163,7 @@ export type Operation = {
 
 export type DataSheetGridProps<T> = {
   value?: T[]
+  errorData?: Cell[]
   style?: React.CSSProperties
   className?: string
   rowClassName?:
