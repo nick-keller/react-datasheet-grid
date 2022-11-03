@@ -16,7 +16,7 @@ export type CellProps<T, C> = {
   disabled: boolean
   columnData: C
   setRowData: (rowData: T) => void
-  stopEditing: (opts?: { nextRow: boolean }) => void
+  stopEditing: (opts?: { nextRow?: boolean }) => void
   insertRowBelow: () => void
   duplicateRow: () => void
   deleteRow: () => void
@@ -56,35 +56,6 @@ export type Column<T, C, PasteValue> = {
   isCellEmpty: (opt: { rowData: T; rowIndex: number }) => boolean
 }
 
-export type ListItemData<T> = {
-  data: T[]
-  contentWidth?: number
-  columns: Column<T, any, string>[]
-  hasStickyRightColumn: boolean
-  activeCell: Cell | null
-  selectionMinRow?: number
-  selectionMaxRow?: number
-  editing: boolean
-  setRowData: (rowIndex: number, item: T) => void
-  deleteRows: (rowMin: number, rowMax?: number) => void
-  duplicateRows: (rowMin: number, rowMax?: number) => void
-  insertRowAfter: (row: number, count?: number) => void
-  stopEditing: (opts?: { nextRow?: boolean }) => void
-  getContextMenuItems: () => ContextMenuItem[]
-  rowClassName?:
-    | string
-    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
-}
-
-export type HeaderContextType<T> = {
-  columns: Column<T, any, string>[]
-  contentWidth?: number
-  hasStickyRightColumn: boolean
-  height: number
-  activeColMin?: number
-  activeColMax?: number
-}
-
 export type SelectionContextType = {
   columnRights?: number[]
   columnWidths?: number[]
@@ -101,27 +72,6 @@ export type SelectionContextType = {
   contentWidth?: number
   edges: { top: boolean; right: boolean; bottom: boolean; left: boolean }
   expandSelection: number | null
-}
-
-export type RowProps<T> = {
-  index: number
-  data: T
-  style: React.CSSProperties
-  isScrolling?: boolean
-  columns: Column<T, any, string>[]
-  hasStickyRightColumn: boolean
-  active: boolean
-  activeColIndex: number | null
-  editing: boolean
-  setRowData: (rowIndex: number, item: T) => void
-  deleteRows: (rowMin: number, rowMax?: number) => void
-  duplicateRows: (rowMin: number, rowMax?: number) => void
-  insertRowAfter: (row: number, count?: number) => void
-  stopEditing?: (opts?: { nextRow?: boolean }) => void
-  getContextMenuItems: () => ContextMenuItem[]
-  rowClassName?:
-    | string
-    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
 }
 
 export type SimpleColumn<T, C> = Partial<

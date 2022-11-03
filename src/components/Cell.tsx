@@ -1,23 +1,24 @@
 import React, { FC } from 'react'
 import cx from 'classnames'
-import { Column } from '../types'
 
 export const Cell: FC<{
   gutter: boolean
   stickyRight: boolean
   disabled?: boolean
-  column: Column<any, any, any>
-  className: string
+  className?: string
   active?: boolean
   children?: any
+  width: number
+  left: number
 }> = ({
   children,
   gutter,
   stickyRight,
-  column,
   active,
   disabled,
   className,
+  width,
+  left,
 }) => {
   return (
     <div
@@ -30,11 +31,8 @@ export const Cell: FC<{
         className
       )}
       style={{
-        flexBasis: column.basis,
-        flexGrow: column.grow,
-        flexShrink: column.shrink,
-        minWidth: column.minWidth,
-        maxWidth: column.maxWidth,
+        width,
+        left: stickyRight ? undefined : left,
       }}
     >
       {children}

@@ -12,21 +12,12 @@ import {
   ContextMenuItem,
   DataSheetGridProps,
   DataSheetGridRef,
-  HeaderContextType,
-  ListItemData,
   Operation,
   Selection,
-  SelectionContextType,
 } from '../types'
-import { VariableSizeList } from 'react-window'
-import { Row } from './Row'
 import { useColumnWidths } from '../hooks/useColumnWidths'
 import { useResizeDetector } from 'react-resize-detector'
-import { InnerContainer } from './InnerContainer'
-import { HeaderContext } from '../contexts/HeaderContext'
 import { useColumns } from '../hooks/useColumns'
-import { useMemoObject } from '../hooks/useMemoObject'
-import { SelectionContext } from '../contexts/SelectionContext'
 import { useEdges } from '../hooks/useEdges'
 import { useDeepEqualState } from '../hooks/useDeepEqualState'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
@@ -36,9 +27,9 @@ import { useDebounceState } from '../hooks/useDebounceState'
 import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
 import {
-  parseTextPlainData,
-  parseTextHtmlData,
   encodeHtml,
+  parseTextHtmlData,
+  parseTextPlainData,
 } from '../utils/copyPasting'
 import {
   getCell,
@@ -47,6 +38,8 @@ import {
   getSelectionWithId,
 } from '../utils/typeCheck'
 import { getAllTabbableElements } from '../utils/tab'
+import { Grid } from './Grid'
+import { SelectionRect } from './SelectionRect'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -97,15 +90,10 @@ export const DataSheetGrid = React.memo(
       const disableContextMenu = disableContextMenuRaw || lockRows
       const columns = useColumns(rawColumns, gutterColumn, stickyRightColumn)
       const hasStickyRightColumn = Boolean(stickyRightColumn)
-      const listRef = useRef<VariableSizeList>(null)
-      const innerRef = useRef<HTMLElement>(null)
-      const outerRef = useRef<HTMLElement>(null)
+      const innerRef = useRef<HTMLDivElement>(null)
+      const outerRef = useRef<HTMLDivElement>(null)
       const beforeTabIndexRef = useRef<HTMLDivElement>(null)
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
-
-      useEffect(() => {
-        listRef.current?.resetAfterIndex(0)
-      }, [headerRowHeight, rowHeight])
 
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
@@ -396,12 +384,12 @@ export const DataSheetGrid = React.memo(
               (cell.row + 1) * rowHeight + headerRowHeight - height + 1
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            const scrollTop = listRef.current?.state.scrollOffset as number
+            const scrollTop = outerRef.current!.scrollTop
 
             if (scrollTop > topMax) {
-              listRef.current?.scrollTo(topMax)
+              outerRef.current!.scrollTop = topMax
             } else if (scrollTop < topMin) {
-              listRef.current?.scrollTo(topMin)
+              outerRef.current!.scrollTop = topMin
             }
           }
 
@@ -854,7 +842,8 @@ export const DataSheetGrid = React.memo(
             return
           }
 
-          const rightClick = event.button === 2 || (event.button === 0 && event.ctrlKey)
+          const rightClick =
+            event.button === 2 || (event.button === 0 && event.ctrlKey)
           const clickInside =
             innerRef.current?.contains(event.target as Node) || false
 
@@ -1574,84 +1563,12 @@ export const DataSheetGrid = React.memo(
         selection?.max.row,
       ])
 
-      const headerContext = useMemoObject<HeaderContextType<T>>({
-        hasStickyRightColumn,
-        height: headerRowHeight,
-        contentWidth: fullWidth ? undefined : contentWidth,
-        columns,
-        activeColMin: selection?.min.col ?? activeCell?.col,
-        activeColMax: selection?.max.col ?? activeCell?.col,
-      })
-
-      const selectionContext = useMemoObject<SelectionContextType>({
-        columnRights,
-        columnWidths,
-        activeCell,
-        selection,
-        headerRowHeight,
-        rowHeight,
-        hasStickyRightColumn,
-        dataLength: data.length,
-        viewHeight: height,
-        viewWidth: width,
-        contentWidth: fullWidth ? undefined : contentWidth,
-        edges,
-        editing,
-        isCellDisabled,
-        expandSelection,
-      })
-
       const contextMenuItemsRef = useRef(contextMenuItems)
       contextMenuItemsRef.current = contextMenuItems
 
       const getContextMenuItems = useCallback(
         () => contextMenuItemsRef.current,
         []
-      )
-
-      const itemData = useMemoObject<ListItemData<T>>({
-        data,
-        contentWidth: fullWidth ? undefined : contentWidth,
-        columns,
-        hasStickyRightColumn,
-        activeCell,
-        selectionMinRow: selection?.min.row ?? activeCell?.row,
-        selectionMaxRow: selection?.max.row ?? activeCell?.row,
-        editing,
-        setRowData,
-        deleteRows,
-        duplicateRows,
-        insertRowAfter,
-        stopEditing,
-        getContextMenuItems,
-        rowClassName,
-      })
-
-      const itemSize = useCallback(
-        (index: number) => (index === 0 ? headerRowHeight : rowHeight),
-        [headerRowHeight, rowHeight]
-      )
-
-      const itemKey = useCallback(
-        (index: number, { data }: ListItemData<T>): React.Key => {
-          if (rowKey && index > 0) {
-            const row = data[index - 1]
-            if (typeof rowKey === 'function') {
-              return rowKey({ rowData: row, rowIndex: index })
-            } else if (
-              typeof rowKey === 'string' &&
-              row instanceof Object &&
-              rowKey in row
-            ) {
-              const key = row[rowKey as keyof T]
-              if (typeof key === 'string' || typeof key === 'number') {
-                return key
-              }
-            }
-          }
-          return index
-        },
-        [rowKey]
       )
 
       useImperativeHandle(ref, () => ({
@@ -1754,28 +1671,47 @@ export const DataSheetGrid = React.memo(
               setActiveCell({ col: 0, row: 0 })
             }}
           />
-          <HeaderContext.Provider value={headerContext}>
-            <SelectionContext.Provider value={selectionContext}>
-              <VariableSizeList<ListItemData<T>>
-                className="dsg-container"
-                width="100%"
-                ref={listRef}
-                height={displayHeight}
-                itemCount={data.length + 1}
-                itemSize={itemSize}
-                itemKey={itemKey}
-                estimatedItemSize={rowHeight}
-                itemData={itemData}
-                outerRef={outerRef}
-                innerRef={innerRef}
-                innerElementType={InnerContainer}
-                children={Row}
-                useIsScrolling={columns.some(
-                  ({ renderWhenScrolling }) => !renderWhenScrolling
-                )}
-              />
-            </SelectionContext.Provider>
-          </HeaderContext.Provider>
+          <Grid
+            columns={columns}
+            outerRef={outerRef}
+            columnWidths={columnWidths}
+            hasStickyRightColumn={hasStickyRightColumn}
+            displayHeight={displayHeight}
+            data={data}
+            fullWidth={fullWidth}
+            headerRowHeight={headerRowHeight}
+            activeCell={activeCell}
+            innerRef={innerRef}
+            rowHeight={rowHeight}
+            rowKey={rowKey}
+            selection={selection}
+            rowClassName={rowClassName}
+            editing={editing}
+            getContextMenuItems={getContextMenuItems}
+            setRowData={setRowData}
+            deleteRows={deleteRows}
+            insertRowAfter={insertRowAfter}
+            duplicateRows={duplicateRows}
+            stopEditing={stopEditing}
+          >
+            <SelectionRect
+              columnRights={columnRights}
+              columnWidths={columnWidths}
+              activeCell={activeCell}
+              selection={selection}
+              headerRowHeight={headerRowHeight}
+              rowHeight={rowHeight}
+              hasStickyRightColumn={hasStickyRightColumn}
+              dataLength={data.length}
+              viewHeight={height}
+              viewWidth={width}
+              contentWidth={fullWidth ? undefined : contentWidth}
+              edges={edges}
+              editing={editing}
+              isCellDisabled={isCellDisabled}
+              expandSelection={expandSelection}
+            />
+          </Grid>
           <div
             ref={afterTabIndexRef}
             tabIndex={rawColumns.length && data.length ? 0 : undefined}

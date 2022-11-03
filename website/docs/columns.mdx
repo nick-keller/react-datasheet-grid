@@ -20,8 +20,13 @@ If you are using typescript:
 import { Column } from 'react-datasheet-grid'
 
 const columns: Column[] = [{}, {}]
+
 // You may specify the row type
-type Row = { firstName: string, lastName: string }
+type Row = { 
+  firstName: string
+  lastName: string 
+}
+
 const columns: Column<Row>[] = [{}, {}]
 ```
 
@@ -37,7 +42,7 @@ To get you started, 6 simple columns are built-in:
 
 <BuiltInColumns />
 
-Each built-in column handles rows of a very specific data type:
+Each built-in column handles rows of a very specific data type. For instance the `textColumn` expects all rows to be strings:
 
 ```tsx
 import {
@@ -59,7 +64,10 @@ const ExampleStrings = () => {
     />
   )
 }
+```
+And the `checkboxColumn` expects all rows to be booleans:
 
+```tsx
 const ExampleBooleans = () => {
   const [ data, setData ] = useState([true, false, true])
 
@@ -75,6 +83,8 @@ const ExampleBooleans = () => {
 }
 ```
 
+This means that columns are very simple in their behavior, but in a real world application you might want rows to be complex objects, we will see in the next section how to do so.
+
 ## Overriding column props
 Because columns are simple objects, you can easily override any property by spreading it.
 See the [exhaustive list](./api-reference/columns.mdx) of properties a column has.
@@ -88,6 +98,8 @@ const columns = [
   }
 ]
 ```
+
+This is a great way to factor common behaviors across multiple columns without repeating code.
 
 ## Using objects as rows
 In a real world project we often use objects and would like each column to handle

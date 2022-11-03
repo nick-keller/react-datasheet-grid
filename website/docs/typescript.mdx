@@ -37,7 +37,6 @@ function App() {
     {
       ...keyColumn<Row, 'active'>('active', checkboxColumn),
       title: 'Active',
-      width: 0.5,
     },
     {
       ...keyColumn<Row, 'firstName'>('firstName', textColumn),
@@ -46,7 +45,6 @@ function App() {
     {
       ...keyColumn<Row, 'lastName'>('lastName', textColumn),
       title: 'Last name',
-      width: 2,
     },
   ]
 
@@ -64,9 +62,11 @@ function App() {
 
 Alternatively you can pass the row type to the component:
 ```tsx
-<DataSheetGrid<Row>
-  value={data}
-  onChange={setData}
-  columns={columns}
-/>
+return (
+  <DataSheetGrid<Row>
+    value={data}
+    onChange={setData}
+    columns={columns}
+  />
+)
 ```

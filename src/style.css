@@ -26,6 +26,11 @@
   box-sizing: border-box;
   color: black;
   background: white;
+  position: relative;
+  width: 100%;
+  overflow: auto;
+  will-change: transform;
+  direction: ltr;
 }
 
 .dsg-corner-indicator {
@@ -37,15 +42,17 @@
 }
 
 .dsg-row {
+  position: absolute;
+  top: 0;
+  left: 0;
   background: var(--dsg-cell-background-color);
   box-shadow: 0 1px var(--dsg-border-color) inset;
-  display: flex;
 }
 
 .dsg-row-header {
   position: sticky;
   top: 0;
-  z-index: 4;
+  z-index: 40;
 }
 
 .dsg-cell {
@@ -57,7 +64,9 @@
   border-bottom: none;
   border-right: none;
   box-shadow: 1px 1px var(--dsg-border-color);
-  position: relative;
+  position: absolute;
+  top: 0;
+  height: 100%;
 }
 
 .dsg-hidden-cell {
@@ -67,7 +76,9 @@
 .dsg-cell-sticky-right {
   position: sticky;
   right: 0;
-  z-index: 3;
+  z-index: 30;
+  margin-left: auto;
+  transform: translateY(-100%);
 }
 
 .dsg-cell-disabled {
@@ -99,7 +110,8 @@
   left: 0;
   padding: 0 5px;
   justify-content: center;
-  z-index: 3;
+  z-index: 30;
+  height: 100%;
 }
 
 .dsg-cell-header-active,
@@ -116,6 +128,7 @@
   border-radius: var(--dsg-selection-border-radius);
   transition: all var(--dsg-transition-duration);
   pointer-events: none;
+  z-index: 20;
 }
 
 .dsg-active-cell-focus {
@@ -144,7 +157,7 @@
 
 .dsg-scrollable-view {
   position: sticky;
-  z-index: 1;
+  z-index: 10;
   box-sizing: border-box;
   border: solid 1px var(--dsg-border-color);
   border-bottom: none;
@@ -417,7 +430,7 @@
 .dsg-selection-col-marker,
 .dsg-selection-row-marker-container,
 .dsg-selection-row-marker {
-  z-index: 2;
+  z-index: 20;
   transition: all var(--dsg-transition-duration);
   pointer-events: none;
 }
@@ -544,6 +557,7 @@
   position: absolute;
   transition: all var(--dsg-transition-duration);
   cursor: crosshair;
+  z-index: 25;
 }
 
 .dsg-expand-rows-indicator-disabled {
