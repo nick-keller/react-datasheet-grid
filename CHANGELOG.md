@@ -1,5 +1,14 @@
 # Change Log
 
+## 4.6.0
+> Date: 2022-11-04
+### Changed
+- `width` is now deprecated for columns, you should now use directly `basis`, `grow`, and `shrink`.
+    Width computation is now done internally in JS and does not rely on the browser.
+- Migrated from `react-window` to `react-virtual`. As a result columns are now virtualized as well.
+### Added
+- Support for `Ctrl`+`Left click` to open the context menu
+
 ## 4.5.0
 > Date: 2022-09-28
 ### Added

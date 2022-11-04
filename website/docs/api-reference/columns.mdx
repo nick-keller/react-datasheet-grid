@@ -26,41 +26,46 @@ Element to display in the header row.
 You can specify a unique ID for each column. This allows you to specify the column ID instead of its index when [controlling the grid](../controlling-the-grid).
 
 ## Sizing
-### width
-> Type: `string | number`<br />
+### basis
+> Type: `number`<br />
+> Default: `0`
+
+Same as the [flex-basis property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis). 
+This is the initial width of the column in pixels before growing or shrinking to fit the grid width.
+
+### grow
+> Type: `number`<br />
 > Default: `1`
 
-Width of the column, supports the same values as the CSS [flex property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex).
+Same as the [flex-grow property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow). 
+This is a unit-less factor that dictates how much this column should grow to occupy the entire available width of the grid.
 
+### shrink
+> Type: `number`<br />
+> Default: `1`
+
+Same as the [flex-shrink property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink). 
+This is a unit-less factor that dictates how much this column should shrink to fit to the available width of the grid.
+
+::: info
 #### Fixed sized columns
+To make a fixed width column of 100 pixels that does not shrink or grow:
 ```tsx
-const column = { width: '0 0 100px' }
+const column = { basis: 100, grow: 0, shrink: 0 }
 ```
+:::
 
-`'0 0 <width>px'` for fixed width of `<width>` pixels. This syntaxe is the same than the shorthand property of flex and is equivalent to:
-
-```css
-flex-grow: 0;
-flex-shrink: 0;
-flex-basis: <width>px;
-```
-
+::: info
 #### Relative sized columns
+For responsive columns:
 ```tsx
 const columns = [
-  { width: 1 },
-  { width: 1 },
-  { width: 2 }, // 👈 This column will grow and shrink like the others but will be twice as large
+  {}, // 👈 This column will grow and shrink normally
+  { shrink: 3 }, // 👈 This column will shrink 3 times faster than the others
+  { grow: 2 }, // 👈 This column will grow 2 times faster than the others
 ]
 ```
-
-`<number>` for responsive columns. This is equivalent to:
-
-```css
-flex-grow: <number>;
-flex-shrink: <number>;
-flex-basis: 0;
-```
+:::
 
 ### minWidth
 > Type: `number`<br />

@@ -4,6 +4,7 @@ const config: Config.InitialOptions = {
   verbose: true,
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  setupFiles: ['./tests/setup.ts'],
   testPathIgnorePatterns: ['./dist'],
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
   moduleNameMapper: {
