@@ -90,11 +90,11 @@ function App() => {
 
 Used to customize the gutter column to the left of the grid. Mostly used to customize the width or the component that renders the gutter.
 
-To change the width of the gutter column you can simply specify the `width` key ([More details](columns#width)):
+To change the width of the gutter column you can simply specify the `basis` key ([More details](columns#basis)):
 ```tsx
 function App() => {
   return (
-    <DataSheetGrid gutterColumn={{ width: '0 0 60px' }} />
+    <DataSheetGrid gutterColumn={{ basis: 60 }} />
   )
 }
 ```
