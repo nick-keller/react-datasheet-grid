@@ -36,7 +36,6 @@ export type Column<T, C, PasteValue> = {
   shrink: number
   minWidth: number
   maxWidth?: number
-  renderWhenScrolling: boolean
   component: CellComponent<T, C>
   columnData?: C
   disableKeys: boolean
@@ -133,14 +132,18 @@ export type DataSheetGridProps<T> = {
   height?: number
   rowHeight?: number
   headerRowHeight?: number
-  addRowsComponent?: ((props: AddRowsComponentProps) => JSX.Element) | false
+  addRowsComponent?:
+    | ((props: AddRowsComponentProps) => React.ReactElement | null)
+    | false
   createRow?: () => T
   duplicateRow?: (opts: { rowData: T; rowIndex: number }) => T
   autoAddRow?: boolean
   lockRows?: boolean
   disableContextMenu?: boolean
   disableExpandSelection?: boolean
-  contextMenuComponent?: (props: ContextMenuComponentProps) => JSX.Element
+  contextMenuComponent?: (
+    props: ContextMenuComponentProps
+  ) => React.ReactElement | null
   onFocus?: (opts: { cell: CellWithId }) => void
   onBlur?: (opts: { cell: CellWithId }) => void
   onActiveCellChange?: (opts: { cell: CellWithId | null }) => void

@@ -2,6 +2,7 @@
 sidebar_position: 4
 ---
 import BuiltInColumns from '../src/demos/builtInColumns'
+import {ColumnsSizing} from '../src/demos/sizing'
 
 # Columns
 
@@ -19,9 +20,6 @@ If you are using typescript:
 ```tsx
 import { Column } from 'react-datasheet-grid'
 
-const columns: Column[] = [{}, {}]
-
-// You may specify the row type
 type Row = { 
   firstName: string
   lastName: string 
@@ -48,7 +46,6 @@ Each built-in column handles rows of a very specific data type. For instance the
 import {
   DataSheetGrid,
   textColumn,
-  checkboxColumn,
 } from 'react-datasheet-grid'
 
 const ExampleStrings = () => {
@@ -68,6 +65,11 @@ const ExampleStrings = () => {
 And the `checkboxColumn` expects all rows to be booleans:
 
 ```tsx
+import {
+  DataSheetGrid,
+  checkboxColumn,
+} from 'react-datasheet-grid'
+
 const ExampleBooleans = () => {
   const [ data, setData ] = useState([true, false, true])
 
@@ -83,7 +85,7 @@ const ExampleBooleans = () => {
 }
 ```
 
-This means that columns are very simple in their behavior, but in a real world application you might want rows to be complex objects, we will see in the next section how to do so.
+This means that columns are very simple, we will see in the next sections how to integrate them in more complex scenarios.
 
 ## Overriding column props
 Because columns are simple objects, you can easily override any property by spreading it.
@@ -102,7 +104,7 @@ const columns = [
 This is a great way to factor common behaviors across multiple columns without repeating code.
 
 ## Using objects as rows
-In a real world project we often use objects and would like each column to handle
+In a real world project rows often are objects, and we would like each column to handle
 a specific key of that object. This is where `keyColumn` comes in:
 
 ```tsx
@@ -135,10 +137,10 @@ const Example = () => {
 }
 ```
 
-`keyColumn` wraps all properties of a column and allows you to write simpler columns that only need to handle a
-specific data type. It also has a very positive [performance impact](performance/optimization-guidelines#use-keycolumn).
+`keyColumn` wraps all properties of a column and allows you to write simpler columns that don't need to worry about an entire row object. 
+It also has a very positive [performance impact](performance/optimization-guidelines#use-keycolumn).
 
-Because columns are still regular objects, you can override any props by spreading it:
+Because columns wrapped with `keyColumn` are still regular objects, you can override any props by spreading it:
 
 ```tsx
 const columns = [
@@ -169,7 +171,24 @@ const columns = [
 ]
 ```
 
-Unfortunately, due to the complexity of the type, you have to type the key twice (eg. `'active'` is written twice).
+Unfortunately, due to the complexity of the type, you have to type the key twice: once for the generic type, and once for the parameter (eg. `'active'` is written twice).
+
+## Responsive width
+Columns are responsive by design. DSG uses the [flexbox algorithm](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#properties_applied_to_flex_items) to dynamically compute the width of each column.
+
+By default, all columns have the same width and a min-width of 100:
+<ColumnsSizing columns={[{}, {}, {}]} />
+
+You can use the `grow` property to make a specific column grow faster. Here the middle column is twice as large as other columns:
+<ColumnsSizing columns={[{}, { grow: 2 }, {}]} />
+
+You can pass `grow: 0` to prevent a column from growing:
+<ColumnsSizing columns={[{}, { grow: 0 }, {}]} />
+
+Use `minWidth` to prevent columns from shrinking too much. By default columns already have `minWidth: 100`:
+<ColumnsSizing columns={[{}, { minWidth: 200 }, {}]} />
+
+Read more about each property in the [API reference](./api-reference/columns#sizing).
 
 ## Building custom columns
 Built-in columns are there to get your project started, but often you end up building you own custom columns
@@ -184,6 +203,7 @@ to implement a custom component from scratch and can instead use `createTextColu
 import { createTextColumn } from 'react-datasheet-grid'
 
 const columns = [ createTextColumn({ /* options */ }) ]
+
 // When using Typescript you may specify the data type:
 const columns = [ createTextColumn<number>({ /* options */ }) ]
 ```
@@ -239,7 +259,7 @@ Parse the pasted value
 If you need a more exotic column, you can write your own from scratch. A column consists of a custom component
 that renders the widget and a few props to control its behavior.
 
-See an [example](./examples/implementing-select) of how to implement a select column, or read the
+See a [step-by-step example](./examples/implementing-select) of how to implement a select column, or read the
 [exhaustive list](./api-reference/columns.mdx) of properties a column has.
 
 ```tsx

@@ -22,7 +22,7 @@ Feature rich:
 - Easy to extend and implement custom widgets
 - Blazing fast, optimized for speed, minimal renders count
 - Smooth animations
-- Virtualized, supports hundreds of thousands of rows
+- Virtualized rows and columns, supports hundreds of thousands of rows
 - Extensively customizable, controllable behaviors
 - Built with Typescript
 

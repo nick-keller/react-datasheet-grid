@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.7.0
+> Date: 2022-11-06
+### Added
+- Now export `createAddRowsComponent` and `createContextMenuComponent` for easier i18n
+
 ## 4.6.0
 > Date: 2022-11-04
 ### Changed

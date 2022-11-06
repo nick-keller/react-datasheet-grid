@@ -73,7 +73,7 @@ export default () => {
           minWidth: 150,
         },
       ]}
-      gutterColumn={{ width: '0 0 60px' }}
+      gutterColumn={{ basis: 60, grow: 0, shrink: 0 }}
       lockRows
       height={250}
     />

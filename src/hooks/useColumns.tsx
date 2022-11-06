@@ -131,7 +131,6 @@ export const useColumns = <T extends any>(
         grow: column.grow ?? legacyWidth.grow ?? 1,
         shrink: column.shrink ?? legacyWidth.shrink ?? 1,
         minWidth: column.minWidth ?? 100,
-        renderWhenScrolling: column.renderWhenScrolling ?? true,
         component: column.component ?? defaultComponent,
         disableKeys: column.disableKeys ?? false,
         disabled: column.disabled ?? false,

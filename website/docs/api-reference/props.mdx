@@ -23,7 +23,7 @@ function App() => {
 ```
 
 ### value
-> Type: `Array`
+> Type: `T[]`
 
 Each element of the array is a row, elements could be anything like strings or objects.
 
@@ -216,23 +216,29 @@ A function that should return a new row object. This function is called once per
 or inserts new rows. Most often used to add default values and / or random ids to new rows.
 
 ### duplicateRow
-> Type: `({ rowData, rowIndex }) => any`<br />
+> Type: `({ rowData: T, rowIndex: number }) => any`<br />
 > Default: `({ rowData }) => ({ ...rowData })`
 
 A function that should return a new row object from an existing row. This function is called once per row every time the user duplicates rows. Most often used to override values and / or change uniq ids when duplicating rows.
 
 ## Customizable components
 ### addRowsComponent
+> Type: `FC<AddRowsComponentProps> | false`
+
 Used to replace the content of the "Add row" button below the grid. Most often used for translations,
 custom inputs,
-icons... View [default implementation](https://github.com/nick-keller/react-datasheet-grid/blob/master/src/components/AddRows.tsx)
-to start implementing your own from a solid base.
+icons...
 
 Passing `false` will hide the component.
 
+See more [details and examples](../i18n#add-button).
+
 ### contextMenuComponent
-Used to customize the context menu when right clicking. View [default implementation](https://github.com/nick-keller/react-datasheet-grid/blob/master/src/components/ContextMenu.tsx)
-to start implementing your own from a solid base..
+> Type: `FC<ContextMenuComponentProps>`
+
+Used to customize the context menu when right-clicking. 
+
+See more [details and examples](../i18n#context-menu).
 
 ## Callbacks
 Callbacks receive parameters of type `Cell`. `row` is the index of the row, `col` the index of the column, and `colId`

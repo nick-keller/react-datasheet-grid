@@ -26,6 +26,8 @@ Element to display in the header row.
 You can specify a unique ID for each column. This allows you to specify the column ID instead of its index when [controlling the grid](../controlling-the-grid).
 
 ## Sizing
+Sizing uses the [flexbox algorithm](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox#properties_applied_to_flex_items), checkout some [examples](../columns#responsive-width).
+
 ### basis
 > Type: `number`<br />
 > Default: `0`
@@ -46,26 +48,6 @@ This is a unit-less factor that dictates how much this column should grow to occ
 
 Same as the [flex-shrink property](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink). 
 This is a unit-less factor that dictates how much this column should shrink to fit to the available width of the grid.
-
-:::info
-#### Fixed sized columns
-To make a fixed width column of 100 pixels that does not shrink or grow:
-```tsx
-const column = { basis: 100, grow: 0, shrink: 0 }
-```
-:::
-
-:::info
-#### Relative sized columns
-For responsive columns:
-```tsx
-const columns = [
-  {}, // 👈 This column will grow and shrink normally
-  { shrink: 3 }, // 👈 This column will shrink 3 times faster than the others
-  { grow: 2 }, // 👈 This column will grow 2 times faster than the others
-]
-```
-:::
 
 ### minWidth
 > Type: `number`<br />
@@ -113,9 +95,9 @@ A function that deletes the column value of a row. Used when the user cuts, clea
 
 ## Rendering
 ### component
-> Type: `Component`
+> Type: `CellComponent`
 
-A react component that renders a cell. [See props](cell-components)
+A React component that renders a cell. [See props](cell-components)
 
 ### columnData
 > Type: `any`
@@ -181,13 +163,6 @@ Notice that in this example you cannot delete a row using the `Del` key, this is
 This might be problematic depending on your use-case, to solve this issue you can use [`isCellEmpty`](#iscellempty)
 and always return true to ignore this column.
 :::
-
-### renderWhenScrolling
-> Type: `boolean`<br />
-> Default: `true`
-
-When set to `false`, the column waits for the scroll to stop to render new cells.
-[More details](../performance/optimization-guidelines#slow-components-and-scrolling) about performance.
 
 ### disableKeys
 > Type: `boolean`<br />

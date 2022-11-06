@@ -62,7 +62,6 @@ export const Grid = <T extends any>({
     count: data.length,
     getScrollElement: () => outerRef.current,
     paddingStart: headerRowHeight,
-    scrollPaddingStart: headerRowHeight,
     estimateSize: () => rowHeight,
     getItemKey: (index: number): React.Key => {
       if (rowKey && index > 0) {
@@ -89,11 +88,7 @@ export const Grid = <T extends any>({
   const colVirtualizer = useVirtualizer({
     count: columns.length,
     getScrollElement: () => outerRef.current,
-    scrollPaddingStart: columnWidths?.[0],
-    scrollPaddingEnd: hasStickyRightColumn
-      ? columnWidths?.[columnWidths.length - 1]
-      : 0,
-    estimateSize: (index) => columnWidths?.[index] ?? 0,
+    estimateSize: (index) => columnWidths?.[index] ?? 100,
     horizontal: true,
     getItemKey: (index: number): React.Key => columns[index].id ?? index,
     enableSmoothScroll: false,
@@ -117,10 +112,10 @@ export const Grid = <T extends any>({
     colVirtualizer.measure()
   }, [colVirtualizer, columnWidths])
 
-  const setGivenRowData = useMemoizedIndexCallback(setRowData)
-  const deleteGivenRow = useMemoizedIndexCallback(deleteRows)
-  const duplicateGivenRow = useMemoizedIndexCallback(duplicateRows)
-  const insertAfterGivenRow = useMemoizedIndexCallback(insertRowAfter)
+  const setGivenRowData = useMemoizedIndexCallback(setRowData, 1)
+  const deleteGivenRow = useMemoizedIndexCallback(deleteRows, 0)
+  const duplicateGivenRow = useMemoizedIndexCallback(duplicateRows, 0)
+  const insertAfterGivenRow = useMemoizedIndexCallback(insertRowAfter, 0)
 
   const selectionColMin = selection?.min.col ?? activeCell?.col
   const selectionColMax = selection?.max.col ?? activeCell?.col

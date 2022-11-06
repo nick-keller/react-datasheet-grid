@@ -1,7 +1,6 @@
 ---
 sidebar_position: 2
 ---
-import Demo from '../../src/demos/renderWhenScrolling'
 
 # Optimization guidelines
 
@@ -81,18 +80,3 @@ const columns = [
 ```
 `keyColumn` has the advantage of reducing the number of renders your component has to perform while also
 making it much easier to write.
-
-## Slow components and scrolling
-React Datasheet Grid uses virtualized rows, only rendering rows that are in view. When the user scrolls through a
-long datasheet, hundreds of rows might be rendered in a few seconds. If a component is slow to render,
-it might have a big impact on performance.
-
-For such slow components it is recommended to set `renderWhenScrolling` to `false` to only start rendering the
-column when scroll stops:
-```tsx
-const columns = [
-  { title: 'A', component: SlowComponent, renderWhenScrolling: false },
-  { title: 'B', component: NormalComponent },
-]
-```
-<Demo />

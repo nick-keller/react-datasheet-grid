@@ -6,7 +6,8 @@ import { Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9, Multiple
 # Implementing a select column
 
 The goal here is to implement a simple select that can serve as a base for a prod ready
-component of your application. It will be easily extensible, and re-usable anywhere in your app:
+component of your application. It will be easily extensible, and re-usable anywhere in your app.
+The end result will look like this:
 
 ```tsx
 function App() {
@@ -23,7 +24,6 @@ function App() {
         {
           // We use our custom select column 🎉
           ...selectColumn({
-            disabled: false,
             choices: [
               { value: 'chocolate', label: 'Chocolate' },
               { value: 'strawberry', label: 'Strawberry' },

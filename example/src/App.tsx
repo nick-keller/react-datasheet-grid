@@ -35,6 +35,90 @@ function App() {
       title: 'Last name',
       grow: 2,
     },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'active'>('active', checkboxColumn),
+      title: 'Active',
+      grow: 0.5,
+    },
+    {
+      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
+      title: 'First name',
+    },
+    {
+      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
+      title: 'Last name',
+      grow: 2,
+    },
   ]
 
   return (

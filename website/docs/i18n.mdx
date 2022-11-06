@@ -1,0 +1,117 @@
+---
+sidebar_position: 7
+---
+
+# Internationalization
+
+Their are three part of DSG that involve i18n, row numbers, the "Add" button, and the context menu. Each one is
+customizable to you needs.
+
+## Row numbers
+
+Simply override the component of the [gutter column](../api-reference/props#guttercolumn).
+You can then display anything based on the [rowIndex](../api-reference/cell-components#rowindex) prop.
+
+```tsx
+import { CellProps } from 'react-datasheet-grid'
+
+function CustomRowNumberComponent({ rowIndex }: CellProps) {
+  return <>{new Intl.NumberFormat('fr-FR').format(rowIndex + 1)}</>
+}
+
+function App() {
+  return (
+    <DataSheetGrid
+      gutterColumn={{
+        component: <CustomRowNumberComponent/>
+      }}
+    />
+  )
+}
+```
+
+## Add button
+You can simply use the helper function `createAddRowsComponent` to only change the translation keys and pass it to the [addRowsComponent](./api-reference/props#addrowscomponent) prop:
+
+```tsx
+import { createAddRowsComponent } from 'react-datasheet-grid'
+
+const AddRows = createAddRowsComponent({
+  button: 'Ajouter', // Add
+  unit: 'lignes', // rows
+})
+
+function App() {
+  return (
+    <DataSheetGrid
+      addRowsComponent={AddRows}
+    />
+  )
+}
+```
+
+You may also write the entire component yourself to use your own buttons and inputs:
+
+```tsx
+import { AddRowsComponentProps } from 'react-datasheet-grid'
+
+function AddRows({ addRows }: AddRowsComponentProps) {
+  // You can call addRows() or addRows(n) where n is the number of rows
+  return /*...*/
+}
+
+function App() {
+  return (
+    <DataSheetGrid
+      addRowsComponent={AddRows}
+    />
+  )
+}
+```
+
+You can look at the [default implementation](https://github.com/nick-keller/react-datasheet-grid/blob/master/src/components/AddRows.tsx)
+to see how the built-in component works.
+
+## Context menu
+You can simply use the helper function `createContextMenuComponent` to only change the translation keys and pass it to the [contextMenuComponent](./http://localhost:3000/docs/api-reference/props#contextmenucomponent) prop:
+
+```tsx
+import { createContextMenuComponent, ContextMenuItem } from 'react-datasheet-grid'
+
+const ContextMenu = createContextMenuComponent((item: ContextMenuItem) => {
+  if (item.type === 'DELETE_ROW') {
+    return <>Delete row</>
+  }
+  
+  /*...*/
+})
+
+function App() {
+  return (
+    <DataSheetGrid
+      contextMenuComponent={ContextMenu}
+    />
+  )
+}
+```
+
+You may also write the entire component yourself to use your own components:
+
+```tsx
+import { ContextMenuComponentProps } from 'react-datasheet-grid'
+
+function ContextMenu({ clientX, clientY, items, close }: ContextMenuComponentProps) {
+  return /*...*/
+}
+
+function App() {
+  return (
+    <DataSheetGrid
+      contextMenuComponent={ContextMenu}
+    />
+  )
+}
+```
+
+You can look at the [default implementation](https://github.com/nick-keller/react-datasheet-grid/blob/master/src/components/AddRows.tsx)
+to see how the built-in component works.
