@@ -26,6 +26,7 @@ export const Grid = <T extends any>({
   selection,
   activeCell,
   rowClassName,
+  cellClassName,
   children,
   editing,
   getContextMenuItems,
@@ -46,6 +47,7 @@ export const Grid = <T extends any>({
   rowHeight: number
   rowKey: DataSheetGridProps<T>['rowKey']
   rowClassName: DataSheetGridProps<T>['rowClassName']
+  cellClassName: DataSheetGridProps<T>['cellClassName']
   fullWidth: boolean
   selection: Selection | null
   activeCell: Cell | null
@@ -194,7 +196,7 @@ export const Grid = <T extends any>({
               }}
             >
               {colVirtualizer.getVirtualItems().map((col) => {
-                const cellClassName = columns[col.index].cellClassName
+                const colCellClassName = columns[col.index].cellClassName
                 const disabled = columns[col.index].disabled
                 const Component = columns[col.index].component
                 const cellDisabled =
@@ -217,7 +219,14 @@ export const Grid = <T extends any>({
                     }
                     active={col.index === 0 && rowActive}
                     disabled={cellDisabled}
-                    className={
+                    className={cx(
+                      typeof colCellClassName === 'function'
+                        ? colCellClassName({
+                            rowData: data[row.index],
+                            rowIndex: row.index,
+                            columnId: columns[col.index].id,
+                          })
+                        : colCellClassName,
                       typeof cellClassName === 'function'
                         ? cellClassName({
                             rowData: data[row.index],
@@ -225,7 +234,7 @@ export const Grid = <T extends any>({
                             columnId: columns[col.index].id,
                           })
                         : cellClassName
-                    }
+                    )}
                     width={col.size}
                     left={col.start}
                   >

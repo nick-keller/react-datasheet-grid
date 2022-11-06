@@ -3,7 +3,8 @@
 ## 4.7.0
 > Date: 2022-11-06
 ### Added
-- Now export `createAddRowsComponent` and `createContextMenuComponent` for easier i18n
+- Now export `createAddRowsComponent`, `renderContextMenuItem`, and `createContextMenuComponent` for easier i18n
+- Added `cellClassName` prop to DSG itself
 
 ## 4.6.0
 > Date: 2022-11-04

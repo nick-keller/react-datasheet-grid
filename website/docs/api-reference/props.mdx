@@ -194,6 +194,12 @@ Style of the outer `<div />`.
 
 CSS class of a row, or a function that returns a CSS class for a given row.
 
+### cellClassName
+> Type: `string | ((opt: { rowData: unknown; rowIndex: number, columnId?: string }) => string | undefined)`
+
+CSS class of a cell, or a function that returns a CSS class for a given cell.
+This is exactly the same as specifying it [on the column](./columns#cellclassname), but `rowData` is of type `unknown` because we cannot know how the column wraps the value.
+
 ## Row behavior
 ### rowKey
 > Type: `string | (({ rowData: T; rowIndex: number }) => string)`<br />

@@ -33,4 +33,7 @@ export { percentColumn } from './columns/percentColumn'
 export { dateColumn } from './columns/dateColumn'
 export { keyColumn } from './columns/keyColumn'
 export { createAddRowsComponent } from './components/AddRows'
-export { createContextMenuComponent } from './components/ContextMenu'
+export {
+  createContextMenuComponent,
+  defaultRenderItem as renderContextMenuItem,
+} from './components/ContextMenu'

@@ -124,6 +124,13 @@ export type DataSheetGridProps<T> = {
   rowClassName?:
     | string
     | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
+  cellClassName?:
+    | string
+    | ((opt: {
+        rowData: unknown
+        rowIndex: number
+        columnId?: string
+      }) => string | undefined)
   onChange?: (value: T[], operations: Operation[]) => void
   columns?: Partial<Column<T, any, any>>[]
   gutterColumn?: SimpleColumn<T, any> | false

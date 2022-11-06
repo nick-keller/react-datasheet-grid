@@ -3,7 +3,7 @@ import { FC, useCallback, useRef } from 'react'
 import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { ContextMenuItem, ContextMenuComponentProps } from '../types'
 
-const defaultRenderItem = (item: ContextMenuItem) => {
+export const defaultRenderItem = (item: ContextMenuItem) => {
   if (item.type === 'DELETE_ROW') {
     return <>Delete row</>
   }
