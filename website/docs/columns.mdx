@@ -202,10 +202,44 @@ to implement a custom component from scratch and can instead use `createTextColu
 ```tsx
 import { createTextColumn } from 'react-datasheet-grid'
 
-const columns = [ createTextColumn({ /* options */ }) ]
+const column = createTextColumn({ /* options */ })
 
 // When using Typescript you may specify the data type:
-const columns = [ createTextColumn<number>({ /* options */ }) ]
+const column = createTextColumn<number>({ /* options */ })
+```
+
+The `createTextColumn` function returns a column object that can be used normally:
+
+```tsx
+const columns = [
+  {
+    ...keyColumn(
+      'name',
+      createTextColumn({
+        placeholder: 'Name of the person',
+        alignRight: true,
+        //...
+      }) 
+    ),
+    title: 'Name'
+  },
+]
+```
+
+You can also create a custom re-usable column instead of inline it:
+```tsx
+// columns/email.tsx
+export const emailColumn = createTextColumn({ /* Custom parser & formatter for emails */ })
+
+// index.tsx
+import { emailColumn } from './columns/email'
+
+const columns = [
+  {
+    ...keyColumn('email', emailColumn),
+    title: 'Email'
+  },
+]
 ```
 
 #### placeholder
