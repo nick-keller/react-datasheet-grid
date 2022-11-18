@@ -8,6 +8,7 @@ import {
   intColumn,
   percentColumn,
   textColumn,
+  isoDateColumn,
 } from 'react-datasheet-grid'
 import faker from 'faker'
 
@@ -17,6 +18,7 @@ export default () => {
       textColumn: faker.name.firstName(),
       checkboxColumn: faker.datatype.boolean(),
       dateColumn: new Date(faker.date.past()),
+      isoDateColumn: new Date(faker.date.past()).toISOString().slice(0, 10),
       intColumn: faker.datatype.number(1100),
       floatColumn: faker.datatype.number(1000) / 100,
       percentColumn: faker.datatype.number(100) / 100,
@@ -52,6 +54,10 @@ export default () => {
           {
             ...keyColumn('dateColumn', dateColumn),
             title: 'dateColumn',
+          },
+          {
+            ...keyColumn('isoDateColumn', isoDateColumn),
+            title: 'isoDateColumn',
           },
           {
             ...keyColumn('percentColumn', percentColumn),

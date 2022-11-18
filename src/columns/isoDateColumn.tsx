@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react'
 import { CellComponent, CellProps, Column } from '../types'
 import cx from 'classnames'
 
-const DateComponent = React.memo<CellProps<Date | null, any>>(
+const IsoDateComponent = React.memo<CellProps<string | null, any>>(
   ({ focus, active, rowData, setRowData }) => {
     const ref = useRef<HTMLInputElement>(null)
 
@@ -29,29 +29,28 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
           opacity: rowData || active ? undefined : 0,
         }}
         // Because rowData is a Date object and we need a string, we use toISOString...
-        value={rowData?.toISOString().substr(0, 10) ?? ''}
+        value={rowData ?? ''}
         // ...and the input returns a string that should be converted into a Date object
         onChange={(e) => {
           const date = new Date(e.target.value)
-          setRowData(isNaN(date.getTime()) ? null : date)
+          setRowData(
+            isNaN(date.getTime()) ? null : date.toISOString().substr(0, 10)
+          )
         }}
       />
     )
   }
 )
 
-DateComponent.displayName = 'DateComponent'
+IsoDateComponent.displayName = 'IsoDateComponent'
 
-export const dateColumn: Partial<Column<Date | null, any, string>> = {
-  component: DateComponent as CellComponent<Date | null, any>,
+export const isoDateColumn: Partial<Column<string | null, any, string>> = {
+  component: IsoDateComponent as CellComponent<string | null, any>,
   deleteValue: () => null,
-  // We convert the date to a string for copying using toISOString
-  copyValue: ({ rowData }) =>
-    rowData ? rowData.toISOString().substr(0, 10) : null,
   // Because the Date constructor works using iso format, we can use it to parse ISO string back to a Date object
   pasteValue: ({ value }) => {
     const date = new Date(value)
-    return isNaN(date.getTime()) ? null : date
+    return isNaN(date.getTime()) ? null : date.toISOString().substr(0, 10)
   },
   minWidth: 170,
   isCellEmpty: ({ rowData }) => !rowData,

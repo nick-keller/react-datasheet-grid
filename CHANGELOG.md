@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.8.0
+> Date: 2022-11-18
+### Added
+- Added `isoDateColumn` to work with strings instead of Date objects
+### Changed
+- `isoDateColumn` and `dateColumn` now hide the calendar icon when not active for a better visual experience
+
 ## 4.7.0
 > Date: 2022-11-06
 ### Added
