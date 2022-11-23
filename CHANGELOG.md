@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.8.1
+> Date: 2022-11-23
+### Fixed
+- Duplicate characters issue when typing in Korean or other composable languages
+
 ## 4.8.0
 > Date: 2022-11-18
 ### Added
