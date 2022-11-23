@@ -1237,6 +1237,10 @@ export const DataSheetGrid = React.memo(
             return
           }
 
+          if (event.isComposing) {
+            return
+          }
+
           // Tab from last cell of a row
           if (
             event.key === 'Tab' &&
