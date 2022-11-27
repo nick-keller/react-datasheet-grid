@@ -22,6 +22,7 @@ export const StaticDataSheetGrid = React.forwardRef<
       onActiveCellChange,
       onSelectionChange,
       rowClassName,
+      rowHeight,
       ...rest
     }: DataSheetGridProps<T>,
     ref: React.ForwardedRef<DataSheetGridRef>
@@ -40,9 +41,19 @@ export const StaticDataSheetGrid = React.forwardRef<
       onActiveCellChange,
       onSelectionChange,
       rowClassName,
+      rowHeight,
     })
 
-    return <DataSheetGrid {...staticProps} {...rest} ref={ref} />
+    return (
+      <DataSheetGrid
+        {...staticProps}
+        {...rest}
+        rowHeight={
+          typeof rowHeight === 'number' ? rowHeight : staticProps.rowHeight
+        }
+        ref={ref}
+      />
+    )
   }
 ) as <T extends any>(
   props: DataSheetGridProps<T> & { ref?: React.ForwardedRef<DataSheetGridRef> }
