@@ -12,6 +12,13 @@ module.exports = {
   organizationName: 'nick-keller', // Usually your GitHub org/user name.
   projectName: 'react-datasheet-grid', // Usually your repo name.
   themeConfig: {
+    algolia: {
+      appId: 'OVO3D4IJS9',
+      apiKey: '0f37b9b0bd96aa1069cba400c005410b',
+      indexName: 'react-datasheet-grid',
+      contextualSearch: false,
+      searchPagePath: 'search',
+    },
     announcementBar: {
       content:
         '⭐️ <b>If you like React-Datasheet-Grid, give it a star on <a target="_blank" href="https://github.com/nick-keller/react-datasheet-grid">GitHub</a> and follow us on <a target="_blank" href="https://twitter.com/NicolasKa3">Twitter</a>!</b>',
