@@ -50,7 +50,7 @@ export const dateColumn: Partial<Column<Date | null, any, string>> = {
     rowData ? rowData.toISOString().substr(0, 10) : null,
   // Because the Date constructor works using iso format, we can use it to parse ISO string back to a Date object
   pasteValue: ({ value }) => {
-    const date = new Date(value)
+    const date = new Date(value.replace(/\.\s|\//g, '-'))
     return isNaN(date.getTime()) ? null : date
   },
   minWidth: 170,
