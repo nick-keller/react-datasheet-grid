@@ -21,6 +21,7 @@ const IsoDateComponent = React.memo<CellProps<string | null, any>>(
         type="date"
         // Important to prevent any undesired "tabbing"
         tabIndex={-1}
+        max="9999-12-31"
         ref={ref}
         // The `pointerEvents` trick is the same than in `textColumn`
         // Only show the calendar symbol on non-empty cells, or when cell is active, otherwise set opacity to 0
@@ -49,7 +50,7 @@ export const isoDateColumn: Partial<Column<string | null, any, string>> = {
   deleteValue: () => null,
   // Because the Date constructor works using iso format, we can use it to parse ISO string back to a Date object
   pasteValue: ({ value }) => {
-    const date = new Date(value.replace(/\.\s|\//g, '-'))
+    const date = new Date(value.replace(/\.\s?|\//g, '-'))
     return isNaN(date.getTime()) ? null : date.toISOString().substr(0, 10)
   },
   minWidth: 170,
