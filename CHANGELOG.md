@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.9.2
+> Date: 2022-12-27
+### Fix
+- Date columns now support `YYYY.MM.DD` format and max year is 9999
+
 ## 4.9.1
 > Date: 2022-12-19
 ### Fix
