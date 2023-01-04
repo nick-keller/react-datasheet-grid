@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
+import { Virtualizer } from '@tanstack/virtual-core'
 
 export type Cell = {
   col: number
@@ -155,6 +156,9 @@ export type DataSheetGridProps<T> = {
   onBlur?: (opts: { cell: CellWithId }) => void
   onActiveCellChange?: (opts: { cell: CellWithId | null }) => void
   onSelectionChange?: (opts: { selection: SelectionWithId | null }) => void
+  customHeaderComponent?: (
+    colVirtualizer: Virtualizer<any, unknown>
+  ) => ReactElement
 }
 
 type CellWithIdInput = {

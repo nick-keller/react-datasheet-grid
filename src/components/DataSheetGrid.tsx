@@ -85,6 +85,7 @@ export const DataSheetGrid = React.memo(
         onSelectionChange = DEFAULT_EMPTY_CALLBACK,
         rowClassName,
         cellClassName,
+        customHeaderComponent,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -1706,6 +1707,7 @@ export const DataSheetGrid = React.memo(
             duplicateRows={duplicateRows}
             stopEditing={stopEditing}
             cellClassName={cellClassName}
+            customHeaderComponent={customHeaderComponent}
           >
             <SelectionRect
               columnRights={columnRights}
