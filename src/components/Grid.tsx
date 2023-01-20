@@ -83,7 +83,6 @@ export const Grid = <T extends any>({
       }
       return index
     },
-    enableSmoothScroll: false,
     overscan: 5,
   })
 
@@ -93,7 +92,6 @@ export const Grid = <T extends any>({
     estimateSize: (index) => columnWidths?.[index] ?? 100,
     horizontal: true,
     getItemKey: (index: number): React.Key => columns[index].id ?? index,
-    enableSmoothScroll: false,
     overscan: 1,
     rangeExtractor: (range) => {
       const result = defaultRangeExtractor(range)

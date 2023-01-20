@@ -6,7 +6,7 @@ import {
   keyColumn,
   textColumn,
 } from '../../src'
-import '../../dist/style.css'
+import '../../src/style.css'
 
 type Row = {
   active: boolean
