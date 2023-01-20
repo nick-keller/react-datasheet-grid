@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.9.3
+> Date: 2023-01-20
+### Fix
+- Better support for non-english characters
+
 ## 4.9.2
 > Date: 2022-12-27
 ### Fix
