@@ -602,7 +602,7 @@ export const DataSheetGrid = React.memo(
       )
 
       const onCopy = useCallback(
-        (event: ClipboardEvent) => {
+        async (event?: ClipboardEvent) => {
           if (!editing && activeCell) {
             const copyData: Array<Array<number | string | null>> = []
 
@@ -620,28 +620,59 @@ export const DataSheetGrid = React.memo(
               }
             }
 
-            event.clipboardData?.setData(
-              'text/plain',
-              copyData.map((row) => row.join('\t')).join('\n')
-            )
-            event.clipboardData?.setData(
-              'text/html',
-              `<table>${copyData
-                .map(
-                  (row) =>
-                    `<tr>${row
-                      .map(
-                        (cell) =>
-                          `<td>${encodeHtml(String(cell ?? '')).replace(
-                            /\n/g,
-                            '<br/>'
-                          )}</td>`
-                      )
-                      .join('')}</tr>`
-                )
-                .join('')}</table>`
-            )
-            event.preventDefault()
+            const textPlain = copyData.map((row) => row.join('\t')).join('\n')
+            const textHtml = `<table>${copyData
+              .map(
+                (row) =>
+                  `<tr>${row
+                    .map(
+                      (cell) =>
+                        `<td>${encodeHtml(String(cell ?? '')).replace(
+                          /\n/g,
+                          '<br/>'
+                        )}</td>`
+                    )
+                    .join('')}</tr>`
+              )
+              .join('')}</table>`
+
+            if (event !== undefined) {
+              event.clipboardData?.setData('text/plain', textPlain)
+              event.clipboardData?.setData('text/html', textHtml)
+              event.preventDefault()
+              return
+            }
+
+            let success = false
+            if (navigator.clipboard.write !== undefined) {
+              const textBlob = new Blob([textPlain], {
+                type: 'text/plain',
+              })
+              const htmlBlob = new Blob([textHtml], { type: 'text/html' })
+              const clipboardData = [
+                new ClipboardItem({
+                  'text/plain': textBlob,
+                  'text/html': htmlBlob,
+                }),
+              ]
+              await navigator.clipboard.write(clipboardData).then(() => {
+                success = true
+              })
+            } else if (navigator.clipboard.writeText !== undefined) {
+              await navigator.clipboard.writeText(textPlain).then(() => {
+                success = true
+              })
+            } else if (document.execCommand !== undefined) {
+              const result = document.execCommand('copy')
+              if (result) {
+                success = true
+              }
+            }
+            if (!success) {
+              alert(
+                'This action is unavailable in your browser, but you can still use Ctrl+C for copy or Ctrl+X for cut'
+              )
+            }
           }
         },
         [activeCell, columns, data, editing, selection]
@@ -649,36 +680,19 @@ export const DataSheetGrid = React.memo(
       useDocumentEventListener('copy', onCopy)
 
       const onCut = useCallback(
-        (event: ClipboardEvent) => {
+        (event?: ClipboardEvent) => {
           if (!editing && activeCell) {
             onCopy(event)
             deleteSelection(false)
-            event.preventDefault()
           }
         },
         [activeCell, deleteSelection, editing, onCopy]
       )
       useDocumentEventListener('cut', onCut)
 
-      const onPaste = useCallback(
-        async (event: ClipboardEvent) => {
+      const applyPasteDataToDatasheet = useCallback(
+        async (pasteData: string[][]) => {
           if (!editing && activeCell) {
-            let pasteData = [['']]
-
-            if (event.clipboardData?.types.includes('text/html')) {
-              pasteData = parseTextHtmlData(
-                event.clipboardData?.getData('text/html')
-              )
-            } else if (event.clipboardData?.types.includes('text/plain')) {
-              pasteData = parseTextPlainData(
-                event.clipboardData?.getData('text/plain')
-              )
-            } else if (event.clipboardData?.types.includes('text')) {
-              pasteData = parseTextPlainData(
-                event.clipboardData?.getData('text')
-              )
-            }
-
             const min: Cell = selection?.min || activeCell
             const max: Cell = selection?.max || activeCell
 
@@ -822,8 +836,6 @@ export const DataSheetGrid = React.memo(
                 row: min.row + pasteData.length - 1,
               })
             }
-
-            event.preventDefault()
           }
         },
         [
@@ -842,7 +854,22 @@ export const DataSheetGrid = React.memo(
           setSelectionCell,
         ]
       )
-      useDocumentEventListener('paste', onPaste)
+      useDocumentEventListener('paste', (event) => {
+        let pasteData = [['']]
+        if (event.clipboardData?.types.includes('text/html')) {
+          pasteData = parseTextHtmlData(
+            event.clipboardData?.getData('text/html')
+          )
+        } else if (event.clipboardData?.types.includes('text/plain')) {
+          pasteData = parseTextPlainData(
+            event.clipboardData?.getData('text/plain')
+          )
+        } else if (event.clipboardData?.types.includes('text')) {
+          pasteData = parseTextPlainData(event.clipboardData?.getData('text'))
+        }
+        applyPasteDataToDatasheet(pasteData)
+        event.preventDefault()
+      })
 
       const onMouseDown = useCallback(
         (event: MouseEvent) => {
@@ -1498,6 +1525,55 @@ export const DataSheetGrid = React.memo(
       useEffect(() => {
         const items: ContextMenuItem[] = []
 
+        if (activeCell?.row !== undefined) {
+          items.push(
+            {
+              type: 'COPY',
+              action: (): void => {
+                onCopy()
+                setContextMenu(null)
+              },
+            },
+            {
+              type: 'CUT',
+              action: (): void => {
+                onCut()
+                setContextMenu(null)
+              },
+            },
+            {
+              type: 'PASTE',
+              action: async (): Promise<void> => {
+                if (navigator.clipboard.read !== undefined) {
+                  const items = await navigator.clipboard.read()
+                  items.forEach(async (item) => {
+                    let pasteData = [['']]
+                    if (item.types.includes('text/plain')) {
+                      const plainTextData = await item.getType('text/plain')
+                      pasteData = parseTextPlainData(await plainTextData.text())
+                    } else if (item.types.includes('text/html')) {
+                      const htmlTextData = await item.getType('text/html')
+                      pasteData = parseTextHtmlData(await htmlTextData.text())
+                    } else if (item.types.includes('text')) {
+                      const htmlTextData = await item.getType('text')
+                      pasteData = parseTextHtmlData(await htmlTextData.text())
+                    }
+                    applyPasteDataToDatasheet(pasteData)
+                  })
+                } else if (navigator.clipboard.readText !== undefined) {
+                  const text = await navigator.clipboard.readText()
+                  applyPasteDataToDatasheet(parseTextPlainData(text))
+                } else {
+                  alert(
+                    'This action is unavailable in your browser, but you can still use Ctrl+V for paste'
+                  )
+                }
+                setContextMenu(null)
+              },
+            }
+          )
+        }
+
         if (selection?.max.row !== undefined) {
           items.push({
             type: 'INSERT_ROW_BELLOW',
@@ -1566,14 +1642,7 @@ export const DataSheetGrid = React.memo(
         if (!items.length) {
           setContextMenu(null)
         }
-      }, [
-        activeCell?.row,
-        deleteRows,
-        duplicateRows,
-        insertRowAfter,
-        selection?.min.row,
-        selection?.max.row,
-      ])
+      }, [selection, activeCell, deleteRows, duplicateRows, insertRowAfter])
 
       const contextMenuItemsRef = useRef(contextMenuItems)
       contextMenuItemsRef.current = contextMenuItems

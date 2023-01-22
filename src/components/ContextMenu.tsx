@@ -4,6 +4,18 @@ import { useDocumentEventListener } from '../hooks/useDocumentEventListener'
 import { ContextMenuItem, ContextMenuComponentProps } from '../types'
 
 export const defaultRenderItem = (item: ContextMenuItem) => {
+  if (item.type === 'CUT') {
+    return <>Cut</>
+  }
+
+  if (item.type === 'COPY') {
+    return <>Copy</>
+  }
+
+  if (item.type === 'PASTE') {
+    return <>Paste</>
+  }
+
   if (item.type === 'DELETE_ROW') {
     return <>Delete row</>
   }
