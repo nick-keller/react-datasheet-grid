@@ -1,3 +1,4 @@
+import { parseFloatIntl } from '../utils/internationalization'
 import { createTextColumn } from './textColumn'
 
 const TEN_TO_THE_12 = 1000000000000
@@ -17,11 +18,11 @@ export const percentColumn = createTextColumn<number | null>({
       ? String(Math.round(value * TEN_TO_THE_12) / TEN_TO_THE_10)
       : '',
   parseUserInput: (value) => {
-    const number = parseFloat(value)
+    const number = parseFloatIntl(value)
     return !isNaN(number) ? number / 100 : null
   },
   parsePastedValue: (value) => {
-    const number = parseFloat(value)
+    const number = parseFloatIntl(value)
     return !isNaN(number) ? number : null
   },
 })
