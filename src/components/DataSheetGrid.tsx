@@ -1642,7 +1642,16 @@ export const DataSheetGrid = React.memo(
         if (!items.length) {
           setContextMenu(null)
         }
-      }, [selection, activeCell, deleteRows, duplicateRows, insertRowAfter])
+      }, [
+        selection,
+        activeCell,
+        deleteRows,
+        duplicateRows,
+        insertRowAfter,
+        onCut,
+        onCopy,
+        applyPasteDataToDatasheet,
+      ])
 
       const contextMenuItemsRef = useRef(contextMenuItems)
       contextMenuItemsRef.current = contextMenuItems
