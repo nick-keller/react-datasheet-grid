@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.10.0
+> Date: 2023-01-20
+### Added
+- Clipboard actions (copy, cut, paste) are now available from context menu (right-click)
+
 ## 4.9.3
 > Date: 2023-01-20
 ### Fix
