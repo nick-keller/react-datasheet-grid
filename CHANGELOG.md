@@ -1,6 +1,6 @@
 # Change Log
 
-## 4.10.1
+## 4.10.2
 > Date: 2023-02-08
 ### Fix
 - Fix paste issue when pasting was blocked on other inputs
