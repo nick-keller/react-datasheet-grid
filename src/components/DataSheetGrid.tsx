@@ -873,7 +873,6 @@ export const DataSheetGrid = React.memo(
               )
             }
             applyPasteDataToDatasheet(pasteData)
-            event.preventDefault()
           }
         },
         [activeCell, applyPasteDataToDatasheet]
@@ -1556,7 +1555,7 @@ export const DataSheetGrid = React.memo(
               action: async (): Promise<void> => {
                 if (navigator.clipboard.read !== undefined) {
                   const items = await navigator.clipboard.read()
-                  items.forEach(async (item) => {
+                  for (const item of items) {
                     let pasteData = [['']]
                     if (item.types.includes('text/plain')) {
                       const plainTextData = await item.getType('text/plain')
@@ -1569,7 +1568,7 @@ export const DataSheetGrid = React.memo(
                       pasteData = parseTextHtmlData(await htmlTextData.text())
                     }
                     applyPasteDataToDatasheet(pasteData)
-                  })
+                  }
                 } else if (navigator.clipboard.readText !== undefined) {
                   const text = await navigator.clipboard.readText()
                   applyPasteDataToDatasheet(parseTextPlainData(text))
