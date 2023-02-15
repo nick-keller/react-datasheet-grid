@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.10.3
+> Date: 2023-02-15
+### Fix
+- Fix paste issue when editing
+
 ## 4.10.2
 > Date: 2023-02-08
 ### Fix

@@ -857,7 +857,7 @@ export const DataSheetGrid = React.memo(
 
       const onPaste = useCallback(
         (event: ClipboardEvent) => {
-          if (activeCell) {
+          if (activeCell && !editing) {
             let pasteData = [['']]
             if (event.clipboardData?.types.includes('text/html')) {
               pasteData = parseTextHtmlData(
@@ -876,7 +876,7 @@ export const DataSheetGrid = React.memo(
             event.preventDefault()
           }
         },
-        [activeCell, applyPasteDataToDatasheet]
+        [activeCell, applyPasteDataToDatasheet, editing]
       )
 
       useDocumentEventListener('paste', onPaste)
