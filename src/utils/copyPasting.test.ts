@@ -138,6 +138,23 @@ describe('parsePlainTextData', () => {
     expect(parseTextPlainData('"foo\nbar""baz"""')).toEqual([['foo\nbar"baz"']])
   })
 
+  test('single cell multi line clean', () => {
+    expect(parseTextPlainData('"foo\nbar"')).toEqual([['foo\nbar']])
+  })
+
+  test('multi cell multi line', () => {
+    expect(parseTextPlainData('"foo\nbar"\n"baz\nqux"')).toEqual([
+      ['foo\nbar'],
+      ['baz\nqux'],
+    ])
+  })
+
+  test('multi cell single line', () => {
+    expect(parseTextPlainData('"foo\nbar"\t"baz\nqux"')).toEqual([
+      ['foo\nbar', 'baz\nqux'],
+    ])
+  })
+
   test('quoted first cell', () => {
     expect(parseTextPlainData('"foo\nbar')).toEqual([['"foo'], ['bar']])
   })
