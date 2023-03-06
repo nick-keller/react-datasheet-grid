@@ -524,8 +524,8 @@
   text-align: right;
 }
 
-.dsg-hide-date-picker[type="date"]::-webkit-inner-spin-button,
-.dsg-hide-date-picker[type="date"]::-webkit-calendar-picker-indicator {
+.dsg-hide-date-picker[type='date']::-webkit-inner-spin-button,
+.dsg-hide-date-picker[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }
