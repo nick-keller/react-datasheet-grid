@@ -57,13 +57,18 @@ const InfiniteScroll = () => {
   }, [fetchNextPage, isFetching, hasNextPage]);
 
   return (
-    <DataSheetGrid<User>
+    <>
+      <DataSheetGrid<User>
       value={users}
       onChange={setUsers}
       columns={columns}
       height={500}
       onScroll={fetchMoreOnBottomReached}
-    />
+      />
+      <p>
+        Data size: {users.length} - Status: {isFetching ? 'loading' : 'idle'}
+      </p>
+    </>
   )
 }
 
