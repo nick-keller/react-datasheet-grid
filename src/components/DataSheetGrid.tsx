@@ -85,6 +85,7 @@ export const DataSheetGrid = React.memo(
         onSelectionChange = DEFAULT_EMPTY_CALLBACK,
         rowClassName,
         cellClassName,
+        onScroll,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -194,17 +195,17 @@ export const DataSheetGrid = React.memo(
       // Same as expandSelectionRowsCount but is null when we should not be able to expand the selection
       const expandSelection =
         disableExpandSelection ||
-        editing ||
-        selectionMode.active ||
-        activeCell?.row === data?.length - 1 ||
-        selection?.max.row === data?.length - 1 ||
-        (activeCell &&
-          columns
-            .slice(
-              (selection?.min.col ?? activeCell.col) + 1,
-              (selection?.max.col ?? activeCell.col) + 2
-            )
-            .every((column) => column.disabled === true))
+          editing ||
+          selectionMode.active ||
+          activeCell?.row === data?.length - 1 ||
+          selection?.max.row === data?.length - 1 ||
+          (activeCell &&
+            columns
+              .slice(
+                (selection?.min.col ?? activeCell.col) + 1,
+                (selection?.max.col ?? activeCell.col) + 2
+              )
+              .every((column) => column.disabled === true))
           ? null
           : expandSelectionRowsCount
 
@@ -214,7 +215,7 @@ export const DataSheetGrid = React.memo(
       // Blur any element on focusing the grid
       useEffect(() => {
         if (activeCell !== null) {
-          ;(document.activeElement as HTMLElement).blur()
+          ; (document.activeElement as HTMLElement).blur()
           window.getSelection()?.removeAllRanges()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,7 +254,7 @@ export const DataSheetGrid = React.memo(
               if (
                 hasStickyRightColumn &&
                 outerBoundingClientRect.right - event.clientX <=
-                  columnWidths[columnWidths.length - 1]
+                columnWidths[columnWidths.length - 1]
               ) {
                 x = columnRights[columnRights.length - 2] + 1
               }
@@ -289,9 +290,9 @@ export const DataSheetGrid = React.memo(
           return Boolean(
             typeof disabled === 'function'
               ? disabled({
-                  rowData: dataRef.current[cell.row],
-                  rowIndex: cell.row,
-                })
+                rowData: dataRef.current[cell.row],
+                rowIndex: cell.row,
+              })
               : disabled
           )
         },
@@ -779,7 +780,7 @@ export const DataSheetGrid = React.memo(
                 let columnIndex = 0;
                 columnIndex < pasteData[0].length &&
                 min.col + columnIndex <
-                  columns.length - (hasStickyRightColumn ? 2 : 1);
+                columns.length - (hasStickyRightColumn ? 2 : 1);
                 columnIndex++
               ) {
                 const pasteValue =
@@ -977,27 +978,27 @@ export const DataSheetGrid = React.memo(
               cursorIndex && {
                 col:
                   (rightClickInSelection || rightClickOnSelectedHeaders) &&
-                  activeCell
+                    activeCell
                     ? activeCell.col
                     : Math.max(
-                        0,
-                        clickOnStickyRightColumn ? 0 : cursorIndex.col
-                      ),
+                      0,
+                      clickOnStickyRightColumn ? 0 : cursorIndex.col
+                    ),
                 row:
                   (rightClickInSelection ||
                     rightClickOnSelectedGutter ||
                     clickOnSelectedStickyRightColumn) &&
-                  activeCell
+                    activeCell
                     ? activeCell.row
                     : Math.max(0, cursorIndex.row),
                 doNotScrollX: Boolean(
                   (rightClickInSelection && activeCell) ||
-                    clickOnStickyRightColumn ||
-                    cursorIndex.col === -1
+                  clickOnStickyRightColumn ||
+                  cursorIndex.col === -1
                 ),
                 doNotScrollY: Boolean(
                   (rightClickInSelection && activeCell) ||
-                    cursorIndex.row === -1
+                  cursorIndex.row === -1
                 ),
               }
             )
@@ -1011,19 +1012,19 @@ export const DataSheetGrid = React.memo(
           setSelectionMode(
             cursorIndex && !rightClick
               ? {
-                  columns:
-                    (cursorIndex.col !== -1 && !clickOnStickyRightColumn) ||
-                    Boolean(event.shiftKey && activeCell),
-                  rows:
-                    cursorIndex.row !== -1 ||
-                    Boolean(event.shiftKey && activeCell),
-                  active: true,
-                }
+                columns:
+                  (cursorIndex.col !== -1 && !clickOnStickyRightColumn) ||
+                  Boolean(event.shiftKey && activeCell),
+                rows:
+                  cursorIndex.row !== -1 ||
+                  Boolean(event.shiftKey && activeCell),
+                active: true,
+              }
               : {
-                  columns: false,
-                  rows: false,
-                  active: false,
-                }
+                columns: false,
+                rows: false,
+                active: false,
+              }
           )
 
           if (event.shiftKey && activeCell && !rightClick) {
@@ -1160,7 +1161,7 @@ export const DataSheetGrid = React.memo(
                         rowData: newData[rowIndex],
                         value:
                           copyData[(rowIndex - max.row - 1) % copyData.length][
-                            columnIndex
+                          columnIndex
                           ],
                         rowIndex,
                       })
@@ -1290,7 +1291,7 @@ export const DataSheetGrid = React.memo(
             event.key === 'Tab' &&
             !event.shiftKey &&
             activeCell.col ===
-              columns.length - (hasStickyRightColumn ? 3 : 2) &&
+            columns.length - (hasStickyRightColumn ? 3 : 2) &&
             !columns[activeCell.col + 1].disableKeys
           ) {
             // Last row
@@ -1675,7 +1676,7 @@ export const DataSheetGrid = React.memo(
         activeCell: getCellWithId(activeCell, columns),
         selection: getSelectionWithId(
           selection ??
-            (activeCell ? { min: activeCell, max: activeCell } : null),
+          (activeCell ? { min: activeCell, max: activeCell } : null),
           columns
         ),
         setSelection: (value) => {
@@ -1742,7 +1743,7 @@ export const DataSheetGrid = React.memo(
         callbacksRef.current.onSelectionChange({
           selection: getSelectionWithId(
             selection ??
-              (activeCell ? { min: activeCell, max: activeCell } : null),
+            (activeCell ? { min: activeCell, max: activeCell } : null),
             columns
           ),
         })
@@ -1794,6 +1795,7 @@ export const DataSheetGrid = React.memo(
             duplicateRows={duplicateRows}
             stopEditing={stopEditing}
             cellClassName={cellClassName}
+            onScroll={onScroll}
           >
             <SelectionRect
               columnRights={columnRights}
