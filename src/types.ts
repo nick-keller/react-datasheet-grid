@@ -41,12 +41,12 @@ export type Column<T, C, PasteValue> = {
   disableKeys: boolean
   disabled: boolean | ((opt: { rowData: T; rowIndex: number }) => boolean)
   cellClassName?:
-  | string
-  | ((opt: {
-    rowData: T
-    rowIndex: number
-    columnId?: string
-  }) => string | undefined)
+    | string
+    | ((opt: {
+        rowData: T
+        rowIndex: number
+        columnId?: string
+      }) => string | undefined)
   keepFocus: boolean
   deleteValue: (opt: { rowData: T; rowIndex: number }) => T
   copyValue: (opt: { rowData: T; rowIndex: number }) => number | string | null
@@ -93,15 +93,15 @@ export type AddRowsComponentProps = {
 
 export type ContextMenuItem =
   | {
-    type: 'INSERT_ROW_BELLOW' | 'DELETE_ROW' | 'DUPLICATE_ROW' | 'COPY' | 'CUT' | 'PASTE'
-    action: () => void
-  }
+      type: 'INSERT_ROW_BELLOW' | 'DELETE_ROW' | 'DUPLICATE_ROW' | 'COPY' | 'CUT' | 'PASTE'
+      action: () => void
+    }
   | {
-    type: 'DELETE_ROWS' | 'DUPLICATE_ROWS'
-    action: () => void
-    fromRow: number
-    toRow: number
-  }
+      type: 'DELETE_ROWS' | 'DUPLICATE_ROWS'
+      action: () => void
+      fromRow: number
+      toRow: number
+    }
 
 export type ContextMenuComponentProps = {
   clientX: number
@@ -122,15 +122,15 @@ export type DataSheetGridProps<T> = {
   style?: React.CSSProperties
   className?: string
   rowClassName?:
-  | string
-  | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
+    | string
+    | ((opt: { rowData: T; rowIndex: number }) => string | undefined)
   cellClassName?:
-  | string
-  | ((opt: {
-    rowData: unknown
-    rowIndex: number
-    columnId?: string
-  }) => string | undefined)
+    | string
+    | ((opt: {
+        rowData: unknown
+        rowIndex: number
+        columnId?: string
+      }) => string | undefined)
   onChange?: (value: T[], operations: Operation[]) => void
   columns?: Partial<Column<T, any, any>>[]
   gutterColumn?: SimpleColumn<T, any> | false
@@ -140,8 +140,8 @@ export type DataSheetGridProps<T> = {
   rowHeight?: number | ((opt: { rowData: T; rowIndex: number }) => number)
   headerRowHeight?: number
   addRowsComponent?:
-  | ((props: AddRowsComponentProps) => React.ReactElement | null)
-  | false
+    | ((props: AddRowsComponentProps) => React.ReactElement | null)
+    | false
   createRow?: () => T
   duplicateRow?: (opts: { rowData: T; rowIndex: number }) => T
   autoAddRow?: boolean

@@ -158,10 +158,10 @@ export const Grid = <T extends any>({
                 className={cx(
                   'dsg-cell-header',
                   selectionColMin !== undefined &&
-                  selectionColMax !== undefined &&
-                  selectionColMin <= col.index - 1 &&
-                  selectionColMax >= col.index - 1 &&
-                  'dsg-cell-header-active',
+                    selectionColMax !== undefined &&
+                    selectionColMin <= col.index - 1 &&
+                    selectionColMax >= col.index - 1 &&
+                    'dsg-cell-header-active',
                   columns[col.index].headerClassName
                 )}
               >
@@ -175,7 +175,7 @@ export const Grid = <T extends any>({
         {rowVirtualizer.getVirtualItems().map((row) => {
           const rowActive = Boolean(
             row.index >= (selectionMinRow ?? Infinity) &&
-            row.index <= (selectionMaxRow ?? -Infinity)
+              row.index <= (selectionMaxRow ?? -Infinity)
           )
           return (
             <div
@@ -185,9 +185,9 @@ export const Grid = <T extends any>({
                 typeof rowClassName === 'string' ? rowClassName : null,
                 typeof rowClassName === 'function'
                   ? rowClassName({
-                    rowData: data[row.index],
-                    rowIndex: row.index,
-                  })
+                      rowData: data[row.index],
+                      rowIndex: row.index,
+                    })
                   : null
               )}
               style={{
@@ -223,17 +223,17 @@ export const Grid = <T extends any>({
                     className={cx(
                       typeof colCellClassName === 'function'
                         ? colCellClassName({
-                          rowData: data[row.index],
-                          rowIndex: row.index,
-                          columnId: columns[col.index].id,
-                        })
+                            rowData: data[row.index],
+                            rowIndex: row.index,
+                            columnId: columns[col.index].id,
+                          })
                         : colCellClassName,
                       typeof cellClassName === 'function'
                         ? cellClassName({
-                          rowData: data[row.index],
-                          rowIndex: row.index,
-                          columnId: columns[col.index].id,
-                        })
+                            rowData: data[row.index],
+                            rowIndex: row.index,
+                            columnId: columns[col.index].id,
+                          })
                         : cellClassName
                     )}
                     width={col.size}
