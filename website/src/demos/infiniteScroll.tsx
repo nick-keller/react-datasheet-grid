@@ -14,7 +14,10 @@ const InfiniteScroll = () => {
     ]
   }, []);
 
-  const { fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery('example', ({ pageParam = 1 }): User[] => {
+  const { fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery('example', async ({ pageParam = 1 }): Promise<User[]> => {
+    /// Fake waiting time for data
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    /// Build mock data
     return new Array(usersPerPage).fill(0).map((_, i) => {
       const id = (pageParam - 1) * usersPerPage + i + 1
       return { id, name: `User ${id}` };
