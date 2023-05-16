@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.11.0
+> Date: 2023-05-16
+### Add
+- Add `onScroll` prop to allow infinite loaders and other fancy behaviors
+
 ## 4.10.3
 > Date: 2023-02-15
 ### Fix
