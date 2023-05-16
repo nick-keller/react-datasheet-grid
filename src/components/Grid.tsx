@@ -35,6 +35,7 @@ export const Grid = <T extends any>({
   duplicateRows,
   insertRowAfter,
   stopEditing,
+  onScroll,
 }: {
   data: T[]
   columns: Column<T, any, any>[]
@@ -59,6 +60,7 @@ export const Grid = <T extends any>({
   duplicateRows: (rowMin: number, rowMax?: number) => void
   insertRowAfter: (row: number, count?: number) => void
   stopEditing: (opts?: { nextRow?: boolean }) => void
+  onScroll?: React.UIEventHandler<HTMLDivElement>
 }) => {
   const rowVirtualizer = useVirtualizer({
     count: data.length,
@@ -126,6 +128,7 @@ export const Grid = <T extends any>({
     <div
       ref={outerRef}
       className="dsg-container"
+      onScroll={onScroll}
       style={{ height: displayHeight }}
     >
       <div

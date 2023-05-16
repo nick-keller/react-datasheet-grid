@@ -85,6 +85,7 @@ export const DataSheetGrid = React.memo(
         onSelectionChange = DEFAULT_EMPTY_CALLBACK,
         rowClassName,
         cellClassName,
+        onScroll,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -214,7 +215,7 @@ export const DataSheetGrid = React.memo(
       // Blur any element on focusing the grid
       useEffect(() => {
         if (activeCell !== null) {
-          ;(document.activeElement as HTMLElement).blur()
+          ; (document.activeElement as HTMLElement).blur()
           window.getSelection()?.removeAllRanges()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1794,6 +1795,7 @@ export const DataSheetGrid = React.memo(
             duplicateRows={duplicateRows}
             stopEditing={stopEditing}
             cellClassName={cellClassName}
+            onScroll={onScroll}
           >
             <SelectionRect
               columnRights={columnRights}
