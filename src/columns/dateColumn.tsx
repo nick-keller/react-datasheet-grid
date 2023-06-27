@@ -22,6 +22,7 @@ const DateComponent = React.memo<CellProps<Date | null, any>>(
         // Important to prevent any undesired "tabbing"
         tabIndex={-1}
         max="9999-12-31"
+        placeholder="dd-mm-yyyy"
         ref={ref}
         // The `pointerEvents` trick is the same than in `textColumn`
         // Only show the calendar symbol on non-empty cells, or when cell is active, otherwise set opacity to 0
