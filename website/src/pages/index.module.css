@@ -64,3 +64,78 @@ html[data-theme='dark'] .feature:nth-child(odd) {
   padding: 0 20px;
   margin: 0;
 }
+
+.partner {
+  display: flex;
+  align-items: center;
+  max-width: 800px;
+  margin: 40px auto;
+  gap: 50px;
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.partner:before {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(-45deg, #e81cff 0%, #40c9ff 100% );
+  transform: translate3d(0px, 10px, 0) scale(0.95);
+  filter: blur(20px);
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  border-radius: inherit;
+}
+
+/*
+* Prevents issues when the parent creates a
+* stacking context. (For example, using the transform
+* property )
+*/
+.partner::after {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: inherit;
+  border-radius: inherit;
+}
+
+
+.partner figure {
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner aside {
+  padding: 0;
+  margin: 0;
+  flex: 2;
+}
+
+.partner figure > a {
+  color: #252525;
+}
+
+.partner figure > a > div {
+  left: 62%;
+  background: #252525;
+  transition: all .3s cubic-bezier(.47,1.64,.41,.8);
+}
+
+.partner figure > a:hover > div {
+  left: 36%;
+}
