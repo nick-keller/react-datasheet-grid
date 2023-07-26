@@ -1,6 +1,6 @@
 # Change Log
 
-## 4.11.1
+## 4.11.2
 > Date: 2023-07-26
 ### Fix
 - Prevent submitting form when pressing `Enter` on a cell to edit it
