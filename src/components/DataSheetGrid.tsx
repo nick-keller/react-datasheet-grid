@@ -215,7 +215,7 @@ export const DataSheetGrid = React.memo(
       // Blur any element on focusing the grid
       useEffect(() => {
         if (activeCell !== null) {
-          ; (document.activeElement as HTMLElement).blur()
+          ;(document.activeElement as HTMLElement).blur()
           window.getSelection()?.removeAllRanges()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1428,11 +1428,13 @@ export const DataSheetGrid = React.memo(
             if (editing) {
               if (!columns[activeCell.col + 1].disableKeys) {
                 stopEditing()
+                event.preventDefault()
               }
             } else if (!isCellDisabled(activeCell)) {
               lastEditingCellRef.current = activeCell
               setEditing(true)
               scrollTo(activeCell)
+              event.preventDefault()
             }
           } else if (
             event.key === 'Enter' &&
