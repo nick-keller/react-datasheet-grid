@@ -1564,8 +1564,7 @@ export const DataSheetGrid = React.memo(
                     if (item.types.includes('text/html')) {
                       const htmlTextData = await item.getType('text/html')
                       pasteData = parseTextHtmlData(await htmlTextData.text())
-                    }
-                    else if (item.types.includes('text/plain')) {
+                    } else if (item.types.includes('text/plain')) {
                       const plainTextData = await item.getType('text/plain')
                       pasteData = parseTextPlainData(await plainTextData.text())
                     } else if (item.types.includes('text')) {
