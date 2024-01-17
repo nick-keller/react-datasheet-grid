@@ -1561,12 +1561,13 @@ export const DataSheetGrid = React.memo(
                   const items = await navigator.clipboard.read()
                   items.forEach(async (item) => {
                     let pasteData = [['']]
-                    if (item.types.includes('text/plain')) {
-                      const plainTextData = await item.getType('text/plain')
-                      pasteData = parseTextPlainData(await plainTextData.text())
-                    } else if (item.types.includes('text/html')) {
+                    if (item.types.includes('text/html')) {
                       const htmlTextData = await item.getType('text/html')
                       pasteData = parseTextHtmlData(await htmlTextData.text())
+                    }
+                    else if (item.types.includes('text/plain')) {
+                      const plainTextData = await item.getType('text/plain')
+                      pasteData = parseTextPlainData(await plainTextData.text())
                     } else if (item.types.includes('text')) {
                       const htmlTextData = await item.getType('text')
                       pasteData = parseTextHtmlData(await htmlTextData.text())
