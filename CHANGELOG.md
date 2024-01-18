@@ -1,5 +1,12 @@
 # Change Log
 
+## 4.11.3
+> Date: 2024-01-18
+### Fix
+- Triggering editing a cell just by typing now works with non-ASCII characters
+- Fix pasting from Excel for some edge cases
+- Improve table behavior when scaling
+
 ## 4.11.2
 > Date: 2023-07-26
 ### Fix
