@@ -28,6 +28,7 @@ import deepEqual from 'fast-deep-equal'
 import { ContextMenu } from './ContextMenu'
 import {
   encodeHtml,
+  isPrintableUnicode,
   parseTextHtmlData,
   parseTextPlainData,
 } from '../utils/copyPasting'
@@ -1456,7 +1457,7 @@ export const DataSheetGrid = React.memo(
             )
             event.preventDefault()
           } else if (
-            (event.key.match(/^[ -~]$/) || event.code.match(/Key[A-Z\p{L}]$/u)) &&
+            (isPrintableUnicode(event.key) || event.code.match(/Key[A-Z]$/)) &&
             !event.ctrlKey &&
             !event.metaKey &&
             !event.altKey

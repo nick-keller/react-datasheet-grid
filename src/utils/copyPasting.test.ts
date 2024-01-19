@@ -2,6 +2,7 @@ import {
   parseTextPlainData,
   parseTextHtmlData,
   encodeHtml,
+  isPrintableUnicode,
 } from './copyPasting'
 import { JSDOM } from 'jsdom'
 
@@ -156,4 +157,24 @@ test('encodeHtml', () => {
   expect(encodeHtml('<div title="foo\'bar">baz</div>')).toBe(
     '&lt;div title=&quot;foo&#039;bar&quot;&gt;baz&lt;/div&gt;'
   )
+})
+
+test('isPrintableUnicode', () => {
+  expect(isPrintableUnicode('a')).toBe(true)
+  expect(isPrintableUnicode('ş')).toBe(true)
+  expect(isPrintableUnicode('Ğ')).toBe(true)
+  expect(isPrintableUnicode('中')).toBe(true)
+  expect(isPrintableUnicode('©')).toBe(true)
+  expect(isPrintableUnicode('5')).toBe(true)
+  expect(isPrintableUnicode('!')).toBe(true)
+  expect(isPrintableUnicode('.')).toBe(true)
+  expect(isPrintableUnicode(':')).toBe(true)
+  expect(isPrintableUnicode('[')).toBe(true)
+  expect(isPrintableUnicode('\x0B')).toBe(false) // Vertical Tab
+  expect(isPrintableUnicode('\x7F')).toBe(false) // Delete
+  expect(isPrintableUnicode('\r')).toBe(false)
+  expect(isPrintableUnicode(' ')).toBe(false)
+  expect(isPrintableUnicode('\t')).toBe(false)
+  expect(isPrintableUnicode('\n')).toBe(false)
+  expect(isPrintableUnicode('\x90')).toBe(false) // Non-printable character in the extended ASCII range
 })
