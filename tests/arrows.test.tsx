@@ -9,7 +9,7 @@ import {
   keyColumn,
   DataSheetGridRef,
   checkboxColumn,
-} from '../src'
+} from '../v4'
 
 jest.mock('react-resize-detector', () => ({
   useResizeDetector: () => ({ width: 100, height: 100 }),

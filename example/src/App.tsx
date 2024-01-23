@@ -1,42 +1,42 @@
 import React, { useState } from 'react'
-import {
-  checkboxColumn,
-  Column,
-  DataSheetGrid,
-  keyColumn,
-  textColumn,
-} from '../../src'
-import '../../src/style.css'
+import { DataSheetGrid } from '../../src'
+// import '../../src/style.css'
 
-type Row = {
-  active: boolean
-  firstName: string | null
-  lastName: string | null
-}
+const columns = [
+  // { id: 'foo', stickyLeft: true },
+  // { id: 'foo', stickyLeft: true },
+  // { id: 'foo', stickyLeft: true },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  // { id: 'foo', stickyRight: true },
+  // { id: 'foo', stickyRight: true },
+  // { id: 'foo', stickyRight: true },
+  // { id: 'foo', stickyRight: true },
+]
+
+const data = new Array(100).fill(0)
 
 function App() {
-  const [data, setData] = useState<Row[]>([
-    { active: true, firstName: 'Elon', lastName: 'Musk' },
-    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
-  ])
-
-  const columns: Column<Row>[] = [
-    {
-      ...keyColumn<Row, 'active'>('active', checkboxColumn),
-      title: 'Active',
-      grow: 0.5,
-    },
-    {
-      ...keyColumn<Row, 'firstName'>('firstName', textColumn),
-      title: 'First name',
-    },
-    {
-      ...keyColumn<Row, 'lastName'>('lastName', textColumn),
-      title: 'Last name',
-      grow: 2,
-    },
-  ]
-
   return (
     <div
       style={{
@@ -46,7 +46,25 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid value={data} onChange={setData} columns={columns} />
+      <DataSheetGrid
+        value={data}
+        overscanRows={10}
+        rowIsSticky={({ rowIndex }) => {
+          if (rowIndex % 40 === 0) {
+            return 0
+          }
+          if (rowIndex % 20 === 2) {
+            return 1
+          }
+
+          if (rowIndex % 10 === 3) {
+            return 2
+          }
+
+          return rowIndex % 5 === 3 ? 3 : false
+        }}
+        columns={columns}
+      />
     </div>
   )
 }
