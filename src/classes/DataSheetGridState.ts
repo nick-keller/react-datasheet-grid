@@ -157,102 +157,197 @@ export class DataSheetGridState<Row> {
   computeStickyRows() {
     const isSticky = this._rowIsSticky
     const rowVirtualizer = this.rowVirtualizer
+    this._stickyRows = []
+    this._stickyRowsData.clear()
 
     if (!isSticky || !rowVirtualizer) {
-      this._stickyRows = []
-      this._stickyRowsData.clear()
       return
     }
 
-    // The stack of levels in increasing order
-    const levels: {
-      level: number
-      top: number
-      nextTop: number
-      stickyRowData: StickyRowData
-    }[] = []
-    // Just a shorthand for the last element of the array
-    let lastLevel: typeof levels[number] | undefined
-
-    this._stickyRowsData.clear()
-    this._stickyRows = this._data.reduce((acc, rowData, rowIndex) => {
+    const stickyRows = this._data.reduce((acc, rowData, rowIndex) => {
       const rowStickiness = parseRowStickinessFnResult(
         isSticky({ rowData, rowIndex })
       )
 
       if (rowStickiness) {
-        acc.push(rowIndex)
-
-        const stickyRowData: StickyRowData = {
-          areaTop: rowVirtualizer.measurementsCache[rowIndex].start,
-          // Will be computed later
-          areaBottom: 0,
-          rowHeight: rowVirtualizer.measurementsCache[rowIndex].size,
-          level: rowStickiness.level,
-        }
-
-        // We found a level that is lower than the current one, we need to pop the stack
-        if (lastLevel && lastLevel.level > rowStickiness.level) {
-          // The total height of the removed levels
-          let removedHeight = 0
-          while (levels.length && lastLevel.level > rowStickiness.level) {
-            // The bottom of the area of the sticky row is the top of the next level
-            lastLevel.stickyRowData.areaBottom +=
-              rowVirtualizer.measurementsCache[rowIndex].start - removedHeight
-            removedHeight += lastLevel.stickyRowData.rowHeight
-            levels.pop()
-            lastLevel = levels[levels.length - 1]
-          }
-          lastLevel.stickyRowData.areaBottom -= removedHeight
-        }
-
-        if (!lastLevel) {
-          lastLevel = {
-            level: rowStickiness.level,
-            top: 0,
-            nextTop: rowVirtualizer.measurementsCache[rowIndex].size,
-            stickyRowData,
-          }
-          levels.push(lastLevel)
-        } else if (lastLevel.level < rowStickiness.level) {
-          lastLevel = {
-            level: rowStickiness.level,
-            top: lastLevel.nextTop,
-            nextTop:
-              rowVirtualizer.measurementsCache[rowIndex].size +
-              lastLevel.nextTop,
-            stickyRowData,
-          }
-          levels.push(lastLevel)
-        } else if (lastLevel.level === rowStickiness.level) {
-          lastLevel.stickyRowData.areaBottom +=
-            rowVirtualizer.measurementsCache[rowIndex].start
-          levels.pop()
-          lastLevel = {
-            level: rowStickiness.level,
-            top: lastLevel.top,
-            nextTop:
-              rowVirtualizer.measurementsCache[rowIndex].size + lastLevel.top,
-            stickyRowData,
-          }
-          levels.push(lastLevel)
-        }
-
-        stickyRowData.stickyTop = lastLevel.top
-
-        this._stickyRowsData.set(rowIndex, stickyRowData)
-      }
-
-      if (rowIndex === this._data.length - 1) {
-        while (levels.length) {
-          levels[levels.length - 1].stickyRowData.areaBottom +=
-            rowVirtualizer.measurementsCache[rowIndex].end
-          levels.pop()
-        }
+        this._stickyRows.push(rowIndex)
+        acc.push({ index: rowIndex, rowStickiness })
       }
 
       return acc
-    }, [] as number[])
+    }, [] as { index: number; rowStickiness: RowStickiness }[])
+
+    const top = [] as { level: number; top: number }[]
+
+    for (let i = 0; i < stickyRows.length; i++) {
+      const { index, rowStickiness } = stickyRows[i]
+
+      if (rowStickiness.position === 'top') {
+        let next = i + 1
+
+        while (next < stickyRows.length) {
+          if (stickyRows[next].rowStickiness.level <= rowStickiness.level) {
+            break
+          }
+          next++
+        }
+
+        while (top.length && top[top.length - 1].level >= rowStickiness.level) {
+          top.pop()
+        }
+
+        top.push({
+          top: rowVirtualizer.measurementsCache[index].size,
+          level: rowStickiness.level,
+        })
+
+        this._stickyRowsData.set(index, {
+          areaTop: rowVirtualizer.measurementsCache[index].start,
+          areaBottom:
+            next === stickyRows.length
+              ? rowVirtualizer.measurementsCache[this._data.length - 1].end
+              : rowVirtualizer.measurementsCache[stickyRows[next].index].start,
+          rowHeight: rowVirtualizer.measurementsCache[index].size,
+          level: rowStickiness.level,
+          stickyTop: top.reduce(
+            (acc, value, index) =>
+              index < top.length - 1 ? acc + value.top : acc,
+            0
+          ),
+        })
+      }
+    }
+
+    const bottom = [] as { level: number; bottom: number }[]
+
+    for (let i = stickyRows.length - 1; i >= 0; i--) {
+      const { index, rowStickiness } = stickyRows[i]
+
+      if (rowStickiness.position === 'bottom') {
+        let next = i - 1
+
+        while (next >= 0) {
+          if (stickyRows[next].rowStickiness.level <= rowStickiness.level) {
+            break
+          }
+          next--
+        }
+
+        while (bottom.length && bottom[bottom.length - 1].level >= rowStickiness.level) {
+          bottom.pop()
+        }
+
+        bottom.push({
+          bottom: rowVirtualizer.measurementsCache[index].size,
+          level: rowStickiness.level,
+        })
+
+        this._stickyRowsData.set(index, {
+          areaBottom: rowVirtualizer.measurementsCache[index].end,
+          areaTop:
+            next === -1
+              ? 0
+              : rowVirtualizer.measurementsCache[stickyRows[next].index].end,
+          rowHeight: rowVirtualizer.measurementsCache[index].size,
+          level: rowStickiness.level,
+          stickyBottom: bottom.reduce(
+            (acc, value, index) =>
+              index < bottom.length - 1 ? acc + value.bottom : acc,
+            0
+          ),
+        })
+      }
+    }
+    //
+    // // The stack of levels in increasing order
+    // const levels: {
+    //   level: number
+    //   top: number
+    //   nextTop: number
+    //   stickyRowData: StickyRowData
+    // }[] = []
+    // // Just a shorthand for the last element of the array
+    // let lastLevel: typeof levels[number] | undefined
+    //
+    // this._stickyRowsData.clear()
+    // this._stickyRows = this._data.reduce((acc, rowData, rowIndex) => {
+    //   const rowStickiness = parseRowStickinessFnResult(
+    //     isSticky({ rowData, rowIndex })
+    //   )
+    //
+    //   if (rowStickiness) {
+    //     acc.push(rowIndex)
+    //
+    //     const stickyRowData: StickyRowData = {
+    //       areaTop: rowVirtualizer.measurementsCache[rowIndex].start,
+    //       // Will be computed later
+    //       areaBottom: 0,
+    //       rowHeight: rowVirtualizer.measurementsCache[rowIndex].size,
+    //       level: rowStickiness.level,
+    //     }
+    //
+    //     // We found a level that is lower than the current one, we need to pop the stack
+    //     if (lastLevel && lastLevel.level > rowStickiness.level) {
+    //       // The total height of the removed levels
+    //       let removedHeight = 0
+    //       while (levels.length && lastLevel.level > rowStickiness.level) {
+    //         // The bottom of the area of the sticky row is the top of the next level
+    //         lastLevel.stickyRowData.areaBottom +=
+    //           rowVirtualizer.measurementsCache[rowIndex].start - removedHeight
+    //         removedHeight += lastLevel.stickyRowData.rowHeight
+    //         levels.pop()
+    //         lastLevel = levels[levels.length - 1]
+    //       }
+    //       lastLevel.stickyRowData.areaBottom -= removedHeight
+    //     }
+    //
+    //     if (!lastLevel) {
+    //       lastLevel = {
+    //         level: rowStickiness.level,
+    //         top: 0,
+    //         nextTop: rowVirtualizer.measurementsCache[rowIndex].size,
+    //         stickyRowData,
+    //       }
+    //       levels.push(lastLevel)
+    //     } else if (lastLevel.level < rowStickiness.level) {
+    //       lastLevel = {
+    //         level: rowStickiness.level,
+    //         top: lastLevel.nextTop,
+    //         nextTop:
+    //           rowVirtualizer.measurementsCache[rowIndex].size +
+    //           lastLevel.nextTop,
+    //         stickyRowData,
+    //       }
+    //       levels.push(lastLevel)
+    //     } else if (lastLevel.level === rowStickiness.level) {
+    //       lastLevel.stickyRowData.areaBottom +=
+    //         rowVirtualizer.measurementsCache[rowIndex].start
+    //       levels.pop()
+    //       lastLevel = {
+    //         level: rowStickiness.level,
+    //         top: lastLevel.top,
+    //         nextTop:
+    //           rowVirtualizer.measurementsCache[rowIndex].size + lastLevel.top,
+    //         stickyRowData,
+    //       }
+    //       levels.push(lastLevel)
+    //     }
+    //
+    //     stickyRowData.stickyTop = lastLevel.top
+    //
+    //     this._stickyRowsData.set(rowIndex, stickyRowData)
+    //   }
+    //
+    //   if (rowIndex === this._data.length - 1) {
+    //     while (levels.length) {
+    //       levels[levels.length - 1].stickyRowData.areaBottom +=
+    //         rowVirtualizer.measurementsCache[rowIndex].end
+    //       levels.pop()
+    //     }
+    //   }
+    //
+    //   return acc
+    // }, [] as number[])
 
     console.log('stickyRows', this._stickyRows)
     console.log('stickyRowsData', this._stickyRowsData)

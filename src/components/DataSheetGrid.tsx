@@ -77,11 +77,12 @@ export const DataSheetGrid = memo(
         const stickyRow =
           stateRef.current.stickyRows[nextStickyRowIndex] === row.index
 
+        let stickyRowData: StickyRowData | undefined
+
         if (stickyRow) {
+          stickyRowData = stateRef.current.stickyRowsData.get(row.index)
           stickyRows.push({
-            data: stateRef.current.stickyRowsData.get(
-              row.index
-            ) as StickyRowData,
+            data: stickyRowData as StickyRowData,
             cells: [],
           })
         }
@@ -102,7 +103,7 @@ export const DataSheetGrid = memo(
                   height: row.size,
                   transform: `translateX(${col.start}px)`,
                   background: ['#ff0000', '#cc0000', '#990000', '#660000'][
-                    stateRef.current.stickyRowsData.get(row.index)?.level ?? 0
+                    stickyRowData!.level
                   ],
                 }}
               >
@@ -183,30 +184,6 @@ export const DataSheetGrid = memo(
               }}
             >
               {middleCells}
-              {stickyRows.map(({ data, cells }) => (
-                <div
-                  key={data.areaTop + '-' + data.areaBottom}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: data.areaTop,
-                    height: data.areaBottom - data.areaTop,
-                    zIndex: 100 - data.level,
-                  }}
-                >
-                  <div
-                    style={{
-                      position: 'sticky',
-                      top: data.stickyTop,
-                      width: 100,
-                      height: data.rowHeight,
-                    }}
-                  >
-                    {cells}
-                  </div>
-                </div>
-              ))}
               <div
                 style={{
                   position: 'sticky',
@@ -227,6 +204,38 @@ export const DataSheetGrid = memo(
               >
                 {stickyRightCells}
               </div>
+              {stickyRows.map(({ data, cells }) => (
+                <div
+                  key={data.areaTop + '-' + data.areaBottom}
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    top: data.areaTop,
+                    height: data.areaBottom - data.areaTop,
+                    zIndex: 100 - data.level,
+                  }}
+                >
+                  {data.stickyBottom !== undefined && (
+                    <div
+                      style={{
+                        height: data.areaBottom - data.areaTop - data.rowHeight,
+                      }}
+                    />
+                  )}
+                  <div
+                    style={{
+                      position: 'sticky',
+                      top: data.stickyTop,
+                      bottom: data.stickyBottom,
+                      width: 100,
+                      height: data.rowHeight,
+                    }}
+                  >
+                    {cells}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
