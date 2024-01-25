@@ -31,21 +31,22 @@ export const DataSheetGrid = memo(
       ref
     ) => {
       const stateRef = useRef<DataSheetGridState<any>>(new DataSheetGridState())
-      stateRef.current.data = data
-      stateRef.current.rowIsSticky = rowIsSticky
-      stateRef.current.columns = columns as Column<any>[]
+      stateRef.current.update({
+        data,
+        columns: columns as Column<any>[],
+        rowIsSticky,
+      })
 
       const scrollableRef = useRef<HTMLDivElement>(null)
 
       const rowVirtualizer = useVirtualizer({
         count: stateRef.current.rowCount(),
         getScrollElement: () => scrollableRef.current,
-        estimateSize: () => 35,
+        estimateSize: (index) => 20 + (index % 9) * 6,
         overscan: overscanRows,
-        rangeExtractor: (range) => stateRef.current.rowRangeExtractor(range),
+        rangeExtractor: stateRef.current.rowRangeExtractor,
         onChange: (instance) => {
           stateRef.current.rowVirtualizer = instance
-          stateRef.current.computeStickyRows()
         },
       })
 
@@ -53,41 +54,43 @@ export const DataSheetGrid = memo(
         count: stateRef.current.colCount(),
         horizontal: true,
         getScrollElement: () => scrollableRef.current,
-        estimateSize: () => 50,
+        estimateSize: (index) => 50 + (index % 9) * 4,
         overscan: overscanCols,
-        rangeExtractor: (range) => stateRef.current.colRangeExtractor(range),
-        onChange: (instance) => {
-          stateRef.current.colVirtualizer = instance
-        },
+        rangeExtractor: stateRef.current.colRangeExtractor,
       })
 
+      // Cells that scroll normally
       const middleCells: ReactNode[] = []
+      // Cells that are sticky to the left, but otherwise scroll normally
       const stickyLeftCells: ReactNode[] = []
+      // Cells that are sticky to the right, but otherwise scroll normally
       const stickyRightCells: ReactNode[] = []
+      // Rows that are sticky to the top or bottom
       const stickyRows: {
         data: StickyRowData
+        // Cells that scroll left to right normally
         cells: ReactNode[]
+        // Cells that are sticky to the left
         stickyLeftCells: ReactNode[]
+        // Cells that are sticky to the right
         stickyRightCells: ReactNode[]
       }[] = []
-      let nextStickyRowIndex = 0
+
+      const stickyRowsData = [...stateRef.current.stickyRows]
 
       rowVirtualizer.getVirtualItems().forEach((row) => {
-        while (
-          nextStickyRowIndex < stateRef.current.stickyRows.length &&
-          stateRef.current.stickyRows[nextStickyRowIndex] < row.index
-        ) {
-          nextStickyRowIndex++
+        while (stickyRowsData.length && stickyRowsData[0].index < row.index) {
+          stickyRowsData.shift()
         }
-        const stickyRow =
-          stateRef.current.stickyRows[nextStickyRowIndex] === row.index
 
-        let stickyRowData: StickyRowData | undefined
+        const stickyRowData =
+          stickyRowsData[0].index === row.index
+            ? stickyRowsData[0].data
+            : undefined
 
-        if (stickyRow) {
-          stickyRowData = stateRef.current.stickyRowsData.get(row.index)
+        if (stickyRowData) {
           stickyRows.push({
-            data: stickyRowData as StickyRowData,
+            data: stickyRowData,
             cells: [],
             stickyLeftCells: [],
             stickyRightCells: [],
@@ -98,7 +101,7 @@ export const DataSheetGrid = memo(
           const stickyLeft = stateRef.current.isStickyLeft(col.index)
           const stickyRight = stateRef.current.isStickyRight(col.index)
 
-          if (stickyRow) {
+          if (stickyRowData) {
             if (stickyLeft) {
               stickyRows[stickyRows.length - 1].stickyLeftCells.push(
                 <div
