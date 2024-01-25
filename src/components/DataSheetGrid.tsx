@@ -64,7 +64,12 @@ export const DataSheetGrid = memo(
       const middleCells: ReactNode[] = []
       const stickyLeftCells: ReactNode[] = []
       const stickyRightCells: ReactNode[] = []
-      const stickyRows: { data: StickyRowData; cells: ReactNode[] }[] = []
+      const stickyRows: {
+        data: StickyRowData
+        cells: ReactNode[]
+        stickyLeftCells: ReactNode[]
+        stickyRightCells: ReactNode[]
+      }[] = []
       let nextStickyRowIndex = 0
 
       rowVirtualizer.getVirtualItems().forEach((row) => {
@@ -84,6 +89,8 @@ export const DataSheetGrid = memo(
           stickyRows.push({
             data: stickyRowData as StickyRowData,
             cells: [],
+            stickyLeftCells: [],
+            stickyRightCells: [],
           })
         }
 
@@ -92,24 +99,66 @@ export const DataSheetGrid = memo(
           const stickyRight = stateRef.current.isStickyRight(col.index)
 
           if (stickyRow) {
-            stickyRows[stickyRows.length - 1].cells.push(
-              <div
-                key={`${col.key}-${row.key}`}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: col.size,
-                  height: row.size,
-                  transform: `translateX(${col.start}px)`,
-                  background: ['#ff0000', '#cc0000', '#990000', '#660000'][
-                    stickyRowData!.level
-                  ],
-                }}
-              >
-                {col.index},{row.index}
-              </div>
-            )
+            if (stickyLeft) {
+              stickyRows[stickyRows.length - 1].stickyLeftCells.push(
+                <div
+                  key={`${col.key}-${row.key}`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: col.size,
+                    height: row.size,
+                    transform: `translateX(${col.start}px)`,
+                    background: ['#00ff00', '#00cc00', '#009900', '#006600'][
+                      stickyRowData!.level
+                    ],
+                  }}
+                >
+                  {col.index},{row.index}
+                </div>
+              )
+            } else if (stickyRight) {
+              stickyRows[stickyRows.length - 1].stickyRightCells.push(
+                <div
+                  key={`${col.key}-${row.key}`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: col.size,
+                    height: row.size,
+                    transform: `translateX(${
+                      col.end - colVirtualizer.getTotalSize()
+                    }px)`,
+                    background: ['#0000ff', '#0000cc', '#000099', '#000066'][
+                      stickyRowData!.level
+                    ],
+                  }}
+                >
+                  {col.index},{row.index}
+                </div>
+              )
+            } else {
+              stickyRows[stickyRows.length - 1].cells.push(
+                <div
+                  key={`${col.key}-${row.key}`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: col.size,
+                    height: row.size,
+                    transform: `translateX(${col.start}px)`,
+                    background: ['#ff0000', '#cc0000', '#990000', '#660000'][
+                      stickyRowData!.level
+                    ],
+                  }}
+                >
+                  {col.index},{row.index}
+                </div>
+              )
+            }
           } else if (stickyLeft) {
             stickyLeftCells.push(
               <div
@@ -121,7 +170,7 @@ export const DataSheetGrid = memo(
                   width: col.size,
                   height: row.size,
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
-                  background: 'red',
+                  background: 'teal',
                 }}
               >
                 {col.index},{row.index}
@@ -140,7 +189,7 @@ export const DataSheetGrid = memo(
                   transform: `translateX(${
                     col.end - colVirtualizer.getTotalSize()
                   }px) translateY(${row.start}px)`,
-                  background: 'blue',
+                  background: 'plum',
                 }}
               >
                 {col.index},{row.index}
@@ -157,7 +206,7 @@ export const DataSheetGrid = memo(
                   width: col.size,
                   height: row.size,
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
-                  background: 'green',
+                  background: 'white',
                 }}
               >
                 {col.index},{row.index}
@@ -204,38 +253,61 @@ export const DataSheetGrid = memo(
               >
                 {stickyRightCells}
               </div>
-              {stickyRows.map(({ data, cells }) => (
-                <div
-                  key={data.areaTop + '-' + data.areaBottom}
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: data.areaTop,
-                    height: data.areaBottom - data.areaTop,
-                    zIndex: 100 - data.level,
-                  }}
-                >
-                  {data.stickyBottom !== undefined && (
-                    <div
-                      style={{
-                        height: data.areaBottom - data.areaTop - data.rowHeight,
-                      }}
-                    />
-                  )}
+              {stickyRows.map(
+                ({ data, cells, stickyRightCells, stickyLeftCells }) => (
                   <div
+                    key={data.areaTop + '-' + data.areaBottom}
                     style={{
-                      position: 'sticky',
-                      top: data.stickyTop,
-                      bottom: data.stickyBottom,
-                      width: 100,
-                      height: data.rowHeight,
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      top: data.areaTop,
+                      height: data.areaBottom - data.areaTop,
+                      zIndex: 100 - data.level,
                     }}
                   >
-                    {cells}
+                    {data.stickyBottom !== undefined && (
+                      <div
+                        style={{
+                          height:
+                            data.areaBottom - data.areaTop - data.rowHeight,
+                        }}
+                      />
+                    )}
+                    <div
+                      style={{
+                        position: 'sticky',
+                        top: data.stickyTop,
+                        bottom: data.stickyBottom,
+                        width: '100%',
+                        height: data.rowHeight,
+                      }}
+                    >
+                      {cells}
+                      <div
+                        style={{
+                          position: 'sticky',
+                          left: 0,
+                          background: 'blue',
+                          width: 1,
+                        }}
+                      >
+                        {stickyLeftCells}
+                      </div>
+                      <div
+                        style={{
+                          position: 'sticky',
+                          right: 0,
+                          width: 1,
+                          marginLeft: 'auto',
+                        }}
+                      >
+                        {stickyRightCells}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
         </div>

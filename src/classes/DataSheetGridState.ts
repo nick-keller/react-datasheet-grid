@@ -131,10 +131,41 @@ export class DataSheetGridState<Row> {
 
   rowRangeExtractor(range: Range): number[] {
     const items = [] as number[]
+    const top =
+      this.rowVirtualizer?.measurementsCache[range.startIndex].start ?? 0
+    const bottom =
+      this.rowVirtualizer?.measurementsCache[range.endIndex].end ?? 0
 
-    for (let i = 0; i < range.count; i++) {
+    const visibleRows = this._stickyRows.filter((rowIndex) => {
+      const row = this._stickyRowsData.get(rowIndex)
+      return row ? row.areaTop < bottom && row.areaBottom > top : false
+    })
+
+    const firstVisibleIndex = Math.max(0, range.startIndex - range.overscan)
+    const lastVisibleIndex = Math.min(
+      range.count - 1,
+      range.endIndex + range.overscan
+    )
+
+    for (const rowIndex of visibleRows) {
+      if (rowIndex >= firstVisibleIndex) {
+        break
+      }
+      items.push(rowIndex)
+    }
+
+    for (let i = firstVisibleIndex; i <= lastVisibleIndex; i++) {
       items.push(i)
     }
+
+    for (const rowIndex of visibleRows) {
+      if (rowIndex <= lastVisibleIndex) {
+        continue
+      }
+      items.push(rowIndex)
+    }
+
+    console.log(items)
 
     return items
   }
@@ -233,7 +264,10 @@ export class DataSheetGridState<Row> {
           next--
         }
 
-        while (bottom.length && bottom[bottom.length - 1].level >= rowStickiness.level) {
+        while (
+          bottom.length &&
+          bottom[bottom.length - 1].level >= rowStickiness.level
+        ) {
           bottom.pop()
         }
 

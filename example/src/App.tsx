@@ -28,6 +28,11 @@ const columns: Column<any>[] = [
   { id: 'foo' },
   { id: 'foo' },
   { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
+  { id: 'foo' },
   { id: 'foo', sticky: 'right' },
   { id: 'foo', sticky: 'right' },
   { id: 'foo', sticky: 'right' },
@@ -47,7 +52,6 @@ function App() {
     >
       <DataSheetGrid
         value={data}
-        overscanRows={10}
         rowIsSticky={({ rowIndex }) => {
           if (rowIndex % 20 === 0) {
             return { level: 1, position: 'top' }
