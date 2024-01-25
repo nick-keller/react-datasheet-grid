@@ -4,14 +4,15 @@ import {
   DataSheetGridState,
   StickyRowData,
 } from '../classes/DataSheetGridState'
-import { Column, RowParams, RowStickiness, RowStickinessFn } from '../types'
+import {Column, isStaticRow, RowParams, RowStickinessFn, StaticRow} from '../types'
 
 export type DataSheetGridProps<Row> = {
-  value?: Row[]
+  value?: (Row | StaticRow)[]
   overscanRows?: number
   overscanCols?: number
   rowIsSticky?: RowStickinessFn<Row>
   columns?: Partial<Column<Row>>[]
+  rowHeight?: number | ((params: RowParams<Row>) => number)
 }
 
 export type DataSheetGridRef = {}
@@ -27,6 +28,7 @@ export const DataSheetGrid = memo(
         overscanCols,
         rowIsSticky,
         columns,
+        rowHeight = 40,
       },
       ref
     ) => {
@@ -42,7 +44,17 @@ export const DataSheetGrid = memo(
       const rowVirtualizer = useVirtualizer({
         count: stateRef.current.rowCount(),
         getScrollElement: () => scrollableRef.current,
-        estimateSize: (index) => 20 + (index % 9) * 6,
+        estimateSize: (index) => {
+          if (isStaticRow(data[index])) {
+            return data[index].height ?? (typeof rowHeight === 'number' ? rowHeight : 40)
+          }
+
+          if (typeof rowHeight === 'function') {
+            return rowHeight({ rowIndex: index, rowData: data[index] })
+          }
+
+          return rowHeight
+        },
         overscan: overscanRows,
         rangeExtractor: stateRef.current.rowRangeExtractor,
         onChange: (instance) => {
@@ -79,12 +91,13 @@ export const DataSheetGrid = memo(
       const stickyRowsData = [...stateRef.current.stickyRows]
 
       rowVirtualizer.getVirtualItems().forEach((row) => {
+        // We just pop the array from the front to avoid re-iterating over the array for every row
         while (stickyRowsData.length && stickyRowsData[0].index < row.index) {
           stickyRowsData.shift()
         }
 
         const stickyRowData =
-          stickyRowsData[0].index === row.index
+          stickyRowsData[0]?.index === row.index
             ? stickyRowsData[0].data
             : undefined
 
@@ -106,16 +119,11 @@ export const DataSheetGrid = memo(
               stickyRows[stickyRows.length - 1].stickyLeftCells.push(
                 <div
                   key={`${col.key}-${row.key}`}
+                  className="dsg-cell-container"
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
                     width: col.size,
                     height: row.size,
                     transform: `translateX(${col.start}px)`,
-                    background: ['#00ff00', '#00cc00', '#009900', '#006600'][
-                      stickyRowData!.level
-                    ],
                   }}
                 >
                   {col.index},{row.index}
@@ -125,18 +133,13 @@ export const DataSheetGrid = memo(
               stickyRows[stickyRows.length - 1].stickyRightCells.push(
                 <div
                   key={`${col.key}-${row.key}`}
+                  className="dsg-cell-container"
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
                     width: col.size,
                     height: row.size,
                     transform: `translateX(${
                       col.end - colVirtualizer.getTotalSize()
                     }px)`,
-                    background: ['#0000ff', '#0000cc', '#000099', '#000066'][
-                      stickyRowData!.level
-                    ],
                   }}
                 >
                   {col.index},{row.index}
@@ -146,16 +149,11 @@ export const DataSheetGrid = memo(
               stickyRows[stickyRows.length - 1].cells.push(
                 <div
                   key={`${col.key}-${row.key}`}
+                  className="dsg-cell-container"
                   style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
                     width: col.size,
                     height: row.size,
                     transform: `translateX(${col.start}px)`,
-                    background: ['#ff0000', '#cc0000', '#990000', '#660000'][
-                      stickyRowData!.level
-                    ],
                   }}
                 >
                   {col.index},{row.index}
@@ -166,14 +164,11 @@ export const DataSheetGrid = memo(
             stickyLeftCells.push(
               <div
                 key={`${col.key}-${row.key}`}
+                className="dsg-cell-container"
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
                   width: col.size,
                   height: row.size,
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
-                  background: 'teal',
                 }}
               >
                 {col.index},{row.index}
@@ -183,16 +178,13 @@ export const DataSheetGrid = memo(
             stickyRightCells.push(
               <div
                 key={`${col.key}-${row.key}`}
+                className="dsg-cell-container"
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
                   width: col.size,
                   height: row.size,
                   transform: `translateX(${
                     col.end - colVirtualizer.getTotalSize()
                   }px) translateY(${row.start}px)`,
-                  background: 'plum',
                 }}
               >
                 {col.index},{row.index}
@@ -202,14 +194,11 @@ export const DataSheetGrid = memo(
             middleCells.push(
               <div
                 key={`${col.key}-${row.key}`}
+                className="dsg-cell-container"
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
                   width: col.size,
                   height: row.size,
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
-                  background: 'white',
                 }}
               >
                 {col.index},{row.index}
@@ -223,47 +212,34 @@ export const DataSheetGrid = memo(
         <div>
           <div
             ref={scrollableRef}
+            className="dsg-container"
             style={{
               height: `400px`,
-              overflow: 'auto',
             }}
           >
             <div
               style={{
                 height: rowVirtualizer.getTotalSize(),
                 width: colVirtualizer.getTotalSize(),
-                position: 'relative',
               }}
             >
               {middleCells}
-              <div
-                style={{
-                  position: 'sticky',
-                  left: 0,
-                  background: 'blue',
-                  width: 1,
-                }}
-              >
-                {stickyLeftCells}
-              </div>
-              <div
-                style={{
-                  position: 'sticky',
-                  right: 0,
-                  width: 1,
-                  marginLeft: 'auto',
-                }}
-              >
-                {stickyRightCells}
-              </div>
+              {stickyLeftCells.length > 0 && (
+                <div className="dsg-sticky-left-container">
+                  {stickyLeftCells}
+                </div>
+              )}
+              {stickyRightCells.length > 0 && (
+                <div className="dsg-sticky-right-container">
+                  {stickyRightCells}
+                </div>
+              )}
               {stickyRows.map(
                 ({ data, cells, stickyRightCells, stickyLeftCells }) => (
                   <div
                     key={data.areaTop + '-' + data.areaBottom}
+                    className="dsg-sticky-row-area"
                     style={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
                       top: data.areaTop,
                       height: data.areaBottom - data.areaTop,
                       zIndex: 100 - data.level,
@@ -278,35 +254,24 @@ export const DataSheetGrid = memo(
                       />
                     )}
                     <div
+                      className="dsg-sticky-row"
                       style={{
-                        position: 'sticky',
                         top: data.stickyTop,
                         bottom: data.stickyBottom,
-                        width: '100%',
                         height: data.rowHeight,
                       }}
                     >
                       {cells}
-                      <div
-                        style={{
-                          position: 'sticky',
-                          left: 0,
-                          background: 'blue',
-                          width: 1,
-                        }}
-                      >
-                        {stickyLeftCells}
-                      </div>
-                      <div
-                        style={{
-                          position: 'sticky',
-                          right: 0,
-                          width: 1,
-                          marginLeft: 'auto',
-                        }}
-                      >
-                        {stickyRightCells}
-                      </div>
+                      {stickyLeftCells.length > 0 && (
+                        <div className="dsg-sticky-left-container">
+                          {stickyLeftCells}
+                        </div>
+                      )}
+                      {stickyRightCells.length > 0 && (
+                        <div className="dsg-sticky-right-container">
+                          {stickyRightCells}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )

@@ -1,5 +1,17 @@
-import { Column, RowParams, RowStickiness, RowStickinessFn } from '../types'
-import { Range, Virtualizer } from '@tanstack/react-virtual'
+import {
+  Column,
+  isStaticRow,
+  RowParams,
+  RowStickiness,
+  RowStickinessFn,
+  RowStickinessShortHand,
+  StaticRow,
+} from '../types'
+import {
+  Range,
+  Virtualizer,
+  defaultRangeExtractor,
+} from '@tanstack/react-virtual'
 
 export type StickyRowData = {
   // Top of the sticky area in which the element can travel
@@ -15,10 +27,14 @@ export type StickyRowData = {
 }
 
 const parseRowStickinessFnResult = (
-  result: ReturnType<RowStickinessFn<any>>
+  result: RowStickinessShortHand
 ): RowStickiness | null => {
-  if (typeof result === 'boolean') {
+  if (typeof result === 'boolean' || result === 'top') {
     return result ? { level: 1, position: 'top' } : null
+  }
+
+  if (result === 'bottom') {
+    return { level: 1, position: 'bottom' }
   }
 
   if (typeof result === 'number') {
@@ -33,14 +49,14 @@ const parseRowStickinessFnResult = (
 }
 
 export class DataSheetGridState<Row> {
-  private _data: Row[] = []
+  private _data: (Row | StaticRow)[] = []
   private _rowIsSticky: null | RowStickinessFn<Row> = null
   private _stickyRows: { index: number; data: StickyRowData }[] = []
   private _stickyColumnsLeft: number = 0
   private _stickyColumnsRightFromIndex: number = Infinity
   private _columns: Column<Row>[] = []
-  private _colRangeExtractor: (range: Range) => number[] = () => []
-  private _rowRangeExtractor: (range: Range) => number[] = () => []
+  private _colRangeExtractor: (range: Range) => number[] = defaultRangeExtractor
+  private _rowRangeExtractor: (range: Range) => number[] = defaultRangeExtractor
   public _rowVirtualizer: Virtualizer<HTMLDivElement, Element> | null = null
 
   constructor() {}
@@ -162,17 +178,17 @@ export class DataSheetGridState<Row> {
   }
 
   computeStickyRows() {
-    const isSticky = this._rowIsSticky
+    const isSticky = this._rowIsSticky ?? (() => false)
     const rowVirtualizer = this._rowVirtualizer
     this._stickyRows = []
 
-    if (!isSticky || !rowVirtualizer) {
+    if (!rowVirtualizer) {
       return
     }
 
     const stickyRows = this._data.reduce((acc, rowData, rowIndex) => {
       const rowStickiness = parseRowStickinessFnResult(
-        isSticky({ rowData, rowIndex })
+        isStaticRow(rowData) ? rowData.sticky : isSticky({ rowData, rowIndex })
       )
 
       if (rowStickiness) {

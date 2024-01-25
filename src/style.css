@@ -1,0 +1,57 @@
+:root {
+  --dsg-border-color: #e8ebed;
+}
+
+.dsg-container {
+  overflow: auto;
+  background: white;
+}
+
+.dsg-container > div {
+  position: relative;
+}
+
+.dsg-sticky-left-container {
+  position: sticky;
+  left: 0;
+  width: 1px;
+  pointer-events: none;
+}
+
+.dsg-sticky-right-container {
+  position: sticky;
+  right: 0;
+  width: 1px;
+  margin-left: auto;
+  pointer-events: none;
+}
+
+.dsg-sticky-row-area {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.dsg-sticky-row {
+  position: sticky;
+  width: 100%;
+}
+
+.dsg-cell-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  box-sizing: border-box;
+  border: solid 1px var(--dsg-border-color);
+  border-bottom: none;
+  border-right: none;
+  box-shadow: 1px 1px var(--dsg-border-color);
+  pointer-events: auto;
+}
+
+.dsg-sticky-right-container .dsg-cell-container {
+  right: 0;
+  left: auto;
+}
