@@ -1,7 +1,13 @@
 export type RowParams<Row> = { rowData: Row; rowIndex: number }
 
 export type Column<Row> = {
+  id?: string
   sticky?: 'left' | 'right' | false | null
+  basis: number
+  grow: number
+  shrink: number
+  minWidth: number
+  maxWidth?: number
 }
 
 export const dsgSymbol = Symbol('dsg')
@@ -10,7 +16,9 @@ export const isStaticRow = (row: any): row is StaticRow => {
   return row ? row[dsgSymbol] === true : false
 }
 
-export const createStaticRow = (row: Omit<StaticRow, typeof dsgSymbol>): StaticRow => ({
+export const createStaticRow = (
+  row: Omit<StaticRow, typeof dsgSymbol>
+): StaticRow => ({
   ...row,
   [dsgSymbol]: true,
 })
@@ -19,6 +27,7 @@ export type StaticRow = {
   [dsgSymbol]: true
   height?: number
   sticky?: RowStickinessShortHand
+  key?: string
 }
 
 export type RowStickiness = {

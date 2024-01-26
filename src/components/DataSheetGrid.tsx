@@ -1,18 +1,40 @@
-import React, { ForwardedRef, forwardRef, memo, ReactNode, useRef } from 'react'
+import React, {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  memo,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import {
   DataSheetGridState,
   StickyRowData,
 } from '../classes/DataSheetGridState'
-import {Column, isStaticRow, RowParams, RowStickinessFn, StaticRow} from '../types'
+import {
+  Column,
+  isStaticRow,
+  RowParams,
+  RowStickinessFn,
+  StaticRow,
+} from '../types'
+import { ColumnSizer, flexColumnSizer } from '../classes/ColumnSizer'
+import { useColumns } from '../hooks/useColumns'
+import { useColumnSizes } from '../hooks/useColumnSizes'
 
 export type DataSheetGridProps<Row> = {
-  value?: (Row | StaticRow)[]
-  overscanRows?: number
-  overscanCols?: number
-  rowIsSticky?: RowStickinessFn<Row>
+  className?: string
   columns?: Partial<Column<Row>>[]
+  columnSizer?: ColumnSizer
+  overscanCols?: number
+  overscanRows?: number
   rowHeight?: number | ((params: RowParams<Row>) => number)
+  rowIsSticky?: RowStickinessFn<Row>
+  rowKey?: string | ((params: RowParams<Row>) => string | number)
+  style?: CSSProperties
+  value?: (Row | StaticRow)[]
 }
 
 export type DataSheetGridRef = {}
@@ -24,29 +46,40 @@ export const DataSheetGrid = memo(
     (
       {
         value: data = DEFAULT_DATA,
+        columnSizer = flexColumnSizer,
+        className,
+        style,
         overscanRows,
         overscanCols,
         rowIsSticky,
-        columns,
+        columns: partialColumns = [],
         rowHeight = 40,
+        rowKey = ({ rowIndex }) => rowIndex,
       },
       ref
     ) => {
+      const columns = useColumns(partialColumns)
+
       const stateRef = useRef<DataSheetGridState<any>>(new DataSheetGridState())
       stateRef.current.update({
         data,
-        columns: columns as Column<any>[],
+        columns,
         rowIsSticky,
       })
 
       const scrollableRef = useRef<HTMLDivElement>(null)
+
+      const columnSizes = useColumnSizes(columns, scrollableRef, columnSizer)
 
       const rowVirtualizer = useVirtualizer({
         count: stateRef.current.rowCount(),
         getScrollElement: () => scrollableRef.current,
         estimateSize: (index) => {
           if (isStaticRow(data[index])) {
-            return data[index].height ?? (typeof rowHeight === 'number' ? rowHeight : 40)
+            return (
+              data[index].height ??
+              (typeof rowHeight === 'number' ? rowHeight : 40)
+            )
           }
 
           if (typeof rowHeight === 'function') {
@@ -66,10 +99,18 @@ export const DataSheetGrid = memo(
         count: stateRef.current.colCount(),
         horizontal: true,
         getScrollElement: () => scrollableRef.current,
-        estimateSize: (index) => 50 + (index % 9) * 4,
+        estimateSize: (index) => columnSizes[index],
         overscan: overscanCols,
         rangeExtractor: stateRef.current.colRangeExtractor,
       })
+
+      useEffect(() => {
+        colVirtualizer.measure()
+      }, [columnSizes])
+
+      useEffect(() => {
+        rowVirtualizer.measure()
+      }, [rowHeight])
 
       // Cells that scroll normally
       const middleCells: ReactNode[] = []
@@ -110,7 +151,16 @@ export const DataSheetGrid = memo(
           })
         }
 
+        const dataRow = data[row.index]
+
+        const rk = isStaticRow(dataRow)
+          ? dataRow.key ?? row.index
+          : typeof rowKey === 'function'
+          ? rowKey({ rowIndex: row.index, rowData: dataRow })
+          : ((dataRow[rowKey] ?? row.index) as string | number)
+
         colVirtualizer.getVirtualItems().forEach((col) => {
+          const ck = columns[col.index].id ?? col.index
           const stickyLeft = stateRef.current.isStickyLeft(col.index)
           const stickyRight = stateRef.current.isStickyRight(col.index)
 
@@ -118,7 +168,7 @@ export const DataSheetGrid = memo(
             if (stickyLeft) {
               stickyRows[stickyRows.length - 1].stickyLeftCells.push(
                 <div
-                  key={`${col.key}-${row.key}`}
+                  key={`${ck}-${rk}`}
                   className="dsg-cell-container"
                   style={{
                     width: col.size,
@@ -132,7 +182,7 @@ export const DataSheetGrid = memo(
             } else if (stickyRight) {
               stickyRows[stickyRows.length - 1].stickyRightCells.push(
                 <div
-                  key={`${col.key}-${row.key}`}
+                  key={`${ck}-${rk}`}
                   className="dsg-cell-container"
                   style={{
                     width: col.size,
@@ -148,7 +198,7 @@ export const DataSheetGrid = memo(
             } else {
               stickyRows[stickyRows.length - 1].cells.push(
                 <div
-                  key={`${col.key}-${row.key}`}
+                  key={`${ck}-${rk}`}
                   className="dsg-cell-container"
                   style={{
                     width: col.size,
@@ -163,7 +213,7 @@ export const DataSheetGrid = memo(
           } else if (stickyLeft) {
             stickyLeftCells.push(
               <div
-                key={`${col.key}-${row.key}`}
+                key={`${ck}-${rk}`}
                 className="dsg-cell-container"
                 style={{
                   width: col.size,
@@ -177,7 +227,7 @@ export const DataSheetGrid = memo(
           } else if (stickyRight) {
             stickyRightCells.push(
               <div
-                key={`${col.key}-${row.key}`}
+                key={`${ck}-${rk}`}
                 className="dsg-cell-container"
                 style={{
                   width: col.size,
@@ -193,7 +243,7 @@ export const DataSheetGrid = memo(
           } else {
             middleCells.push(
               <div
-                key={`${col.key}-${row.key}`}
+                key={`${ck}-${rk}`}
                 className="dsg-cell-container"
                 style={{
                   width: col.size,
@@ -209,7 +259,7 @@ export const DataSheetGrid = memo(
       })
 
       return (
-        <div>
+        <div className={className} style={style}>
           <div
             ref={scrollableRef}
             className="dsg-container"

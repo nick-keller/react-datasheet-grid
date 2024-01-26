@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 import { DataSheetGrid, Column, createStaticRow, isStaticRow } from '../../src'
 import '../../src/style.css'
 
-const columns: Column<any>[] = [
+const columns: Partial<Column<any>>[] = [
   { sticky: 'left' },
   { sticky: 'left' },
-  { sticky: 'left' },
   {},
   {},
   {},
@@ -48,27 +47,11 @@ const columns: Column<any>[] = [
   {},
   {},
   {},
-  {},
-  { sticky: 'right' },
   { sticky: 'right' },
   { sticky: 'right' },
 ]
 
-const data = [
-  createStaticRow({ sticky: true, height: 40 }),
-  ...new Array(1000).fill(0),
-]
-
-const rowIsSticky = ({ rowIndex }: { rowIndex: number }) => {
-  if (rowIndex % 20 === 0) {
-    return { level: 1, position: 'top' as const }
-  }
-  if (rowIndex % 20 === 15) {
-    return { level: 2, position: 'bottom' as const }
-  }
-
-  return null
-}
+const data = [createStaticRow({ sticky: true }), ...new Array(1000).fill(0)]
 
 function App() {
   return (
@@ -80,7 +63,7 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid value={data} columns={columns} rowHeight={20} />
+      <DataSheetGrid value={data} columns={columns} />
     </div>
   )
 }
