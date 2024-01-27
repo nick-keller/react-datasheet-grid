@@ -71,6 +71,7 @@ export const DataSheetGrid = React.memo(
         headerRowHeight = typeof rowHeight === 'number' ? rowHeight : 40,
         gutterColumn,
         stickyRightColumn,
+        stickyFirstColumn,
         rowKey,
         addRowsComponent: AddRowsComponent = AddRows,
         createRow = DEFAULT_CREATE_ROW as () => T,
@@ -253,6 +254,13 @@ export const DataSheetGrid = React.memo(
               }
 
               if (
+                stickyFirstColumn &&
+                event.clientX - outerBoundingClientRect.left <= columnRights[1]
+              ) {
+                x = event.clientX - outerBoundingClientRect.left
+              }
+
+              if (
                 hasStickyRightColumn &&
                 outerBoundingClientRect.right - event.clientX <=
                   columnWidths[columnWidths.length - 1]
@@ -277,6 +285,7 @@ export const DataSheetGrid = React.memo(
           getOuterBoundingClientRect,
           headerRowHeight,
           hasStickyRightColumn,
+          stickyFirstColumn,
           getRowIndex,
         ]
       )
@@ -1780,6 +1789,7 @@ export const DataSheetGrid = React.memo(
             outerRef={outerRef}
             columnWidths={columnWidths}
             hasStickyRightColumn={hasStickyRightColumn}
+            stickyFirstColumn={stickyFirstColumn}
             displayHeight={displayHeight}
             data={data}
             fullWidth={fullWidth}
@@ -1808,6 +1818,7 @@ export const DataSheetGrid = React.memo(
               headerRowHeight={headerRowHeight}
               rowHeight={getRowSize}
               hasStickyRightColumn={hasStickyRightColumn}
+              stickyFirstColumn={stickyFirstColumn}
               dataLength={data.length}
               viewHeight={height}
               viewWidth={width}

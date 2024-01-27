@@ -4,6 +4,7 @@ import cx from 'classnames'
 export const Cell: FC<{
   gutter: boolean
   stickyRight: boolean
+  stickyFirstColumn?: boolean
   disabled?: boolean
   className?: string
   active?: boolean
@@ -14,6 +15,7 @@ export const Cell: FC<{
   children,
   gutter,
   stickyRight,
+  stickyFirstColumn,
   active,
   disabled,
   className,
@@ -28,6 +30,7 @@ export const Cell: FC<{
         disabled && 'dsg-cell-disabled',
         gutter && active && 'dsg-cell-gutter-active',
         stickyRight && 'dsg-cell-sticky-right',
+        stickyFirstColumn && 'dsg-cell-sticky-first',
         className
       )}
       style={{
