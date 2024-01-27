@@ -116,6 +116,26 @@ test('Enter to edit', () => {
   })
 })
 
+test('Non-ascii character to edit', () => {
+  const ref = { current: null as unknown as DataSheetGridRef }
+  const data = {
+    current: [
+      { firstName: 'Elon', lastName: 'Musk' },
+      { firstName: 'Jeff', lastName: 'Bezos' },
+    ],
+  }
+
+  render(<DataWrapper dataRef={data} dsgRef={ref} columns={columns} />)
+
+  act(() => ref.current.setActiveCell({ col: 0, row: 1 }))
+
+  userEvent.keyboard('ş')
+  expect(data.current).toEqual([
+    { firstName: 'Elon', lastName: 'Musk' },
+    { firstName: 'ş', lastName: 'Bezos' },
+  ])
+})
+
 test('Lazy cell validate with Enter', () => {
   const ref = { current: null as unknown as DataSheetGridRef }
   const data = {

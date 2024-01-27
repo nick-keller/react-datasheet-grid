@@ -103,3 +103,7 @@ export const encodeHtml = (str: string) => {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
 }
+
+export const isPrintableUnicode = (str: string): boolean => {
+  return str.match(/^[^\x00-\x20\x7F-\x9F]$/) !== null
+}
