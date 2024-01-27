@@ -55,3 +55,9 @@
   right: 0;
   left: auto;
 }
+
+.dsg-cursor {
+  position: absolute;
+  inset: 0;
+  background: tomato;
+}

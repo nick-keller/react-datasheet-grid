@@ -1,10 +1,13 @@
 import {
+  Cell,
   Column,
+  Cursor,
   isStaticRow,
   RowParams,
   RowStickiness,
   RowStickinessFn,
   RowStickinessShortHand,
+  ScrollBehavior,
   StaticRow,
 } from '../types'
 import {
@@ -12,6 +15,7 @@ import {
   Virtualizer,
   defaultRangeExtractor,
 } from '@tanstack/react-virtual'
+import React from 'react'
 
 export type StickyRowData = {
   // Top of the sticky area in which the element can travel
@@ -57,9 +61,16 @@ export class DataSheetGridState<Row> {
   private _columns: Column<Row>[] = []
   private _colRangeExtractor: (range: Range) => number[] = defaultRangeExtractor
   private _rowRangeExtractor: (range: Range) => number[] = defaultRangeExtractor
+  // Highlighted cell, null when not focused
+  private _activeCell: (Cell & ScrollBehavior) | null = { col: 2, row: 2 }
+  // The selection cell and the active cell are the two corners of the selection, null when nothing is selected
+  private _selectionCell: (Cell & ScrollBehavior) | null = { col: 0, row: 5 }
+  private _cursor: Cursor<Row> = () => false
   public _rowVirtualizer: Virtualizer<HTMLDivElement, Element> | null = null
 
-  constructor() {}
+  constructor() {
+    this.computeCursor()
+  }
 
   update({
     data,
@@ -92,6 +103,67 @@ export class DataSheetGridState<Row> {
     if (computeStickyColumns) {
       this.computeStickyColumns()
     }
+  }
+
+  get activeCell(): (Cell & ScrollBehavior) | null {
+    return this._activeCell
+  }
+
+  set activeCell(value: (Cell & ScrollBehavior) | null) {
+    this._activeCell = value
+    this.computeCursor()
+  }
+
+  get selectionCell(): (Cell & ScrollBehavior) | null {
+    return this._selectionCell
+  }
+
+  set selectionCell(value: (Cell & ScrollBehavior) | null) {
+    this._selectionCell = value
+    this.computeCursor()
+  }
+
+  private computeCursor() {
+    this._cursor = ({ cell }) => {
+      if (!this._activeCell) {
+        return false
+      }
+
+      if (
+        this._activeCell.col > cell.col &&
+        (!this._selectionCell || this._selectionCell.col > cell.col)
+      ) {
+        return false
+      }
+
+      if (
+        this._activeCell.col < cell.col &&
+        (!this._selectionCell || this._selectionCell.col < cell.col)
+      ) {
+        return false
+      }
+
+      if (
+        this._activeCell.row < cell.row &&
+        (!this._selectionCell || this._selectionCell.row < cell.row)
+      ) {
+        return false
+      }
+
+      if (
+        this._activeCell.row > cell.row &&
+        (!this._selectionCell || this._selectionCell.row > cell.row)
+      ) {
+        return false
+      }
+
+      console.log(cell)
+      return <div className="dsg-cursor" />
+    }
+  }
+
+  get cursor() {
+    return this._cursor
   }
 
   get data() {

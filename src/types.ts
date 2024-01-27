@@ -1,3 +1,5 @@
+import {ReactNode} from "react";
+
 export type RowParams<Row> = { rowData: Row; rowIndex: number }
 
 export type Column<Row> = {
@@ -47,3 +49,19 @@ export type RowStickinessShortHand =
 export type RowStickinessFn<Row> = (
   opts: RowParams<Row>
 ) => RowStickinessShortHand
+
+export type Cell = {
+  col: number
+  row: number
+}
+
+export type ScrollBehavior = {
+  doNotScrollX?: boolean
+  doNotScrollY?: boolean
+}
+
+export type Cursor<Row> = (opts: {
+  cell: Cell
+  column: Column<Row>
+  rowData: Row | StaticRow
+}) => ReactNode

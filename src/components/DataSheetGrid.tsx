@@ -163,6 +163,11 @@ export const DataSheetGrid = memo(
           const ck = columns[col.index].id ?? col.index
           const stickyLeft = stateRef.current.isStickyLeft(col.index)
           const stickyRight = stateRef.current.isStickyRight(col.index)
+          const cursor = stateRef.current.cursor({
+            rowData: dataRow,
+            cell: { col: col.index, row: row.index },
+            column: columns[col.index],
+          });
 
           if (stickyRowData) {
             if (stickyLeft) {
@@ -176,6 +181,7 @@ export const DataSheetGrid = memo(
                     transform: `translateX(${col.start}px)`,
                   }}
                 >
+                  {cursor}
                   {col.index},{row.index}
                 </div>
               )
@@ -192,6 +198,7 @@ export const DataSheetGrid = memo(
                     }px)`,
                   }}
                 >
+                  {cursor}
                   {col.index},{row.index}
                 </div>
               )
@@ -206,6 +213,7 @@ export const DataSheetGrid = memo(
                     transform: `translateX(${col.start}px)`,
                   }}
                 >
+                  {cursor}
                   {col.index},{row.index}
                 </div>
               )
@@ -221,6 +229,7 @@ export const DataSheetGrid = memo(
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
                 }}
               >
+                {cursor}
                 {col.index},{row.index}
               </div>
             )
@@ -237,6 +246,7 @@ export const DataSheetGrid = memo(
                   }px) translateY(${row.start}px)`,
                 }}
               >
+                {cursor}
                 {col.index},{row.index}
               </div>
             )
@@ -251,6 +261,7 @@ export const DataSheetGrid = memo(
                   transform: `translateX(${col.start}px) translateY(${row.start}px)`,
                 }}
               >
+                {cursor}
                 {col.index},{row.index}
               </div>
             )
