@@ -38,9 +38,13 @@ export const parseTextPlainData = (data: string): string[][] => {
 
   const saveCell = () => {
     let str = cleanData.slice(startCell, cursor)
+    if (str[0] === '"' && str[str.length - 1] === '"') {
+      quoted = true
+    }
 
     if (quoted && str[str.length - 1] === '"' && str.includes('\n')) {
       str = str.slice(1, str.length - 1).replace(/""/g, '"')
+      quoted = false
     }
 
     if (quoted && str[str.length - 1] !== '"') {
