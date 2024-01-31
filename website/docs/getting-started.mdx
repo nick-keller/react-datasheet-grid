@@ -30,9 +30,9 @@ const Example = () => {
   ])
 
   const columns = [
-    { ...keyColumn('active', checkboxColumn), title: 'Active' },
-    { ...keyColumn('firstName', textColumn), title: 'First name' },
-    { ...keyColumn('lastName', textColumn), title: 'Last name' },
+    { ...keyColumn('active', checkboxColumn), title: 'Active',resizable:true },
+    { ...keyColumn('firstName', textColumn), title: 'First name',,resizable:true },
+    { ...keyColumn('lastName', textColumn), title: 'Last name',,resizable:true },
   ]
 
   return (
