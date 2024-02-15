@@ -49,6 +49,7 @@ export const isoDateColumn: Partial<Column<string | null, any, string>> = {
   component: IsoDateComponent as CellComponent<string | null, any>,
   deleteValue: () => null,
   // Because the Date constructor works using iso format, we can use it to parse ISO string back to a Date object
+  copyValue: ({ rowData }) => rowData,
   pasteValue: ({ value }) => {
     const date = new Date(value.replace(/\.\s?|\//g, '-'))
     return isNaN(date.getTime()) ? null : date.toISOString().substr(0, 10)
