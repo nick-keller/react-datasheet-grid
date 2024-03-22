@@ -77,6 +77,7 @@ export const DataSheetGrid = React.memo(
         autoAddRow = false,
         lockRows = false,
         disableExpandSelection = false,
+        disableSmartDelete = false,
         duplicateRow = DEFAULT_DUPLICATE_ROW,
         contextMenuComponent: ContextMenuComponent = ContextMenu,
         disableContextMenu: disableContextMenuRaw = false,
@@ -513,7 +514,8 @@ export const DataSheetGrid = React.memo(
       )
 
       const deleteSelection = useCallback(
-        (smartDelete = true) => {
+        (_smartDelete = true) => {
+          const smartDelete = _smartDelete && !disableSmartDelete
           if (!activeCell) {
             return
           }
