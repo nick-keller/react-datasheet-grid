@@ -178,6 +178,12 @@ When true, no context menu is shown when right clicking. `disableContextMenu` is
 
 When true, the user will not be able to drag the corner of the selection to expand it.
 
+### disableSmartDelete
+> Type: `boolean`<br />
+> Default: `false`
+
+When false, deleting an empty cell will select the whole row, and deleting an empty cell of an empty row will actually remove the row from the sheet. Second behaviour is auto-disabled if the lockRows option is enabled.
+
 ## Style
 ### className
 > Type: `string`
