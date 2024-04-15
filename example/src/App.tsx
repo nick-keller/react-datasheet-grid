@@ -5,6 +5,7 @@ import {
   DataSheetGrid,
   keyColumn,
   textColumn,
+  intColumn,
 } from '../../src'
 import '../../src/style.css'
 
@@ -12,11 +13,29 @@ type Row = {
   active: boolean
   firstName: string | null
   lastName: string | null
+  score?: number
 }
 
 function App() {
   const [data, setData] = useState<Row[]>([
-    { active: true, firstName: 'Elon', lastName: 'Musk' },
+    { active: true, firstName: 'Elon', lastName: 'Musk', score: 1 },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
+    { active: false, firstName: 'Jeff', lastName: 'Bezos' },
     { active: false, firstName: 'Jeff', lastName: 'Bezos' },
   ])
 
@@ -25,6 +44,7 @@ function App() {
       ...keyColumn<Row, 'active'>('active', checkboxColumn),
       title: 'Active',
       grow: 0.5,
+      enableSumFooter: true,
     },
     {
       ...keyColumn<Row, 'firstName'>('firstName', textColumn),
@@ -34,6 +54,12 @@ function App() {
       ...keyColumn<Row, 'lastName'>('lastName', textColumn),
       title: 'Last name',
       grow: 2,
+    },
+    {
+      ...keyColumn<Row, 'score'>('score', intColumn),
+      title: 'Last name',
+      grow: 2,
+      enableSumFooter: true,
     },
   ]
 
@@ -46,7 +72,12 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid value={data} onChange={setData} columns={columns} />
+      <DataSheetGrid
+        // stickyFirstColumn
+        value={data}
+        onChange={setData}
+        columns={columns}
+      />
     </div>
   )
 }

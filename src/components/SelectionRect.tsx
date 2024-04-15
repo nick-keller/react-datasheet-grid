@@ -48,6 +48,7 @@ export const SelectionRect = React.memo<SelectionContextType>(
     rowHeight,
     activeCell,
     hasStickyRightColumn,
+    stickyFirstColumn,
     dataLength,
     viewWidth,
     viewHeight,
@@ -170,7 +171,7 @@ export const SelectionRect = React.memo<SelectionContextType>(
             })}
             style={{
               top: headerRowHeight,
-              left: columnWidths[0],
+              left: columnWidths[0] + (stickyFirstColumn ? columnWidths[1] : 0),
               height: viewHeight ? viewHeight - headerRowHeight : 0,
               width:
                 contentWidth && viewWidth
@@ -178,12 +179,12 @@ export const SelectionRect = React.memo<SelectionContextType>(
                     columnWidths[0] -
                     (hasStickyRightColumn
                       ? columnWidths[columnWidths.length - 1]
-                      : 0)
+                      : -(stickyFirstColumn ? columnWidths[1] : 0))
                   : `calc(100% - ${
                       columnWidths[0] +
                       (hasStickyRightColumn
                         ? columnWidths[columnWidths.length - 1]
-                        : 0)
+                        : -(stickyFirstColumn ? columnWidths[1] : 0))
                     }px)`,
             }}
           />
@@ -232,6 +233,8 @@ export const SelectionRect = React.memo<SelectionContextType>(
             className={cx('dsg-active-cell', {
               'dsg-active-cell-focus': editing,
               'dsg-active-cell-disabled': activeCellIsDisabled,
+              'dsg-active-cell-sticky-first':
+                stickyFirstColumn && activeCell.col === 0,
             })}
             style={activeCellRect}
           />
@@ -253,16 +256,29 @@ export const SelectionRect = React.memo<SelectionContextType>(
             }}
           />
         )}
-        {expandRowsRect && (
-          <div className={cx('dsg-expand-rows-rect')} style={expandRowsRect} />
-        )}
+
         {expandRowsIndicator && (
           <div
             className={cx(
               'dsg-expand-rows-indicator',
-              selectionIsDisabled && 'dsg-expand-rows-indicator-disabled'
+              selectionIsDisabled && 'dsg-expand-rows-indicator-disabled',
+              stickyFirstColumn &&
+                ((!selection && activeCell?.col === 0) ||
+                  selection?.max.col === 0) &&
+                'dsg-expand-rows-indicator-sticky-first'
             )}
             style={expandRowsIndicator}
+          />
+        )}
+        {expandRowsRect && (
+          <div
+            className={cx(
+              'dsg-expand-rows-rect',
+              stickyFirstColumn &&
+                activeCell?.col === 0 &&
+                'dsg-expand-rows-rect-sticky-first'
+            )}
+            style={expandRowsRect}
           />
         )}
       </>

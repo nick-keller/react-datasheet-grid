@@ -86,6 +86,7 @@ export const useColumns = <T extends any>(
             // eslint-disable-next-line react/display-name
             component: () => <></>,
             headerClassName: 'dsg-hidden-cell',
+            footerClassName: 'dsg-hidden-cell',
             cellClassName: 'dsg-hidden-cell',
             isCellEmpty: cellAlwaysEmpty,
           }

@@ -28,6 +28,11 @@ export type CellComponent<T, C> = (props: CellProps<T, C>) => JSX.Element
 export type Column<T, C, PasteValue> = {
   id?: string
   headerClassName?: string
+  stickyFirstColumn?: boolean
+  footerClassName?: string
+  enableSumFooter?: boolean
+  children?: any
+  formatterFooter?: (value: number) => T
   title?: React.ReactNode
   /** @deprecated Use `basis`, `grow`, and `shrink` instead */
   width?: string | number
@@ -63,6 +68,7 @@ export type SelectionContextType = {
   dataLength: number
   rowHeight: (index: number) => { height: number; top: number }
   hasStickyRightColumn: boolean
+  stickyFirstColumn?: boolean
   editing: boolean
   isCellDisabled: (cell: Cell) => boolean
   headerRowHeight: number
@@ -93,7 +99,13 @@ export type AddRowsComponentProps = {
 
 export type ContextMenuItem =
   | {
-      type: 'INSERT_ROW_BELLOW' | 'DELETE_ROW' | 'DUPLICATE_ROW' | 'COPY' | 'CUT' | 'PASTE'
+      type:
+        | 'INSERT_ROW_BELLOW'
+        | 'DELETE_ROW'
+        | 'DUPLICATE_ROW'
+        | 'COPY'
+        | 'CUT'
+        | 'PASTE'
       action: () => void
     }
   | {
