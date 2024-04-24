@@ -131,7 +131,7 @@ export const DataSheetGrid = React.memo(
         totalWidth: contentWidth,
         columnWidths,
         columnRights,
-      } = useColumnWidths(columns, width)
+      } = useColumnWidths(columns, width, initialColumnsWidth)
 
       // x,y coordinates of the right click
       const [contextMenu, setContextMenu] = useState<{
@@ -1766,6 +1766,8 @@ export const DataSheetGrid = React.memo(
         activeCell?.row,
         columns,
       ])
+
+      console.log({ columnWidths, initialColumnsWidth })
 
       return (
         <ColumnsWidthContext.Provider

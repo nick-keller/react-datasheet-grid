@@ -1,12 +1,14 @@
 import { Column } from '../types'
 import { useMemo } from 'react'
+import { useColumnsWidthContext } from './useColumnsWidthContext'
 
 export const getColumnWidths = (
   containerWidth: number,
   columns: Pick<
     Column<any, any, any>,
     'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
-  >[]
+  >[],
+  initialColumnsWidth?: number[]
 ) => {
   const items = columns.map(({ basis, minWidth, maxWidth }) => ({
     basis,
@@ -83,13 +85,23 @@ export const getColumnWidths = (
     availableWidth = items.reduce((acc, cur) => acc - cur.size, containerWidth)
   }
 
-  return items.map(({ size }) => size)
+  return items.map(({ size }, i) => initialColumnsWidth?.[i] ?? size)
 }
 
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
-  width?: number
+  width?: number,
+  initialColumnsWidth?: number[]
 ) => {
+  // const initialHash = initialColumnsWidth?.join(',')
+  console.log(
+    '1) columns',
+    columns,
+    '2) container width',
+    width
+    // '3) initialHash',
+    // initialHash
+  )
   const columnsHash = columns
     .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
       [basis, minWidth, maxWidth, grow, shrink].join(',')
@@ -97,6 +109,12 @@ export const useColumnWidths = (
     .join('|')
 
   return useMemo(() => {
+    console.log(
+      'columnsHash',
+      columnsHash,
+      'initialColumnsWidth',
+      initialColumnsWidth
+    )
     if (width === undefined) {
       return {
         fullWidth: false,
@@ -106,11 +124,12 @@ export const useColumnWidths = (
       }
     }
 
-    const columnWidths = getColumnWidths(width, columns)
+    const columnWidths = getColumnWidths(width, columns, initialColumnsWidth)
 
     let totalWidth = 0
 
     const columnRights = columnWidths.map((w, i) => {
+      console.log(`!@!@!@@column ${i} width: ${w}`)
       totalWidth += w
       return i === columnWidths.length - 1 ? Infinity : totalWidth
     })
@@ -122,5 +141,5 @@ export const useColumnWidths = (
       totalWidth,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, columnsHash])
+  }, [width, columnsHash, initialColumnsWidth])
 }

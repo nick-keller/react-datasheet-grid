@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useResizeHandle } from '../hooks/useResizeHandler'
 import { useColumnsWidthContext } from '../hooks/useColumnsWidthContext'
@@ -17,7 +17,11 @@ type CellProps = {
 }
 
 export const Cell: FC<CellProps> = ({ isHeader, ...props }) => {
-  return isHeader ? <HeaderCell {...props} /> : <BodyCell {...props} />
+  return isHeader ? (
+    <HeaderCell {...props} resizable={props.index !== 0} />
+  ) : (
+    <BodyCell {...props} />
+  )
 }
 
 export const BodyCell: FC<CellProps> = ({
@@ -50,7 +54,7 @@ export const BodyCell: FC<CellProps> = ({
   )
 }
 
-export const HeaderCell: FC<CellProps> = ({
+export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   index,
   children,
   gutter,
@@ -60,27 +64,37 @@ export const HeaderCell: FC<CellProps> = ({
   className,
   width,
   left,
+  resizable,
 }) => {
   const { columnWidths, onColumnsResize } = useColumnsWidthContext()
   const [prevWidth, setPrevWidth] = useState(width)
-  const [colWidth, setColWidth] = useState(width)
 
-  console.log('columnWidths', columnWidths, 'index', index)
+  const colWidth = useRef(width)
+
+  useLayoutEffect(() => {
+    setPrevWidth(width)
+    colWidth.current = width
+  }, [width])
+
+  console.log(
+    `cell ${index} width from props: ${width} and from context: ${columnWidths?.[index]} and from the state: ${colWidth.current}`
+  )
   const ref = useResizeHandle({
     onDrag: (dx = 0) => {
-      setColWidth(prevWidth + dx)
-      onColumnsResize?.(
-        columnWidths?.map((w, i) => (i === 0 ? w + dx : w)) ?? []
-      )
+      colWidth.current = prevWidth + dx
     },
     onDragEnd: (dx) => {
       setPrevWidth(() => {
         if (colWidth && dx) {
-          return colWidth + dx
+          return colWidth.current + dx
         }
 
         return prevWidth
       })
+
+      onColumnsResize?.(
+        columnWidths?.map((w, i) => (i === index ? colWidth.current : w)) ?? []
+      )
     },
   })
   return (
@@ -94,12 +108,12 @@ export const HeaderCell: FC<CellProps> = ({
         className
       )}
       style={{
-        width: colWidth ?? width,
+        width: colWidth.current ?? width,
         left: stickyRight ? undefined : left,
       }}
     >
       {children}
-      <div className="dsg-resize-handle" ref={ref} />
+      {resizable && <div className="dsg-resize-handle" ref={ref} />}
     </div>
   )
 }
