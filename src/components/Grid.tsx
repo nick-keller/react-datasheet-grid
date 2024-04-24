@@ -149,6 +149,8 @@ export const Grid = <T extends any>({
             {colVirtualizer.getVirtualItems().map((col) => (
               <CellComponent
                 key={col.key}
+                index={col.index}
+                isHeader={true}
                 gutter={col.index === 0}
                 stickyRight={
                   hasStickyRightColumn && col.index === columns.length - 1

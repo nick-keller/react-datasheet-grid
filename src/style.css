@@ -105,6 +105,17 @@
   box-shadow: 0 1px var(--dsg-border-color);
 }
 
+.dsg-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  background: var(--dsg-header-text-color);
+  z-index: 30;
+}
+
 .dsg-cell-gutter {
   position: sticky;
   left: 0;
@@ -524,8 +535,8 @@
   text-align: right;
 }
 
-.dsg-hide-date-picker[type="date"]::-webkit-inner-spin-button,
-.dsg-hide-date-picker[type="date"]::-webkit-calendar-picker-indicator {
+.dsg-hide-date-picker[type='date']::-webkit-inner-spin-button,
+.dsg-hide-date-picker[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }

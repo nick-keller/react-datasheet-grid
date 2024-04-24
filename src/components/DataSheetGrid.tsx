@@ -42,6 +42,7 @@ import { getAllTabbableElements } from '../utils/tab'
 import { Grid } from './Grid'
 import { SelectionRect } from './SelectionRect'
 import { useRowHeights } from '../hooks/useRowHeights'
+import { ColumnsWidthContext } from '../hooks/useColumnsWidthContext'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -87,6 +88,8 @@ export const DataSheetGrid = React.memo(
         rowClassName,
         cellClassName,
         onScroll,
+        initialColumnsWidth,
+        onColumnsResize,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -98,7 +101,6 @@ export const DataSheetGrid = React.memo(
       const outerRef = useRef<HTMLDivElement>(null)
       const beforeTabIndexRef = useRef<HTMLDivElement>(null)
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
-
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
 
@@ -1766,84 +1768,92 @@ export const DataSheetGrid = React.memo(
       ])
 
       return (
-        <div className={className} style={style}>
-          <div
-            ref={beforeTabIndexRef}
-            tabIndex={rawColumns.length && data.length ? 0 : undefined}
-            onFocus={(e) => {
-              e.target.blur()
-              setActiveCell({ col: 0, row: 0 })
-            }}
-          />
-          <Grid
-            columns={columns}
-            outerRef={outerRef}
-            columnWidths={columnWidths}
-            hasStickyRightColumn={hasStickyRightColumn}
-            displayHeight={displayHeight}
-            data={data}
-            fullWidth={fullWidth}
-            headerRowHeight={headerRowHeight}
-            activeCell={activeCell}
-            innerRef={innerRef}
-            rowHeight={getRowSize}
-            rowKey={rowKey}
-            selection={selection}
-            rowClassName={rowClassName}
-            editing={editing}
-            getContextMenuItems={getContextMenuItems}
-            setRowData={setRowData}
-            deleteRows={deleteRows}
-            insertRowAfter={insertRowAfter}
-            duplicateRows={duplicateRows}
-            stopEditing={stopEditing}
-            cellClassName={cellClassName}
-            onScroll={onScroll}
-          >
-            <SelectionRect
-              columnRights={columnRights}
+        <ColumnsWidthContext.Provider
+          value={{
+            columnWidths,
+            initialColumnsWidth,
+            onColumnsResize,
+          }}
+        >
+          <div className={className} style={style}>
+            <div
+              ref={beforeTabIndexRef}
+              tabIndex={rawColumns.length && data.length ? 0 : undefined}
+              onFocus={(e) => {
+                e.target.blur()
+                setActiveCell({ col: 0, row: 0 })
+              }}
+            />
+            <Grid
+              columns={columns}
+              outerRef={outerRef}
               columnWidths={columnWidths}
-              activeCell={activeCell}
-              selection={selection}
-              headerRowHeight={headerRowHeight}
-              rowHeight={getRowSize}
               hasStickyRightColumn={hasStickyRightColumn}
-              dataLength={data.length}
-              viewHeight={height}
-              viewWidth={width}
-              contentWidth={fullWidth ? undefined : contentWidth}
-              edges={edges}
+              displayHeight={displayHeight}
+              data={data}
+              fullWidth={fullWidth}
+              headerRowHeight={headerRowHeight}
+              activeCell={activeCell}
+              innerRef={innerRef}
+              rowHeight={getRowSize}
+              rowKey={rowKey}
+              selection={selection}
+              rowClassName={rowClassName}
               editing={editing}
-              isCellDisabled={isCellDisabled}
-              expandSelection={expandSelection}
+              getContextMenuItems={getContextMenuItems}
+              setRowData={setRowData}
+              deleteRows={deleteRows}
+              insertRowAfter={insertRowAfter}
+              duplicateRows={duplicateRows}
+              stopEditing={stopEditing}
+              cellClassName={cellClassName}
+              onScroll={onScroll}
+            >
+              <SelectionRect
+                columnRights={columnRights}
+                columnWidths={columnWidths}
+                activeCell={activeCell}
+                selection={selection}
+                headerRowHeight={headerRowHeight}
+                rowHeight={getRowSize}
+                hasStickyRightColumn={hasStickyRightColumn}
+                dataLength={data.length}
+                viewHeight={height}
+                viewWidth={width}
+                contentWidth={fullWidth ? undefined : contentWidth}
+                edges={edges}
+                editing={editing}
+                isCellDisabled={isCellDisabled}
+                expandSelection={expandSelection}
+              />
+            </Grid>
+            <div
+              ref={afterTabIndexRef}
+              tabIndex={rawColumns.length && data.length ? 0 : undefined}
+              onFocus={(e) => {
+                e.target.blur()
+                setActiveCell({
+                  col: columns.length - (hasStickyRightColumn ? 3 : 2),
+                  row: data.length - 1,
+                })
+              }}
             />
-          </Grid>
-          <div
-            ref={afterTabIndexRef}
-            tabIndex={rawColumns.length && data.length ? 0 : undefined}
-            onFocus={(e) => {
-              e.target.blur()
-              setActiveCell({
-                col: columns.length - (hasStickyRightColumn ? 3 : 2),
-                row: data.length - 1,
-              })
-            }}
-          />
-          {!lockRows && AddRowsComponent && (
-            <AddRowsComponent
-              addRows={(count) => insertRowAfter(data.length - 1, count)}
-            />
-          )}
-          {contextMenu && contextMenuItems.length > 0 && (
-            <ContextMenuComponent
-              clientX={contextMenu.x}
-              clientY={contextMenu.y}
-              cursorIndex={contextMenu.cursorIndex}
-              items={contextMenuItems}
-              close={() => setContextMenu(null)}
-            />
-          )}
-        </div>
+            {!lockRows && AddRowsComponent && (
+              <AddRowsComponent
+                addRows={(count) => insertRowAfter(data.length - 1, count)}
+              />
+            )}
+            {contextMenu && contextMenuItems.length > 0 && (
+              <ContextMenuComponent
+                clientX={contextMenu.x}
+                clientY={contextMenu.y}
+                cursorIndex={contextMenu.cursorIndex}
+                items={contextMenuItems}
+                close={() => setContextMenu(null)}
+              />
+            )}
+          </div>
+        </ColumnsWidthContext.Provider>
       )
     }
   )
