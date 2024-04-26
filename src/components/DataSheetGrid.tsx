@@ -42,7 +42,7 @@ import { getAllTabbableElements } from '../utils/tab'
 import { Grid } from './Grid'
 import { SelectionRect } from './SelectionRect'
 import { useRowHeights } from '../hooks/useRowHeights'
-import { ColumnsWidthContext } from '../hooks/useColumnsWidthContext'
+import { ColumnWidthsContext } from '../hooks/useColumnsWidthContext'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -88,7 +88,7 @@ export const DataSheetGrid = React.memo(
         rowClassName,
         cellClassName,
         onScroll,
-        initialColumnsWidth,
+        initialColumnWidths,
         onColumnsResize,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
@@ -103,9 +103,9 @@ export const DataSheetGrid = React.memo(
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
-      const [resizedColumnsWidth, setResizedColumnsWidth] = useState<
+      const [resizedColumnWidths, setResizedColumnWidths] = useState<
         Array<number | undefined>
-      >(initialColumnsWidth || [])
+      >(initialColumnWidths || [])
 
       const { getRowSize, totalSize, getRowIndex } = useRowHeights({
         value: data,
@@ -134,7 +134,7 @@ export const DataSheetGrid = React.memo(
         totalWidth: contentWidth,
         columnWidths,
         columnRights,
-      } = useColumnWidths(columns, width, resizedColumnsWidth)
+      } = useColumnWidths(columns, width, resizedColumnWidths)
 
       // x,y coordinates of the right click
       const [contextMenu, setContextMenu] = useState<{
@@ -1770,15 +1770,15 @@ export const DataSheetGrid = React.memo(
         columns,
       ])
 
-      console.log({ columnWidths, initialColumnsWidth })
+      console.log({ columnWidths, initialColumnsWidth: initialColumnWidths })
 
       return (
-        <ColumnsWidthContext.Provider
+        <ColumnWidthsContext.Provider
           value={{
             columnWidths,
-            initialColumnsWidth,
+            initialColumnWidths: initialColumnWidths,
             onColumnsResize,
-            resizeCallback: setResizedColumnsWidth,
+            resizeCallback: setResizedColumnWidths,
           }}
         >
           <div className={className} style={style}>
@@ -1859,7 +1859,7 @@ export const DataSheetGrid = React.memo(
               />
             )}
           </div>
-        </ColumnsWidthContext.Provider>
+        </ColumnWidthsContext.Provider>
       )
     }
   )

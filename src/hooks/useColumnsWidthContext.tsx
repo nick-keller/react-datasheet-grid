@@ -1,16 +1,16 @@
 import { Dispatch, SetStateAction, createContext, useContext } from 'react'
 
-export type ColumnsWidthContextType = {
+export type ColumnWidthsContextType = {
   columnWidths?: number[]
-  initialColumnsWidth?: Array<number | undefined>
+  initialColumnWidths?: Array<number | undefined>
   onColumnsResize?: (widths?: Array<number | undefined>) => void
   resizeCallback?: (
     v: Dispatch<SetStateAction<Array<number | undefined>>>
   ) => number | undefined
 }
 
-export const ColumnsWidthContext = createContext<ColumnsWidthContextType>({})
+export const ColumnWidthsContext = createContext<ColumnWidthsContextType>({})
 
-export const useColumnsWidthContext = () => {
-  return useContext(ColumnsWidthContext)
+export const useColumnWidthsContext = () => {
+  return useContext(ColumnWidthsContext)
 }

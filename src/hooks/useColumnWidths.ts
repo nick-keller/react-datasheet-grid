@@ -1,6 +1,6 @@
 import { Column } from '../types'
 import { useMemo } from 'react'
-import { useColumnsWidthContext } from './useColumnsWidthContext'
+import { useColumnWidthsContext } from './useColumnsWidthContext'
 
 export const getColumnWidths = (
   containerWidth: number,

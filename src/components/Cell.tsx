@@ -2,7 +2,7 @@ import React, { FC, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useResizeHandle } from '../hooks/useResizeHandler'
 import { throttle } from 'throttle-debounce'
-import { useColumnsWidthContext } from '../hooks/useColumnsWidthContext'
+import { useColumnWidthsContext } from '../hooks/useColumnsWidthContext'
 
 type CellProps = {
   index: number
@@ -67,8 +67,8 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   left,
   resizable,
 }) => {
-  const { columnWidths, onColumnsResize, resizeCallback } =
-    useColumnsWidthContext()
+  const { columnWidths, initialColumnWidths, onColumnsResize, resizeCallback } =
+    useColumnWidthsContext()
   const [prevWidth, setPrevWidth] = useState(width)
 
   const colWidth = useRef(width)
