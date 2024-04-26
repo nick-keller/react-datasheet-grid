@@ -103,6 +103,9 @@ export const DataSheetGrid = React.memo(
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
+      const [resizedColumnsWidth, setResizedColumnsWidth] = useState<
+        Array<number | undefined>
+      >(initialColumnsWidth || [])
 
       const { getRowSize, totalSize, getRowIndex } = useRowHeights({
         value: data,
@@ -131,7 +134,7 @@ export const DataSheetGrid = React.memo(
         totalWidth: contentWidth,
         columnWidths,
         columnRights,
-      } = useColumnWidths(columns, width, initialColumnsWidth)
+      } = useColumnWidths(columns, width, resizedColumnsWidth)
 
       // x,y coordinates of the right click
       const [contextMenu, setContextMenu] = useState<{
@@ -1775,6 +1778,7 @@ export const DataSheetGrid = React.memo(
             columnWidths,
             initialColumnsWidth,
             onColumnsResize,
+            resizeCallback: setResizedColumnsWidth,
           }}
         >
           <div className={className} style={style}>

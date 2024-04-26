@@ -66,7 +66,8 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   left,
   resizable,
 }) => {
-  const { columnWidths, onColumnsResize } = useColumnsWidthContext()
+  const { columnWidths, onColumnsResize, resizeCallback } =
+    useColumnsWidthContext()
   const [prevWidth, setPrevWidth] = useState(width)
 
   const colWidth = useRef(width)
@@ -82,6 +83,9 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   const ref = useResizeHandle({
     onDrag: (dx = 0) => {
       colWidth.current = prevWidth + dx
+      resizeCallback?.(
+        [...columnWidths].map((w, i) => (i === index ? colWidth.current : w))
+      )
     },
     onDragEnd: (dx) => {
       setPrevWidth(() => {
@@ -93,7 +97,9 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
       })
 
       onColumnsResize?.(
-        columnWidths?.map((w, i) => (i === index ? colWidth.current : w)) ?? []
+        columnWidths?.map((w, i) =>
+          i === index ? colWidth.current : undefined
+        ) ?? []
       )
     },
   })

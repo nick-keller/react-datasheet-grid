@@ -107,13 +107,19 @@
 
 .dsg-resize-handle {
   position: absolute;
-  right: 0;
+  right: -2px;
   bottom: 0;
-  width: 10px;
+  width: 5px;
   height: 100%;
-  cursor: col-resize;
-  background: var(--dsg-header-text-color);
+  background: transparent;
   z-index: 30;
+  transition: background 0.2s;
+}
+
+.dsg-resize-handle:hover {
+  cursor: col-resize;
+  background: rgba(0, 0, 250, 0.75);
+  transition: background 0.2s;
 }
 
 .dsg-cell-gutter {

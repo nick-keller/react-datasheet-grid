@@ -10,6 +10,7 @@ export const getColumnWidths = (
   >[],
   initialColumnsWidth?: number[]
 ) => {
+  console.log('getColumnWidths', containerWidth, columns, initialColumnsWidth)
   const items = columns.map(({ basis, minWidth, maxWidth }) => ({
     basis,
     minWidth,
@@ -91,7 +92,7 @@ export const getColumnWidths = (
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
   width?: number,
-  initialColumnsWidth?: number[]
+  initialColumnsWidth?: Array<number | undefined>
 ) => {
   // const initialHash = initialColumnsWidth?.join(',')
   console.log(
