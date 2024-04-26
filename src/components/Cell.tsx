@@ -1,6 +1,7 @@
 import React, { FC, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { useResizeHandle } from '../hooks/useResizeHandler'
+import { throttle } from 'throttle-debounce'
 import { useColumnsWidthContext } from '../hooks/useColumnsWidthContext'
 
 type CellProps = {
@@ -80,13 +81,16 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   console.log(
     `cell ${index} width from props: ${width} and from context: ${columnWidths?.[index]} and from the state: ${colWidth.current}`
   )
+
+  const throttledOnDrag = throttle(50, (dx = 0) => {
+    colWidth.current = prevWidth + dx
+    resizeCallback?.(
+      columnWidths?.map((w, i) => (i === index ? colWidth.current : w)) ?? []
+    )
+  })
+
   const ref = useResizeHandle({
-    onDrag: (dx = 0) => {
-      colWidth.current = prevWidth + dx
-      resizeCallback?.(
-        [...columnWidths].map((w, i) => (i === index ? colWidth.current : w))
-      )
-    },
+    onDrag: throttledOnDrag,
     onDragEnd: (dx) => {
       setPrevWidth(() => {
         if (colWidth && dx) {
@@ -97,9 +101,7 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
       })
 
       onColumnsResize?.(
-        columnWidths?.map((w, i) =>
-          i === index ? colWidth.current : undefined
-        ) ?? []
+        columnWidths?.map((w, i) => (i === index ? colWidth.current : w)) ?? []
       )
     },
   })
