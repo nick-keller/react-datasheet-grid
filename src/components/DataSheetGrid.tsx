@@ -1780,7 +1780,7 @@ export const DataSheetGrid = React.memo(
         <ColumnWidthsContext.Provider
           value={{
             columnWidths,
-            initialColumnWidths: initialColumnWidths,
+            initialColumnWidths,
             onColumnsResize,
             resizeCallback: setResizedColumnWidths,
             resizedColumnWidths,
