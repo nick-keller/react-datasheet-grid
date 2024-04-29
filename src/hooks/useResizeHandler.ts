@@ -2,7 +2,7 @@ import * as React from 'react'
 
 export interface UseResizeHandleProps {
   onDrag?: (deltaX?: number) => void
-  onDragEnd?: (deltaX?: number) => void
+  onDragEnd?: () => void
 }
 
 export const useResizeHandle = ({
@@ -42,14 +42,14 @@ export const useResizeHandle = ({
           ) {
             document.removeEventListener('pointermove', onPointerMove)
             document.onpointerleave = null
-            onDragEnd?.(deltaXRef.current)
+            onDragEnd?.()
           }
         }
 
         document.onpointerup = () => {
           document.removeEventListener('pointermove', onPointerMove)
           document.onpointerup = null
-          onDragEnd?.(deltaXRef.current)
+          onDragEnd?.()
         }
       }
     }

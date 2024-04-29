@@ -90,15 +90,7 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
 
   const ref = useResizeHandle({
     onDrag: throttledOnDrag,
-    onDragEnd: (dx) => {
-      setPrevWidth(() => {
-        if (colWidth && dx) {
-          return colWidth.current + dx
-        }
-
-        return prevWidth
-      })
-
+    onDragEnd: () => {
       onColumnsResize?.(
         columnWidths?.map((w: number, i: number) =>
           i === index ? colWidth.current : resizedColumnWidths?.[i]
