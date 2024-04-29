@@ -1,6 +1,6 @@
 {
   "name": "@mir4a/react-datasheet-grid",
-  "version": "4.12.0-alpha.1",
+  "version": "4.12.0-alpha.2",
   "description": "An Excel-like React component to create beautiful spreadsheets.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
