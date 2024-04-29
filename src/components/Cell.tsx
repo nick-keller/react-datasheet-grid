@@ -122,7 +122,7 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
       }}
     >
       {children}
-      {resizable && resizeCallback && (
+      {resizable && onColumnsResize && (
         <div className="dsg-resize-handle" ref={ref} />
       )}
     </div>
