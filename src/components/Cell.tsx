@@ -67,13 +67,8 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   left,
   resizable,
 }) => {
-  const {
-    columnWidths,
-    initialColumnWidths,
-    resizedColumnWidths,
-    onColumnsResize,
-    resizeCallback,
-  } = useColumnWidthsContext()
+  const { columnWidths, resizedColumnWidths, onColumnsResize, resizeCallback } =
+    useColumnWidthsContext()
   const [prevWidth, setPrevWidth] = useState(width)
 
   const colWidth = useRef(width)
@@ -127,7 +122,9 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
       }}
     >
       {children}
-      {resizable && <div className="dsg-resize-handle" ref={ref} />}
+      {resizable && resizeCallback && (
+        <div className="dsg-resize-handle" ref={ref} />
+      )}
     </div>
   )
 }
