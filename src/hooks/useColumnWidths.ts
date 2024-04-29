@@ -92,16 +92,16 @@ export const getColumnWidths = (
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
   width?: number,
-  initialColumnsWidth?: Array<number | undefined>
+  initialColumnWidths?: Array<number | undefined>
 ) => {
-  // const initialHash = initialColumnsWidth?.join(',')
+  const initialHash = initialColumnWidths?.join(',')
   console.log(
     '1) columns',
     columns,
     '2) container width',
-    width
-    // '3) initialHash',
-    // initialHash
+    width,
+    '3) initialHash',
+    initialHash
   )
   const columnsHash = columns
     .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
@@ -113,8 +113,8 @@ export const useColumnWidths = (
     console.log(
       'columnsHash',
       columnsHash,
-      'initialColumnsWidth',
-      initialColumnsWidth
+      'initialColumnsWidth++++======>>>>>',
+      initialColumnWidths
     )
     if (width === undefined) {
       return {
@@ -125,7 +125,7 @@ export const useColumnWidths = (
       }
     }
 
-    const columnWidths = getColumnWidths(width, columns, initialColumnsWidth)
+    const columnWidths = getColumnWidths(width, columns, initialColumnWidths)
 
     let totalWidth = 0
 
@@ -142,5 +142,5 @@ export const useColumnWidths = (
       totalWidth,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, columnsHash, initialColumnsWidth])
+  }, [width, columnsHash, initialColumnWidths])
 }

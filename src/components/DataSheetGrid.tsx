@@ -103,6 +103,7 @@ export const DataSheetGrid = React.memo(
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
+      console.log('===>>>>initialColumnWidths ', initialColumnWidths)
       const [resizedColumnWidths, setResizedColumnWidths] = useState<
         Array<number | undefined>
       >(initialColumnWidths || [])
@@ -128,6 +129,10 @@ export const DataSheetGrid = React.memo(
       setHeightDiff(height ? displayHeight - height : 0)
 
       const edges = useEdges(outerRef, width, height)
+
+      useEffect(() => {
+        setResizedColumnWidths(initialColumnWidths)
+      }, [initialColumnWidths])
 
       const {
         fullWidth,
@@ -1779,6 +1784,7 @@ export const DataSheetGrid = React.memo(
             initialColumnWidths: initialColumnWidths,
             onColumnsResize,
             resizeCallback: setResizedColumnWidths,
+            resizedColumnWidths,
           }}
         >
           <div className={className} style={style}>
