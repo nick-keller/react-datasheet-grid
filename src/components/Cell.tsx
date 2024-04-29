@@ -4,6 +4,8 @@ import { useResizeHandle } from '../hooks/useResizeHandler'
 import { throttle } from 'throttle-debounce'
 import { useColumnWidthsContext } from '../hooks/useColumnsWidthContext'
 
+export const MIN_COLUMN_WIDTH = 40
+
 type CellProps = {
   index: number
   isHeader?: boolean
@@ -79,6 +81,11 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   }, [width])
 
   const throttledOnDrag = throttle(50, (dx = 0) => {
+    // prevent column collapse
+    if (prevWidth + dx <= MIN_COLUMN_WIDTH) {
+      return
+    }
+
     colWidth.current = prevWidth + dx
     resizeCallback?.(
       () =>
