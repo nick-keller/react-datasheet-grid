@@ -83,27 +83,19 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
     colWidth.current = width
   }, [width])
 
-  console.log(
-    `cell ${index} width from props: ${width} and from context: ${columnWidths?.[index]} and from the state: ${colWidth.current}`
-  )
-
   const throttledOnDrag = throttle(50, (dx = 0) => {
     colWidth.current = prevWidth + dx
-    console.log('throttledOnDrag _)_)_)_) ', {
-      columnWidths,
-      initialColumnWidths,
-    })
     resizeCallback?.(
-      columnWidths?.map((w, i) =>
-        i === index ? colWidth.current : resizedColumnWidths[i]
-      ) ?? []
+      () =>
+        columnWidths?.map((w: number, i: number) =>
+          i === index ? colWidth.current : resizedColumnWidths?.[i]
+        ) ?? []
     )
   })
 
   const ref = useResizeHandle({
     onDrag: throttledOnDrag,
     onDragEnd: (dx) => {
-      console.log('onDragEnd', { initialColumnWidths, columnWidths })
       setPrevWidth(() => {
         if (colWidth && dx) {
           return colWidth.current + dx
@@ -113,8 +105,8 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
       })
 
       onColumnsResize?.(
-        columnWidths?.map((w, i) =>
-          i === index ? colWidth.current : resizedColumnWidths[i]
+        columnWidths?.map((w: number, i: number) =>
+          i === index ? colWidth.current : resizedColumnWidths?.[i]
         ) ?? []
       )
     },

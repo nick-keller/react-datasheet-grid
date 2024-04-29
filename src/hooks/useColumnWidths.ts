@@ -1,6 +1,5 @@
 import { Column } from '../types'
 import { useMemo } from 'react'
-import { useColumnWidthsContext } from './useColumnsWidthContext'
 
 export const getColumnWidths = (
   containerWidth: number,
@@ -8,9 +7,8 @@ export const getColumnWidths = (
     Column<any, any, any>,
     'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
   >[],
-  initialColumnsWidth?: number[]
+  initialColumnsWidth?: Array<number | undefined>
 ) => {
-  console.log('getColumnWidths', containerWidth, columns, initialColumnsWidth)
   const items = columns.map(({ basis, minWidth, maxWidth }) => ({
     basis,
     minWidth,
@@ -94,15 +92,6 @@ export const useColumnWidths = (
   width?: number,
   initialColumnWidths?: Array<number | undefined>
 ) => {
-  const initialHash = initialColumnWidths?.join(',')
-  console.log(
-    '1) columns',
-    columns,
-    '2) container width',
-    width,
-    '3) initialHash',
-    initialHash
-  )
   const columnsHash = columns
     .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
       [basis, minWidth, maxWidth, grow, shrink].join(',')
@@ -110,12 +99,6 @@ export const useColumnWidths = (
     .join('|')
 
   return useMemo(() => {
-    console.log(
-      'columnsHash',
-      columnsHash,
-      'initialColumnsWidth++++======>>>>>',
-      initialColumnWidths
-    )
     if (width === undefined) {
       return {
         fullWidth: false,
@@ -130,7 +113,6 @@ export const useColumnWidths = (
     let totalWidth = 0
 
     const columnRights = columnWidths.map((w, i) => {
-      console.log(`!@!@!@@column ${i} width: ${w}`)
       totalWidth += w
       return i === columnWidths.length - 1 ? Infinity : totalWidth
     })
