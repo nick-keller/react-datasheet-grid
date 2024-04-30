@@ -102,7 +102,7 @@ export const DataSheetGrid = React.memo(
       const beforeTabIndexRef = useRef<HTMLDivElement>(null)
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
       // Default value is 1 for the border
-      const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
+      const [heightDiff, setHeightDiff] = useDebounceState(20, 100)
       const [resizedColumnWidths, setResizedColumnWidths] = useState<
         Record<string, number>
       >(initialColumnWidths ?? {})
