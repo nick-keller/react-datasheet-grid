@@ -7,6 +7,7 @@ import { useColumnWidthsContext } from '../hooks/useColumnsWidthContext'
 export const MIN_COLUMN_WIDTH = 40
 
 type CellProps = {
+  id?: string
   index: number
   isHeader?: boolean
   gutter: boolean
@@ -58,6 +59,7 @@ export const BodyCell: FC<CellProps> = ({
 }
 
 export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
+  id,
   index,
   children,
   gutter,
@@ -69,8 +71,14 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
   left,
   resizable,
 }) => {
-  const { columnWidths, resizedColumnWidths, onColumnsResize, resizeCallback } =
-    useColumnWidthsContext()
+  const {
+    columnWidths,
+    columnsMap,
+    resizedColumnWidths,
+    onColumnsResize,
+    resizeCallback,
+  } = useColumnWidthsContext()
+
   const [prevWidth, setPrevWidth] = useState(width)
 
   const colWidth = useRef(width)
@@ -87,22 +95,21 @@ export const HeaderCell: FC<CellProps & { resizable?: boolean }> = ({
     }
 
     colWidth.current = prevWidth + dx
-    resizeCallback?.(
-      () =>
-        columnWidths?.map((w: number, i: number) =>
-          i === index ? colWidth.current : resizedColumnWidths?.[i]
-        ) ?? []
-    )
+
+    if (id) {
+      resizeCallback?.(() => ({
+        ...resizedColumnWidths,
+        [id]: colWidth.current,
+      }))
+    }
   })
 
   const ref = useResizeHandle({
     onDrag: throttledOnDrag,
     onDragEnd: () => {
-      onColumnsResize?.(
-        columnWidths?.map((w: number, i: number) =>
-          i === index ? colWidth.current : resizedColumnWidths?.[i]
-        ) ?? []
-      )
+      if (id) {
+        onColumnsResize?.({ ...resizedColumnWidths, [id]: colWidth.current })
+      }
     },
   })
   return (

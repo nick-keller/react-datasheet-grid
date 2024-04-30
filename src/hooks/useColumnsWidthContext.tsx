@@ -2,10 +2,11 @@ import { Dispatch, SetStateAction, createContext, useContext } from 'react'
 
 export type ColumnWidthsContextType = {
   columnWidths?: number[]
-  initialColumnWidths?: Array<number | undefined>
-  resizedColumnWidths?: Array<number | undefined>
-  onColumnsResize?: (widths: Array<number | undefined>) => void
-  resizeCallback?: Dispatch<SetStateAction<Array<number | undefined>>>
+  initialColumnWidths?: Record<string, number>
+  resizedColumnWidths?: Record<string, number>
+  onColumnsResize?: (widths: Record<string, number>) => void
+  resizeCallback?: Dispatch<SetStateAction<Record<string, number>>>
+  columnsMap?: Record<string, number>
 }
 
 export const ColumnWidthsContext = createContext<ColumnWidthsContextType>({})

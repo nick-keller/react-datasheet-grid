@@ -5,11 +5,12 @@ export const getColumnWidths = (
   containerWidth: number,
   columns: Pick<
     Column<any, any, any>,
-    'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
+    'id' | 'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
   >[],
-  initialColumnsWidth?: Array<number | undefined>
+  initialColumnsWidth?: Record<string, number>
 ) => {
-  const items = columns.map(({ basis, minWidth, maxWidth }) => ({
+  const items = columns.map(({ id, basis, minWidth, maxWidth }) => ({
+    id,
     basis,
     minWidth,
     maxWidth,
@@ -84,13 +85,18 @@ export const getColumnWidths = (
     availableWidth = items.reduce((acc, cur) => acc - cur.size, containerWidth)
   }
 
-  return items.map(({ size }, i) => initialColumnsWidth?.[i] ?? size)
+  return items.map(({ size, id }) => {
+    if (id === undefined) {
+      return size
+    }
+    return initialColumnsWidth?.[id] ?? size
+  })
 }
 
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
   width?: number,
-  initialColumnWidths?: Array<number | undefined>
+  initialColumnWidths?: Record<string, number>
 ) => {
   const columnsHash = columns
     .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
@@ -104,11 +110,19 @@ export const useColumnWidths = (
         fullWidth: false,
         columnWidths: undefined,
         columnRights: undefined,
+        columnsMap: undefined,
         totalWidth: undefined,
       }
     }
 
     const columnWidths = getColumnWidths(width, columns, initialColumnWidths)
+    const columnsMap = columns.reduce((acc, cur, i) => {
+      if (cur.id === undefined) {
+        return acc
+      }
+      acc[cur.id] = columnWidths[i]
+      return acc
+    }, {} as Record<string, number>)
 
     let totalWidth = 0
 
@@ -120,6 +134,7 @@ export const useColumnWidths = (
     return {
       fullWidth: Math.abs(width - totalWidth) < 0.1,
       columnWidths,
+      columnsMap,
       columnRights,
       totalWidth,
     }
