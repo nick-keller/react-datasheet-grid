@@ -104,8 +104,8 @@ export const DataSheetGrid = React.memo(
       // Default value is 1 for the border
       const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
       const [resizedColumnWidths, setResizedColumnWidths] = useState<
-        Array<number | undefined>
-      >(initialColumnWidths ?? [])
+        Record<string, number>
+      >(initialColumnWidths ?? {})
 
       const { getRowSize, totalSize, getRowIndex } = useRowHeights({
         value: data,
@@ -138,6 +138,7 @@ export const DataSheetGrid = React.memo(
       const {
         fullWidth,
         totalWidth: contentWidth,
+        columnsMap,
         columnWidths,
         columnRights,
       } = useColumnWidths(columns, width, resizedColumnWidths)
@@ -1781,6 +1782,7 @@ export const DataSheetGrid = React.memo(
           value={{
             columnWidths,
             initialColumnWidths,
+            columnsMap,
             onColumnsResize,
             resizeCallback: setResizedColumnWidths,
             resizedColumnWidths,
