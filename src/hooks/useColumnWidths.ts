@@ -51,7 +51,7 @@ export const getColumnWidths = (
 
     for (const item of items) {
       if (!item.frozen) {
-        item.size += (availableWidth * item.factor) / sumFactors
+        item.size += Math.floor((availableWidth * item.factor) / sumFactors)
 
         if (item.size < item.minWidth) {
           item.violation = item.minWidth - item.size
