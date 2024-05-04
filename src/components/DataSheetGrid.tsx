@@ -43,6 +43,7 @@ import { Grid } from './Grid'
 import { SelectionRect } from './SelectionRect'
 import { useRowHeights } from '../hooks/useRowHeights'
 import { ColumnWidthsContext } from '../hooks/useColumnsWidthContext'
+import { useScrollbarSize } from '../hooks/useScrollbarSize'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -112,6 +113,7 @@ export const DataSheetGrid = React.memo(
         false,
         100
       )
+      const scrollbarSize = useScrollbarSize()
 
       const resizeCallback = (
         val: React.SetStateAction<Record<string, number>>
@@ -143,7 +145,7 @@ export const DataSheetGrid = React.memo(
         refreshRate: 100,
       })
 
-      const { width: innerWidth, height: innerHeight } = useResizeDetector({
+      const { width: innerWidth } = useResizeDetector({
         targetRef: innerRef,
         refreshMode: 'throttle',
         refreshRate: 100,
@@ -1835,8 +1837,7 @@ export const DataSheetGrid = React.memo(
               columnWidths={columnWidths}
               hasStickyRightColumn={hasStickyRightColumn}
               displayHeight={
-                // FIXME: use real scrollbar size for horizontal scrollbar
-                horizontalScroll ? displayHeight + 20 : displayHeight
+                horizontalScroll ? displayHeight + scrollbarSize : displayHeight
               }
               data={data}
               fullWidth={fullWidth}
