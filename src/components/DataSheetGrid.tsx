@@ -106,9 +106,12 @@ export const DataSheetGrid = React.memo(
       const [resizedColumnWidths, setResizedColumnWidths] = useState<
         Record<string, number>
       >(initialColumnWidths ?? {})
-      const [resizing, setResizing] = useState<boolean>(false)
+      const [resizing, setResizing] = useDebounceState<boolean>(false, 50)
       // FIXME: this needs to be calculated on the first render somehow
-      const [horizontalScroll, setHorizontalScroll] = useState<boolean>(false)
+      const [horizontalScroll, setHorizontalScroll] = useDebounceState<boolean>(
+        false,
+        100
+      )
 
       const resizeCallback = (
         val: React.SetStateAction<Record<string, number>>
@@ -152,7 +155,7 @@ export const DataSheetGrid = React.memo(
         } else {
           setHorizontalScroll(false)
         }
-      }, [innerWidth, width])
+      }, [innerWidth, setHorizontalScroll, width])
 
       setHeightDiff(height ? displayHeight - height : 0)
 
@@ -1817,10 +1820,6 @@ export const DataSheetGrid = React.memo(
             resizedColumnWidths,
           }}
         >
-          <pre>
-            is resizing?: {JSON.stringify(resizing)}, is horizontal scrollbar?{' '}
-            {JSON.stringify(horizontalScroll)}
-          </pre>
           <div className={className} style={style}>
             <div
               ref={beforeTabIndexRef}
