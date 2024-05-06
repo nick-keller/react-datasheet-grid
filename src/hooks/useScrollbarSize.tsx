@@ -2,6 +2,10 @@ import { useMemo } from 'react'
 
 export const useScrollbarSize = () => {
   return useMemo(() => {
+    // Ensure this code only runs in a browser environment
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return 0
+    }
     // Create the outer div
     const outer = document.createElement('div')
     outer.style.visibility = 'hidden'
