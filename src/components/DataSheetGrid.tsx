@@ -109,10 +109,7 @@ export const DataSheetGrid = React.memo(
       >(initialColumnWidths ?? {})
       const [resizing, setResizing] = useDebounceState<boolean>(false, 50)
       // FIXME: this needs to be calculated on the first render somehow
-      const [horizontalScroll, setHorizontalScroll] = useDebounceState<boolean>(
-        false,
-        100
-      )
+      const [horizontalScroll, setHorizontalScroll] = useState<boolean>(false)
       const scrollbarSize = useScrollbarSize()
 
       const resizeCallback = (
@@ -140,16 +137,22 @@ export const DataSheetGrid = React.memo(
 
       // Width and height of the scrollable area
       const { width, height } = useResizeDetector({
+        skipOnMount: true,
         targetRef: outerRef,
         refreshMode: 'throttle',
         refreshRate: 100,
       })
 
       const { width: innerWidth } = useResizeDetector({
+        skipOnMount: true,
         targetRef: innerRef,
         refreshMode: 'throttle',
         refreshRate: 100,
       })
+
+      const adjustedDisplayHeight = horizontalScroll
+        ? displayHeight + scrollbarSize
+        : displayHeight
 
       useEffect(() => {
         if (innerWidth && width && width < innerWidth) {
@@ -1836,9 +1839,7 @@ export const DataSheetGrid = React.memo(
               outerRef={outerRef}
               columnWidths={columnWidths}
               hasStickyRightColumn={hasStickyRightColumn}
-              displayHeight={
-                horizontalScroll ? displayHeight + scrollbarSize : displayHeight
-              }
+              displayHeight={adjustedDisplayHeight}
               data={data}
               fullWidth={fullWidth}
               headerRowHeight={headerRowHeight}
