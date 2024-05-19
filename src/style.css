@@ -118,7 +118,7 @@
 
 .dsg-resize-handle:hover {
   cursor: col-resize;
-  background: rgba(0, 0, 250, 0.75);
+  background: var(--dsg-selection-border-color);
   transition: background 0.2s;
 }
 
