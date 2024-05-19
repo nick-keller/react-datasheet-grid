@@ -5,18 +5,23 @@ export const getColumnWidths = (
   containerWidth: number,
   columns: Pick<
     Column<any, any, any>,
-    'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
-  >[]
+    'id' | 'basis' | 'grow' | 'shrink' | 'minWidth' | 'maxWidth'
+  >[],
+  initialColumnsWidth?: Record<string, number>
 ) => {
-  const items = columns.map(({ basis, minWidth, maxWidth }) => ({
-    basis,
-    minWidth,
-    maxWidth,
-    size: basis,
-    violation: 0,
-    frozen: false,
-    factor: 0,
-  }))
+  const items = columns.map(({ id, basis, minWidth, maxWidth }) => {
+    const hasInitialWidth = id && initialColumnsWidth?.[id] !== undefined
+    return {
+      id,
+      basis,
+      minWidth,
+      maxWidth,
+      size: hasInitialWidth ? initialColumnsWidth[id] : basis,
+      violation: 0,
+      frozen: hasInitialWidth,
+      factor: 0,
+    }
+  })
 
   let availableWidth = items.reduce(
     (acc, cur) => acc - cur.size,
@@ -83,16 +88,29 @@ export const getColumnWidths = (
     availableWidth = items.reduce((acc, cur) => acc - cur.size, containerWidth)
   }
 
-  return items.map(({ size }) => size)
+  return items.map(({ size, id }) => {
+    if (id === undefined) {
+      return size
+    }
+    return initialColumnsWidth?.[id] ?? size
+  })
 }
 
 export const useColumnWidths = (
   columns: Column<any, any, any>[],
-  width?: number
+  width?: number,
+  initialColumnWidths?: Record<string, number>
 ) => {
   const columnsHash = columns
-    .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
-      [basis, minWidth, maxWidth, grow, shrink].join(',')
+    .map(({ id, basis, minWidth, maxWidth, grow, shrink }) =>
+      [
+        id && initialColumnWidths?.[id],
+        basis,
+        minWidth,
+        maxWidth,
+        grow,
+        shrink,
+      ].join(',')
     )
     .join('|')
 
@@ -102,11 +120,19 @@ export const useColumnWidths = (
         fullWidth: false,
         columnWidths: undefined,
         columnRights: undefined,
+        columnsMap: undefined,
         totalWidth: undefined,
       }
     }
 
-    const columnWidths = getColumnWidths(width, columns)
+    const columnWidths = getColumnWidths(width, columns, initialColumnWidths)
+    const columnsMap = columns.reduce((acc, cur, i) => {
+      if (cur.id === undefined) {
+        return acc
+      }
+      acc[cur.id] = columnWidths[i]
+      return acc
+    }, {} as Record<string, number>)
 
     let totalWidth = 0
 
@@ -118,9 +144,10 @@ export const useColumnWidths = (
     return {
       fullWidth: Math.abs(width - totalWidth) < 0.1,
       columnWidths,
+      columnsMap,
       columnRights,
       totalWidth,
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, columnsHash])
+  }, [width, columnsHash, initialColumnWidths])
 }

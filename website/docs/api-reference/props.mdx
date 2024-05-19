@@ -277,3 +277,10 @@ Called when the active / highlighted cell changes. Called with null when the gri
 > Default: `void`
 
 Called when the selection changes. Called with null when the grid is blurred.
+
+### onColumnsResize
+> Type: `({ widths: Array<number | undefined>) => void`<br />
+> Default: `void`
+
+If provided, the grid will became resizable. This callback is called when the user resizes a column.
+It returns an array of the new widths of resized columns, skipping the columns that were not resized.

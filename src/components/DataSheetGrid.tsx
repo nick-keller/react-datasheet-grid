@@ -42,6 +42,8 @@ import { getAllTabbableElements } from '../utils/tab'
 import { Grid } from './Grid'
 import { SelectionRect } from './SelectionRect'
 import { useRowHeights } from '../hooks/useRowHeights'
+import { ColumnWidthsContext } from '../hooks/useColumnsWidthContext'
+import { useScrollbarSize } from '../hooks/useScrollbarSize'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -87,6 +89,8 @@ export const DataSheetGrid = React.memo(
         rowClassName,
         cellClassName,
         onScroll,
+        initialColumnWidths,
+        onColumnsResize,
       }: DataSheetGridProps<T>,
       ref: React.ForwardedRef<DataSheetGridRef>
     ): JSX.Element => {
@@ -98,9 +102,27 @@ export const DataSheetGrid = React.memo(
       const outerRef = useRef<HTMLDivElement>(null)
       const beforeTabIndexRef = useRef<HTMLDivElement>(null)
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
-
       // Default value is 1 for the border
-      const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
+      const [heightDiff, setHeightDiff] = useDebounceState(20, 100)
+      const [resizedColumnWidths, setResizedColumnWidths] = useState<
+        Record<string, number>
+      >(initialColumnWidths ?? {})
+      const [resizing, setResizing] = useDebounceState<boolean>(false, 50)
+      // FIXME: this needs to be calculated on the first render somehow
+      const [horizontalScroll, setHorizontalScroll] = useState<boolean>(false)
+      const scrollbarSize = useScrollbarSize()
+
+      const resizeCallback = (
+        val: React.SetStateAction<Record<string, number>>
+      ) => {
+        setResizing(true)
+        setResizedColumnWidths(val)
+      }
+
+      const resizeEndCallback = (val: Record<string, number>) => {
+        setResizing(false)
+        onColumnsResize?.(val)
+      }
 
       const { getRowSize, totalSize, getRowIndex } = useRowHeights({
         value: data,
@@ -115,21 +137,48 @@ export const DataSheetGrid = React.memo(
 
       // Width and height of the scrollable area
       const { width, height } = useResizeDetector({
+        skipOnMount: true,
         targetRef: outerRef,
         refreshMode: 'throttle',
         refreshRate: 100,
       })
 
+      const { width: innerWidth } = useResizeDetector({
+        skipOnMount: true,
+        targetRef: innerRef,
+        refreshMode: 'throttle',
+        refreshRate: 100,
+      })
+
+      const adjustedDisplayHeight = horizontalScroll
+        ? displayHeight + scrollbarSize
+        : displayHeight
+
+      useEffect(() => {
+        if (innerWidth && width && width < innerWidth) {
+          setHorizontalScroll(true)
+        } else {
+          setHorizontalScroll(false)
+        }
+      }, [innerWidth, setHorizontalScroll, width])
+
       setHeightDiff(height ? displayHeight - height : 0)
 
       const edges = useEdges(outerRef, width, height)
 
+      useEffect(() => {
+        if (initialColumnWidths) {
+          setResizedColumnWidths(initialColumnWidths)
+        }
+      }, [initialColumnWidths])
+
       const {
         fullWidth,
         totalWidth: contentWidth,
+        columnsMap,
         columnWidths,
         columnRights,
-      } = useColumnWidths(columns, width)
+      } = useColumnWidths(columns, width, resizedColumnWidths)
 
       // x,y coordinates of the right click
       const [contextMenu, setContextMenu] = useState<{
@@ -1766,84 +1815,98 @@ export const DataSheetGrid = React.memo(
       ])
 
       return (
-        <div className={className} style={style}>
-          <div
-            ref={beforeTabIndexRef}
-            tabIndex={rawColumns.length && data.length ? 0 : undefined}
-            onFocus={(e) => {
-              e.target.blur()
-              setActiveCell({ col: 0, row: 0 })
-            }}
-          />
-          <Grid
-            columns={columns}
-            outerRef={outerRef}
-            columnWidths={columnWidths}
-            hasStickyRightColumn={hasStickyRightColumn}
-            displayHeight={displayHeight}
-            data={data}
-            fullWidth={fullWidth}
-            headerRowHeight={headerRowHeight}
-            activeCell={activeCell}
-            innerRef={innerRef}
-            rowHeight={getRowSize}
-            rowKey={rowKey}
-            selection={selection}
-            rowClassName={rowClassName}
-            editing={editing}
-            getContextMenuItems={getContextMenuItems}
-            setRowData={setRowData}
-            deleteRows={deleteRows}
-            insertRowAfter={insertRowAfter}
-            duplicateRows={duplicateRows}
-            stopEditing={stopEditing}
-            cellClassName={cellClassName}
-            onScroll={onScroll}
-          >
-            <SelectionRect
-              columnRights={columnRights}
+        <ColumnWidthsContext.Provider
+          value={{
+            columnWidths,
+            initialColumnWidths,
+            columnsMap,
+            onColumnsResize: resizeEndCallback,
+            resizeCallback: resizeCallback,
+            resizedColumnWidths,
+          }}
+        >
+          <div className={className} style={style}>
+            <div
+              ref={beforeTabIndexRef}
+              tabIndex={rawColumns.length && data.length ? 0 : undefined}
+              onFocus={(e) => {
+                e.target.blur()
+                setActiveCell({ col: 0, row: 0 })
+              }}
+            />
+            <Grid
+              columns={columns}
+              outerRef={outerRef}
               columnWidths={columnWidths}
-              activeCell={activeCell}
-              selection={selection}
-              headerRowHeight={headerRowHeight}
-              rowHeight={getRowSize}
               hasStickyRightColumn={hasStickyRightColumn}
-              dataLength={data.length}
-              viewHeight={height}
-              viewWidth={width}
-              contentWidth={fullWidth ? undefined : contentWidth}
-              edges={edges}
+              displayHeight={adjustedDisplayHeight}
+              data={data}
+              fullWidth={fullWidth}
+              headerRowHeight={headerRowHeight}
+              activeCell={activeCell}
+              innerRef={innerRef}
+              rowHeight={getRowSize}
+              rowKey={rowKey}
+              selection={selection}
+              rowClassName={rowClassName}
               editing={editing}
-              isCellDisabled={isCellDisabled}
-              expandSelection={expandSelection}
+              getContextMenuItems={getContextMenuItems}
+              setRowData={setRowData}
+              deleteRows={deleteRows}
+              insertRowAfter={insertRowAfter}
+              duplicateRows={duplicateRows}
+              stopEditing={stopEditing}
+              cellClassName={cellClassName}
+              onScroll={onScroll}
+              style={{
+                overflowY: resizing ? 'hidden' : 'auto',
+              }}
+            >
+              <SelectionRect
+                columnRights={columnRights}
+                columnWidths={columnWidths}
+                activeCell={activeCell}
+                selection={selection}
+                headerRowHeight={headerRowHeight}
+                rowHeight={getRowSize}
+                hasStickyRightColumn={hasStickyRightColumn}
+                dataLength={data.length}
+                viewHeight={height}
+                viewWidth={width}
+                contentWidth={fullWidth ? undefined : contentWidth}
+                edges={edges}
+                editing={editing}
+                isCellDisabled={isCellDisabled}
+                expandSelection={expandSelection}
+              />
+            </Grid>
+            <div
+              ref={afterTabIndexRef}
+              tabIndex={rawColumns.length && data.length ? 0 : undefined}
+              onFocus={(e) => {
+                e.target.blur()
+                setActiveCell({
+                  col: columns.length - (hasStickyRightColumn ? 3 : 2),
+                  row: data.length - 1,
+                })
+              }}
             />
-          </Grid>
-          <div
-            ref={afterTabIndexRef}
-            tabIndex={rawColumns.length && data.length ? 0 : undefined}
-            onFocus={(e) => {
-              e.target.blur()
-              setActiveCell({
-                col: columns.length - (hasStickyRightColumn ? 3 : 2),
-                row: data.length - 1,
-              })
-            }}
-          />
-          {!lockRows && AddRowsComponent && (
-            <AddRowsComponent
-              addRows={(count) => insertRowAfter(data.length - 1, count)}
-            />
-          )}
-          {contextMenu && contextMenuItems.length > 0 && (
-            <ContextMenuComponent
-              clientX={contextMenu.x}
-              clientY={contextMenu.y}
-              cursorIndex={contextMenu.cursorIndex}
-              items={contextMenuItems}
-              close={() => setContextMenu(null)}
-            />
-          )}
-        </div>
+            {!lockRows && AddRowsComponent && (
+              <AddRowsComponent
+                addRows={(count) => insertRowAfter(data.length - 1, count)}
+              />
+            )}
+            {contextMenu && contextMenuItems.length > 0 && (
+              <ContextMenuComponent
+                clientX={contextMenu.x}
+                clientY={contextMenu.y}
+                cursorIndex={contextMenu.cursorIndex}
+                items={contextMenuItems}
+                close={() => setContextMenu(null)}
+              />
+            )}
+          </div>
+        </ColumnWidthsContext.Provider>
       )
     }
   )

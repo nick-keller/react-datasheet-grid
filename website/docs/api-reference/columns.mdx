@@ -60,6 +60,14 @@ Minimum width of the column in pixels. Can be `0` for no minimum value.
 
 Maximum width of the column in pixels. Can be `null` for no maximum value.
 
+### initialColumnWidths
+> Type: `Array<number | undefined>`<br />
+> Default: `undefined`
+
+Initial width of the column in pixels. Can be specified for a specific column by index, other columns can be `undefined`,
+for instance, if you want to set the 3rd column to `200px` you would provide an array `[, , 200]`.
+In case if you have more columns than the length of the array, the remaining columns will be resized by default by its basis, min and max width accordingly.
+
 ## Copy pasting
 ### copyValue
 > Type: `({ rowData, rowIndex }) => number | string | null`

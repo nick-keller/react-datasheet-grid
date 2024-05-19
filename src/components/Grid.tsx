@@ -29,6 +29,7 @@ export const Grid = <T extends any>({
   cellClassName,
   children,
   editing,
+  style,
   getContextMenuItems,
   setRowData,
   deleteRows,
@@ -54,6 +55,7 @@ export const Grid = <T extends any>({
   activeCell: Cell | null
   children: ReactNode
   editing: boolean
+  style: React.CSSProperties
   getContextMenuItems: () => ContextMenuItem[]
   setRowData: (rowIndex: number, item: T) => void
   deleteRows: (rowMin: number, rowMax?: number) => void
@@ -129,7 +131,7 @@ export const Grid = <T extends any>({
       ref={outerRef}
       className="dsg-container"
       onScroll={onScroll}
-      style={{ height: displayHeight }}
+      style={{ height: displayHeight, ...style }}
     >
       <div
         ref={innerRef}
@@ -149,6 +151,9 @@ export const Grid = <T extends any>({
             {colVirtualizer.getVirtualItems().map((col) => (
               <CellComponent
                 key={col.key}
+                id={columns[col.index].id}
+                index={col.index}
+                isHeader={true}
                 gutter={col.index === 0}
                 stickyRight={
                   hasStickyRightColumn && col.index === columns.length - 1
@@ -214,6 +219,7 @@ export const Grid = <T extends any>({
                 return (
                   <CellComponent
                     key={col.key}
+                    index={col.index}
                     gutter={col.index === 0}
                     stickyRight={
                       hasStickyRightColumn && col.index === columns.length - 1

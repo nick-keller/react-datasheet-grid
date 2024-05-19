@@ -128,18 +128,18 @@ export const useColumns = <T extends any>(
       return {
         ...column,
         basis: column.basis ?? legacyWidth.basis ?? 0,
-        grow: column.grow ?? legacyWidth.grow ?? 1,
-        shrink: column.shrink ?? legacyWidth.shrink ?? 1,
-        minWidth: column.minWidth ?? 100,
         component: column.component ?? defaultComponent,
-        disableKeys: column.disableKeys ?? false,
-        disabled: column.disabled ?? false,
-        keepFocus: column.keepFocus ?? false,
-        deleteValue: column.deleteValue ?? identityRow,
         copyValue: column.copyValue ?? defaultCopyValue,
+        deleteValue: column.deleteValue ?? identityRow,
+        disabled: column.disabled ?? false,
+        disableKeys: column.disableKeys ?? false,
+        grow: column.grow ?? legacyWidth.grow ?? 1,
+        isCellEmpty: column.isCellEmpty ?? defaultIsCellEmpty,
+        keepFocus: column.keepFocus ?? false,
+        minWidth: column.minWidth ?? 100,
         pasteValue: column.pasteValue ?? identityRow,
         prePasteValues: column.prePasteValues ?? defaultPrePasteValues,
-        isCellEmpty: column.isCellEmpty ?? defaultIsCellEmpty,
+        shrink: column.shrink ?? legacyWidth.shrink ?? 1,
       }
     })
   }, [gutterColumn, stickyRightColumn, columns])
