@@ -76,11 +76,7 @@ export const keyColumn = <
     typeof column.cellClassName === 'function'
       ? ({ rowData, rowIndex, columnId }) => {
           return typeof column.cellClassName === 'function'
-            ? column.cellClassName({
-                rowData: rowData[key],
-                rowIndex,
-                columnId,
-              })
+            ? column.cellClassName({ rowData: rowData[key], rowIndex, columnId })
             : column.cellClassName ?? undefined
         }
       : column.cellClassName,
