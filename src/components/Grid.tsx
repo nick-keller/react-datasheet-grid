@@ -29,6 +29,7 @@ export const Grid = <T extends any>({
   cellClassName,
   children,
   editing,
+  style,
   getContextMenuItems,
   setRowData,
   deleteRows,
@@ -54,6 +55,7 @@ export const Grid = <T extends any>({
   activeCell: Cell | null
   children: ReactNode
   editing: boolean
+  style: React.CSSProperties
   getContextMenuItems: () => ContextMenuItem[]
   setRowData: (rowIndex: number, item: T) => void
   deleteRows: (rowMin: number, rowMax?: number) => void
@@ -129,7 +131,7 @@ export const Grid = <T extends any>({
       ref={outerRef}
       className="dsg-container"
       onScroll={onScroll}
-      style={{ height: displayHeight }}
+      style={{ height: displayHeight, ...style }}
     >
       <div
         ref={innerRef}

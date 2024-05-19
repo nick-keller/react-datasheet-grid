@@ -43,6 +43,7 @@ import { Grid } from './Grid'
 import { SelectionRect } from './SelectionRect'
 import { useRowHeights } from '../hooks/useRowHeights'
 import { ColumnWidthsContext } from '../hooks/useColumnsWidthContext'
+import { useScrollbarSize } from '../hooks/useScrollbarSize'
 
 const DEFAULT_DATA: any[] = []
 const DEFAULT_COLUMNS: Column<any, any, any>[] = []
@@ -102,10 +103,26 @@ export const DataSheetGrid = React.memo(
       const beforeTabIndexRef = useRef<HTMLDivElement>(null)
       const afterTabIndexRef = useRef<HTMLDivElement>(null)
       // Default value is 1 for the border
-      const [heightDiff, setHeightDiff] = useDebounceState(1, 100)
+      const [heightDiff, setHeightDiff] = useDebounceState(20, 100)
       const [resizedColumnWidths, setResizedColumnWidths] = useState<
         Record<string, number>
       >(initialColumnWidths ?? {})
+      const [resizing, setResizing] = useDebounceState<boolean>(false, 50)
+      // FIXME: this needs to be calculated on the first render somehow
+      const [horizontalScroll, setHorizontalScroll] = useState<boolean>(false)
+      const scrollbarSize = useScrollbarSize()
+
+      const resizeCallback = (
+        val: React.SetStateAction<Record<string, number>>
+      ) => {
+        setResizing(true)
+        setResizedColumnWidths(val)
+      }
+
+      const resizeEndCallback = (val: Record<string, number>) => {
+        setResizing(false)
+        onColumnsResize?.(val)
+      }
 
       const { getRowSize, totalSize, getRowIndex } = useRowHeights({
         value: data,
@@ -120,10 +137,30 @@ export const DataSheetGrid = React.memo(
 
       // Width and height of the scrollable area
       const { width, height } = useResizeDetector({
+        skipOnMount: true,
         targetRef: outerRef,
         refreshMode: 'throttle',
         refreshRate: 100,
       })
+
+      const { width: innerWidth } = useResizeDetector({
+        skipOnMount: true,
+        targetRef: innerRef,
+        refreshMode: 'throttle',
+        refreshRate: 100,
+      })
+
+      const adjustedDisplayHeight = horizontalScroll
+        ? displayHeight + scrollbarSize
+        : displayHeight
+
+      useEffect(() => {
+        if (innerWidth && width && width < innerWidth) {
+          setHorizontalScroll(true)
+        } else {
+          setHorizontalScroll(false)
+        }
+      }, [innerWidth, setHorizontalScroll, width])
 
       setHeightDiff(height ? displayHeight - height : 0)
 
@@ -1783,8 +1820,8 @@ export const DataSheetGrid = React.memo(
             columnWidths,
             initialColumnWidths,
             columnsMap,
-            onColumnsResize,
-            resizeCallback: setResizedColumnWidths,
+            onColumnsResize: resizeEndCallback,
+            resizeCallback: resizeCallback,
             resizedColumnWidths,
           }}
         >
@@ -1802,7 +1839,7 @@ export const DataSheetGrid = React.memo(
               outerRef={outerRef}
               columnWidths={columnWidths}
               hasStickyRightColumn={hasStickyRightColumn}
-              displayHeight={displayHeight}
+              displayHeight={adjustedDisplayHeight}
               data={data}
               fullWidth={fullWidth}
               headerRowHeight={headerRowHeight}
@@ -1821,6 +1858,9 @@ export const DataSheetGrid = React.memo(
               stopEditing={stopEditing}
               cellClassName={cellClassName}
               onScroll={onScroll}
+              style={{
+                overflowY: resizing ? 'hidden' : 'auto',
+              }}
             >
               <SelectionRect
                 columnRights={columnRights}

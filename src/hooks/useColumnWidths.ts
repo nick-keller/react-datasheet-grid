@@ -9,16 +9,19 @@ export const getColumnWidths = (
   >[],
   initialColumnsWidth?: Record<string, number>
 ) => {
-  const items = columns.map(({ id, basis, minWidth, maxWidth }) => ({
-    id,
-    basis,
-    minWidth,
-    maxWidth,
-    size: basis,
-    violation: 0,
-    frozen: false,
-    factor: 0,
-  }))
+  const items = columns.map(({ id, basis, minWidth, maxWidth }) => {
+    const hasInitialWidth = id && initialColumnsWidth?.[id] !== undefined
+    return {
+      id,
+      basis,
+      minWidth,
+      maxWidth,
+      size: hasInitialWidth ? initialColumnsWidth[id] : basis,
+      violation: 0,
+      frozen: hasInitialWidth,
+      factor: 0,
+    }
+  })
 
   let availableWidth = items.reduce(
     (acc, cur) => acc - cur.size,
@@ -99,8 +102,15 @@ export const useColumnWidths = (
   initialColumnWidths?: Record<string, number>
 ) => {
   const columnsHash = columns
-    .map(({ basis, minWidth, maxWidth, grow, shrink }) =>
-      [basis, minWidth, maxWidth, grow, shrink].join(',')
+    .map(({ id, basis, minWidth, maxWidth, grow, shrink }) =>
+      [
+        id && initialColumnWidths?.[id],
+        basis,
+        minWidth,
+        maxWidth,
+        grow,
+        shrink,
+      ].join(',')
     )
     .join('|')
 
