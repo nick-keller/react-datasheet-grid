@@ -1359,7 +1359,7 @@ export const DataSheetGrid = React.memo(
             }
           }
 
-          if (event.key.startsWith('Arrow') || event.key === 'Tab') {
+          if (event.key?.startsWith('Arrow') || event.key === 'Tab') {
             if (editing && columns[activeCell.col + 1].disableKeys) {
               return
             }
