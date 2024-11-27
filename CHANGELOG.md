@@ -1,5 +1,16 @@
 # Change Log
 
+## 4.11.5
+> Date: 2024-11-27
+### Fix
+- Copy from ISO date column
+- Add prop `disableSmartDelete`
+
+## 4.11.4
+> Date: 2024-01-27
+### Fix
+- Triggering editing a cell just by typing now works with non-ASCII characters
+
 ## 4.11.3
 > Date: 2024-01-18
 ### Fix
