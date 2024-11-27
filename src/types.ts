@@ -148,6 +148,7 @@ export type DataSheetGridProps<T> = {
   lockRows?: boolean
   disableContextMenu?: boolean
   disableExpandSelection?: boolean
+  disableSmartDelete?: boolean
   contextMenuComponent?: (
     props: ContextMenuComponentProps
   ) => React.ReactElement | null
