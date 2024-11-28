@@ -18,6 +18,7 @@ export const Grid = <T extends any>({
   innerRef,
   columnWidths,
   hasStickyRightColumn,
+  stickyFirstColumn,
   displayHeight,
   headerRowHeight,
   rowHeight,
@@ -43,6 +44,7 @@ export const Grid = <T extends any>({
   innerRef: RefObject<HTMLDivElement>
   columnWidths?: number[]
   hasStickyRightColumn: boolean
+  stickyFirstColumn?: boolean
   displayHeight: number
   headerRowHeight: number
   rowHeight: (index: number) => { height: number }
@@ -97,9 +99,15 @@ export const Grid = <T extends any>({
     overscan: 1,
     rangeExtractor: (range) => {
       const result = defaultRangeExtractor(range)
+
       if (result[0] !== 0) {
         result.unshift(0)
       }
+
+      if (stickyFirstColumn && result[1] !== 1) {
+        result.splice(1, 0, 1)
+      }
+
       if (
         hasStickyRightColumn &&
         result[result.length - 1] !== columns.length - 1
@@ -150,6 +158,7 @@ export const Grid = <T extends any>({
               <CellComponent
                 key={col.key}
                 gutter={col.index === 0}
+                stickyFirstColumn={stickyFirstColumn && col.index === 1}
                 stickyRight={
                   hasStickyRightColumn && col.index === columns.length - 1
                 }
@@ -215,6 +224,7 @@ export const Grid = <T extends any>({
                   <CellComponent
                     key={col.key}
                     gutter={col.index === 0}
+                    stickyFirstColumn={stickyFirstColumn && col.index === 1}
                     stickyRight={
                       hasStickyRightColumn && col.index === columns.length - 1
                     }
