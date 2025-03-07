@@ -1,7 +1,6 @@
 export type ColumnSizer = (
   containerWidth: number | null,
   columns: {
-    id?: string
     basis: number
     grow: number
     shrink: number

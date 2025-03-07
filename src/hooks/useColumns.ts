@@ -9,6 +9,7 @@ export const useColumns = (partialColumns: Partial<Column<any>>[]) => {
         grow: 1,
         shrink: 1,
         minWidth: 100,
+        renderer: () => null,
         ...partialColumn,
       })),
     [partialColumns]

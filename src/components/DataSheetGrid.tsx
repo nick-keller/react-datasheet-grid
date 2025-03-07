@@ -5,7 +5,6 @@ import React, {
   memo,
   ReactNode,
   useEffect,
-  useMemo,
   useRef,
 } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -34,12 +33,26 @@ export type DataSheetGridProps<Row> = {
   rowIsSticky?: RowStickinessFn<Row>
   rowKey?: string | ((params: RowParams<Row>) => string | number)
   style?: CSSProperties
-  value?: (Row | StaticRow)[]
+  value?: (Row | StaticRow<Row>)[]
 }
 
 export type DataSheetGridRef = {}
 
 const DEFAULT_DATA: any[] = []
+
+function renderValue<Row>(
+  rowData: Row | StaticRow<Row>,
+  column: Column<Row>,
+  index: number
+) {
+  if (isStaticRow<Row>(rowData)) {
+    const Renderer = rowData.renderer
+    return Renderer ? <Renderer rowIndex={index} column={column} /> : null
+  }
+
+  const Renderer = column.renderer
+  return <Renderer rowData={rowData} rowIndex={index} />
+}
 
 export const DataSheetGrid = memo(
   forwardRef<DataSheetGridRef, DataSheetGridProps<any>>(
@@ -102,15 +115,65 @@ export const DataSheetGrid = memo(
         estimateSize: (index) => columnSizes[index],
         overscan: overscanCols,
         rangeExtractor: stateRef.current.colRangeExtractor,
+        onChange: (instance) => {
+          stateRef.current.colVirtualizer = instance
+        },
       })
 
       useEffect(() => {
         colVirtualizer.measure()
       }, [columnSizes])
 
+      // useEffect(() => {
+      //   rowVirtualizer.measure()
+      // }, [rowHeight])
+
       useEffect(() => {
-        rowVirtualizer.measure()
-      }, [rowHeight])
+        document.addEventListener('mousemove', (event) => {
+          const boundingClientRect =
+            scrollableRef.current!.getBoundingClientRect()
+          const fixedX = event.x - boundingClientRect.x
+          const fixedY = event.y - boundingClientRect.y
+          const x = fixedX + colVirtualizer.scrollOffset
+          const y = fixedY + rowVirtualizer.scrollOffset
+          const fixedBottom = boundingClientRect.bottom - event.y
+          let rowIndex = -1
+
+          for (const row of stateRef.current.stickyRows) {
+            if (
+              row.data.areaTop <= y &&
+              row.data.areaBottom >= y &&
+              ((typeof row.data.stickyTop === 'number' &&
+                row.data.stickyTop <= fixedY &&
+                row.data.stickyTop + row.data.rowHeight >= fixedY) ||
+                (typeof row.data.stickyBottom === 'number' &&
+                  row.data.stickyBottom <= fixedBottom &&
+                  row.data.stickyBottom + row.data.rowHeight >= fixedBottom))
+            ) {
+              rowIndex = row.index
+              break
+            }
+          }
+
+          if (rowIndex === -1) {
+            rowIndex = rowVirtualizer.getVirtualItemForOffset(y).index
+          }
+
+          let colIndex = colVirtualizer.getVirtualItemForOffset(fixedX).index
+
+          if (!stateRef.current.isStickyLeft(colIndex)) {
+            colIndex = colVirtualizer.getVirtualItemForOffset(
+              colVirtualizer.getTotalSize() - boundingClientRect.right + event.x
+            ).index
+
+            if (!stateRef.current.isStickyRight(colIndex)) {
+              colIndex = colVirtualizer.getVirtualItemForOffset(x).index
+            }
+          }
+
+          console.log(colIndex, rowIndex)
+        })
+      }, [])
 
       // Cells that scroll normally
       const middleCells: ReactNode[] = []
@@ -167,7 +230,8 @@ export const DataSheetGrid = memo(
             rowData: dataRow,
             cell: { col: col.index, row: row.index },
             column: columns[col.index],
-          });
+          })
+          const value = renderValue(dataRow, columns[col.index], row.index)
 
           if (stickyRowData) {
             if (stickyLeft) {
@@ -182,7 +246,7 @@ export const DataSheetGrid = memo(
                   }}
                 >
                   {cursor}
-                  {col.index},{row.index}
+                  {value}
                 </div>
               )
             } else if (stickyRight) {
@@ -199,7 +263,7 @@ export const DataSheetGrid = memo(
                   }}
                 >
                   {cursor}
-                  {col.index},{row.index}
+                  {value}
                 </div>
               )
             } else {
@@ -214,7 +278,7 @@ export const DataSheetGrid = memo(
                   }}
                 >
                   {cursor}
-                  {col.index},{row.index}
+                  {value}
                 </div>
               )
             }
@@ -230,7 +294,7 @@ export const DataSheetGrid = memo(
                 }}
               >
                 {cursor}
-                {col.index},{row.index}
+                {value}
               </div>
             )
           } else if (stickyRight) {
@@ -247,7 +311,7 @@ export const DataSheetGrid = memo(
                 }}
               >
                 {cursor}
-                {col.index},{row.index}
+                {value}
               </div>
             )
           } else {
@@ -262,7 +326,7 @@ export const DataSheetGrid = memo(
                 }}
               >
                 {cursor}
-                {col.index},{row.index}
+                {value}
               </div>
             )
           }

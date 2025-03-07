@@ -18,6 +18,6 @@ export const useColumnSizes = (
 
   return useMemo(
     () => columnSizer(width ?? null, columns),
-    [width, columnSizer]
+    [width, columnSizer, columns]
   )
 }

@@ -1,59 +1,38 @@
 import React, { useState } from 'react'
-import { DataSheetGrid, Column, createStaticRow, isStaticRow } from '../../src'
+import { DataSheetGrid, Column, createStaticRow } from '../../src'
 import '../../src/style.css'
 
-const columns: Partial<Column<any>>[] = [
-  { sticky: 'left' },
-  { sticky: 'left' },
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  { sticky: 'right' },
-  { sticky: 'right' },
-]
-
-const data = [createStaticRow({ sticky: true }), ...new Array(1000).fill(0)]
-
 function App() {
+  const [columns, setColumns] = useState<Partial<Column<any>>[]>([
+    { sticky: 'left', title: 'hello' },
+    { sticky: 'left' },
+    { renderer: () => <b>hello</b>, title: 'world' },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    { sticky: 'right' },
+    { sticky: 'right' },
+    { sticky: 'right' },
+  ])
+  const [data, setData] = useState<any[]>([
+    createStaticRow({ sticky: true, renderer: ({ column }) => column.title }),
+    ...new Array(2000).fill(0),
+  ])
+
   return (
     <div
       style={{
@@ -63,7 +42,14 @@ function App() {
         background: '#f3f3f3',
       }}
     >
-      <DataSheetGrid value={data} columns={columns} />
+      <button onClick={() => setColumns((x) => [...x, {}])}>Add col</button>
+      <button onClick={() => setData((x) => [...x, 0])}>Add row</button>
+      <DataSheetGrid
+        value={data}
+        columns={columns}
+        rowHeight={({ rowIndex }) => (rowIndex % 10) * 8 + 10}
+        rowIsSticky={({ rowIndex }) => (rowIndex % 10 === 8 ? 'bottom' : false)}
+      />
     </div>
   )
 }
