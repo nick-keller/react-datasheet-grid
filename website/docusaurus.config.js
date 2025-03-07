@@ -54,6 +54,50 @@ module.exports = {
       theme: darkCodeTheme,
       darkTheme: darkCodeTheme,
     },
+    footer: {
+      style: 'dark',
+      links: [
+        {
+          title: 'Docs',
+          items: [
+            {
+              label: 'Features',
+              to: '/docs/features',
+            },
+            {
+              label: 'Getting started',
+              to: '/docs/getting-started',
+            },
+            {
+              label: 'Examples',
+              to: '/docs/examples/default-values',
+            },
+            {
+              label: 'Reference',
+              to: '/docs/api-reference/props',
+            },
+          ],
+        },
+        {
+          title: 'Socials',
+          items: [
+            {
+              label: 'GitHub',
+              href: 'https://github.com/nick-keller/react-datasheet-grid',
+            },
+            {
+              label: 'NPM',
+              href: 'https://www.npmjs.com/package/react-datasheet-grid',
+            },
+            {
+              label: 'Tggl: Feature flags for teams',
+              to: 'https://tggl.io',
+              rel: '',
+            },
+          ],
+        },
+      ],
+    },
   },
   presets: [
     [
