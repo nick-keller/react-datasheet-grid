@@ -34,7 +34,7 @@
     "@types/jest": "^27.4.0",
     "@types/jsdom": "^16.2.13",
     "@types/react": "^18.0.8",
-    "@types/throttle-debounce": "^2.1.0",
+    "@types/throttle-debounce": "^5.0.2",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
     "concurrently": "^6.2.0",

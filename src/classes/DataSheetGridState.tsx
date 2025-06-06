@@ -160,14 +160,32 @@ export class DataSheetGridState<Row> {
         return false
       }
 
-      return <div className={cx("dsg-cursor", {
-        'dsg-selection': true,
-        'dsg-selection-active-cell': cell.col === this._activeCell.col && cell.row === this._activeCell.row,
-        'dsg-selection-top': this._activeCell.row < (this._selectionCell?.row ?? Infinity) ? this._activeCell.row === cell.row : this._selectionCell?.row === cell.row,
-        'dsg-selection-left': this._activeCell.col < (this._selectionCell?.col ?? Infinity) ? this._activeCell.col === cell.col : this._selectionCell?.col === cell.col,
-        'dsg-selection-right': this._activeCell.col > (this._selectionCell?.col ?? -Infinity) ? this._activeCell.col === cell.col : this._selectionCell?.col === cell.col,
-        'dsg-selection-bottom': this._activeCell.row > (this._selectionCell?.row ?? -Infinity) ? this._activeCell.row === cell.row : this._selectionCell?.row === cell.row,
-      })} />
+      return (
+        <div
+          className={cx('dsg-cursor', {
+            'dsg-selection': true,
+            'dsg-selection-active-cell':
+              cell.col === this._activeCell.col &&
+              cell.row === this._activeCell.row,
+            'dsg-selection-top':
+              this._activeCell.row < (this._selectionCell?.row ?? Infinity)
+                ? this._activeCell.row === cell.row
+                : this._selectionCell?.row === cell.row,
+            'dsg-selection-left':
+              this._activeCell.col < (this._selectionCell?.col ?? Infinity)
+                ? this._activeCell.col === cell.col
+                : this._selectionCell?.col === cell.col,
+            'dsg-selection-right':
+              this._activeCell.col > (this._selectionCell?.col ?? -Infinity)
+                ? this._activeCell.col === cell.col
+                : this._selectionCell?.col === cell.col,
+            'dsg-selection-bottom':
+              this._activeCell.row > (this._selectionCell?.row ?? -Infinity)
+                ? this._activeCell.row === cell.row
+                : this._selectionCell?.row === cell.row,
+          })}
+        />
+      )
     }
   }
 
@@ -266,7 +284,9 @@ export class DataSheetGridState<Row> {
     }
   }
 
-  throttleComputeStickyRows = throttle(150, false, () => this.computeStickyRows(), false)
+  throttleComputeStickyRows = throttle(150, () => this.computeStickyRows(), {
+    noLeading: true,
+  })
 
   computeStickyRows() {
     const isSticky = this._rowIsSticky ?? (() => false)
@@ -283,7 +303,9 @@ export class DataSheetGridState<Row> {
 
     const stickyRows = this._data.reduce((acc, rowData, rowIndex) => {
       const rowStickiness = parseRowStickinessFnResult(
-        isStaticRow<Row>(rowData) ? rowData.sticky : isSticky({ rowData, rowIndex })
+        isStaticRow<Row>(rowData)
+          ? rowData.sticky
+          : isSticky({ rowData, rowIndex })
       )
 
       if (rowStickiness) {
@@ -323,7 +345,8 @@ export class DataSheetGridState<Row> {
           areaTop: rowVirtualizer.measurementsCache[index].start,
           areaBottom:
             next === stickyRows.length
-              ? rowVirtualizer.measurementsCache[this._data.length - 1]?.end ?? 0
+              ? rowVirtualizer.measurementsCache[this._data.length - 1]?.end ??
+                0
               : rowVirtualizer.measurementsCache[stickyRows[next].index].start,
           rowHeight: rowVirtualizer.measurementsCache[index].size,
           level: rowStickiness.level,
