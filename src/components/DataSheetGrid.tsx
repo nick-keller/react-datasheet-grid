@@ -863,13 +863,13 @@ export const DataSheetGrid = React.memo(
         (event: ClipboardEvent) => {
           if (activeCell && !editing) {
             let pasteData = [['']]
-            if (event.clipboardData?.types.includes('text/html')) {
-              pasteData = parseTextHtmlData(
-                event.clipboardData?.getData('text/html')
-              )
-            } else if (event.clipboardData?.types.includes('text/plain')) {
+            if (event.clipboardData?.types.includes('text/plain')) {
               pasteData = parseTextPlainData(
                 event.clipboardData?.getData('text/plain')
+              )
+            } else if (event.clipboardData?.types.includes('text/html')) {
+              pasteData = parseTextHtmlData(
+                event.clipboardData?.getData('text/html')
               )
             } else if (event.clipboardData?.types.includes('text')) {
               pasteData = parseTextPlainData(
@@ -1564,12 +1564,12 @@ export const DataSheetGrid = React.memo(
                   const items = await navigator.clipboard.read()
                   items.forEach(async (item) => {
                     let pasteData = [['']]
-                    if (item.types.includes('text/html')) {
-                      const htmlTextData = await item.getType('text/html')
-                      pasteData = parseTextHtmlData(await htmlTextData.text())
-                    } else if (item.types.includes('text/plain')) {
+                    if (item.types.includes('text/plain')) {
                       const plainTextData = await item.getType('text/plain')
                       pasteData = parseTextPlainData(await plainTextData.text())
+                    } else if (item.types.includes('text/html')) {
+                      const htmlTextData = await item.getType('text/html')
+                      pasteData = parseTextHtmlData(await htmlTextData.text())
                     } else if (item.types.includes('text')) {
                       const htmlTextData = await item.getType('text')
                       pasteData = parseTextHtmlData(await htmlTextData.text())
