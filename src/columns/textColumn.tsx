@@ -175,7 +175,7 @@ export function createTextColumn<T = string | null>({
   formatInputOnFocus = (value) => String(value ?? ''),
   formatForCopy = (value) => String(value ?? ''),
   parsePastedValue = (value) =>
-    (value.replace(/[\n\r]+/g, ' ').trim() || (null as unknown)) as T,
+    ((value.replace(/[\n\r]+/g, ' ') ?? '').trim() || (null as unknown)) as T,
 }: TextColumnOptions<T> = {}): Partial<Column<T, TextColumnData<T>, string>> {
   return {
     component: TextComponent as unknown as CellComponent<T, TextColumnData<T>>,
