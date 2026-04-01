@@ -58,13 +58,13 @@
     "dist/**/*"
   ],
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.0.0-beta.18",
     "classnames": "^2.3.1",
     "fast-deep-equal": "^3.1.3",
-    "react-resize-detector": "^7.1.2",
+    "react-resize-detector": "^12.0.0",
     "throttle-debounce": "^3.0.1"
   }
 }
