@@ -48,6 +48,7 @@ export const SelectionRect = React.memo<SelectionContextType>(
     rowHeight,
     activeCell,
     hasStickyRightColumn,
+    stickyLeftColumnNumber,
     dataLength,
     viewWidth,
     viewHeight,
@@ -78,6 +79,10 @@ export const SelectionRect = React.memo<SelectionContextType>(
     if (!columnWidths || !columnRights) {
       return null
     }
+
+    const stickyLeftTotalWidth = columnWidths
+      .slice(0, stickyLeftColumnNumber + 1)
+      .reduce((a, b) => a + b, 0)
 
     const extraPixelV = (rowI: number): number => {
       return rowI < dataLength - 1 ? 1 : 0
@@ -170,17 +175,17 @@ export const SelectionRect = React.memo<SelectionContextType>(
             })}
             style={{
               top: headerRowHeight,
-              left: columnWidths[0],
+              left: stickyLeftTotalWidth,
               height: viewHeight ? viewHeight - headerRowHeight : 0,
               width:
                 contentWidth && viewWidth
                   ? viewWidth -
-                    columnWidths[0] -
+                    stickyLeftTotalWidth -
                     (hasStickyRightColumn
                       ? columnWidths[columnWidths.length - 1]
                       : 0)
                   : `calc(100% - ${
-                      columnWidths[0] +
+                      stickyLeftTotalWidth +
                       (hasStickyRightColumn
                         ? columnWidths[columnWidths.length - 1]
                         : 0)
@@ -223,7 +228,7 @@ export const SelectionRect = React.memo<SelectionContextType>(
                 'dsg-selection-row-marker',
                 selectionIsDisabled && 'dsg-selection-row-marker-disabled'
               )}
-              style={{ left: columnWidths[0] }}
+              style={{ left: stickyLeftTotalWidth }}
             />
           </div>
         )}
