@@ -66,15 +66,39 @@ html[data-theme='dark'] .feature:nth-child(odd) {
 }
 
 .partner {
-  display: flex;
-  align-items: center;
-  max-width: 800px;
+  max-width: 900px;
   margin: 40px auto;
-  gap: 50px;
   position: relative;
   background: white;
   border-radius: 20px;
   padding: 30px;
+}
+
+.partner > h2 {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.partnerList {
+  display: flex;
+  gap: 40px;
+}
+
+.partnerItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .partner {
+    margin: 40px 16px;
+  }
+
+  .partnerList {
+    flex-direction: column;
+  }
 }
 
 .partner:before {
@@ -114,16 +138,14 @@ html[data-theme='dark'] .feature:nth-child(odd) {
 .partner figure {
   padding: 0;
   margin: 0;
-  flex: 1;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.partner aside {
-  padding: 0;
+.partner aside p {
   margin: 0;
-  flex: 2;
 }
 
 .partner figure > a {

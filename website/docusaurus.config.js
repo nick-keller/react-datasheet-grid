@@ -99,6 +99,11 @@ module.exports = {
               to: 'https://rabbitgui.com/',
               rel: '',
             },
+            {
+              label: 'LicenseManager.dev: Free license management for your app',
+              to: 'https://licensemanager.dev/',
+              rel: '',
+            },
           ],
         },
       ],
