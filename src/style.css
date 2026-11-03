@@ -81,6 +81,11 @@
   transform: translateY(-100%);
 }
 
+.dsg-cell-sticky-left {
+  position: sticky;
+  z-index: 30;
+}
+
 .dsg-cell-disabled {
   background: var(--dsg-cell-disabled-background-color);
 }

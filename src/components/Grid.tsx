@@ -17,7 +17,9 @@ export const Grid = <T extends any>({
   outerRef,
   innerRef,
   columnWidths,
+  columnRights,
   hasStickyRightColumn,
+  stickyLeftColumnNumber,
   displayHeight,
   headerRowHeight,
   rowHeight,
@@ -42,7 +44,9 @@ export const Grid = <T extends any>({
   outerRef: RefObject<HTMLDivElement>
   innerRef: RefObject<HTMLDivElement>
   columnWidths?: number[]
+  columnRights?: number[]
   hasStickyRightColumn: boolean
+  stickyLeftColumnNumber: number
   displayHeight: number
   headerRowHeight: number
   rowHeight: (index: number) => { height: number }
@@ -97,8 +101,14 @@ export const Grid = <T extends any>({
     overscan: 1,
     rangeExtractor: (range) => {
       const result = defaultRangeExtractor(range)
-      if (result[0] !== 0) {
-        result.unshift(0)
+      const stickyLeftBoundary = Math.min(
+        columns.length - 1,
+        stickyLeftColumnNumber + 1
+      )
+      for (let stickyCol = 0; stickyCol <= stickyLeftBoundary; stickyCol++) {
+        if (!result.includes(stickyCol)) {
+          result.unshift(stickyCol)
+        }
       }
       if (
         hasStickyRightColumn &&
@@ -150,6 +160,8 @@ export const Grid = <T extends any>({
               <CellComponent
                 key={col.key}
                 gutter={col.index === 0}
+                stickyLeft={col.index > 0 && col.index <= stickyLeftColumnNumber}
+                stickyLeftOffset={columnRights?.[col.index - 1] ?? 0}
                 stickyRight={
                   hasStickyRightColumn && col.index === columns.length - 1
                 }
@@ -215,6 +227,10 @@ export const Grid = <T extends any>({
                   <CellComponent
                     key={col.key}
                     gutter={col.index === 0}
+                    stickyLeft={
+                      col.index > 0 && col.index <= stickyLeftColumnNumber
+                    }
+                    stickyLeftOffset={columnRights?.[col.index - 1] ?? 0}
                     stickyRight={
                       hasStickyRightColumn && col.index === columns.length - 1
                     }
